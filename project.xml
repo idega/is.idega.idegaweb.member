@@ -86,10 +86,10 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-    <dependency>
+     <dependency>
       <groupId>bundles</groupId>
-      <artifactId>com.idega.user</artifactId>
-      <!--<version>1.0</version>-->
+      <artifactId>com.idega.builder</artifactId>
+      <!--<version>1.1</version>-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -97,9 +97,9 @@
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>bundles</groupId>
-      <artifactId>com.idega.builder</artifactId>
+      <artifactId>com.idega.user</artifactId>
       <!--<version>1.0</version>-->
       <version>SNAPSHOT</version>
       <type>jar</type>
