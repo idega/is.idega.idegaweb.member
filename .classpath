@@ -25,6 +25,8 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.importer">
   </classpathentry>
+  <classpathentry kind="src" path="/is.idega.block.family">
+  </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
 </classpath>

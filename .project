@@ -11,6 +11,7 @@
     <project>com.idega.block.media</project>
     <project>com.idega.block.cal</project>
     <project>com.idega.block.importer</project>
+    <project>is.idega.block.family</project>
   </projects>
   <buildSpec>
     <buildCommand>
