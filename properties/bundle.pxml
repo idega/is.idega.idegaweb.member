@@ -10,14 +10,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>AgeGenderPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.AgeGenderPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -28,14 +23,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>ClubInformationPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.ClubInformationPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -46,14 +36,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>GroupOfficeAddressPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.GroupOfficeAddressPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -64,14 +49,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>GroupOfficeContactPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.GroupOfficeContactPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -82,14 +62,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>FlokkarPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.FlokkarPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -100,14 +75,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>DeildirPluginBusiness</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.DeildirPluginBusiness.pxml</value>
                 </key>
               </map>
             </value>
@@ -118,94 +88,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>UserEditor</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.block</value>
-                </key>
-                <key>
-                  <name>iw_component_methods</name>
-                  <value>
-                    <map>
-                      <key>
-                        <name>:method:1:implied:void:addRelationType:int:java.lang.String:</name>
-                        <value>
-                          <map>
-                            <key>
-                              <name>iw_method_params</name>
-                              <value>
-                                <map>
-                                  <key>
-                                    <name>1</name>
-                                    <value>
-                                      <map>
-                                        <key>
-                                          <name>iw_method_param_handler</name>
-                                          <type>java.lang.String</type>
-                                          <value />
-                                        </key>
-                                        <key>
-                                          <name>iw_method_param_desc</name>
-                                          <type>java.lang.String</type>
-                                          <value>Relation</value>
-                                        </key>
-                                      </map>
-                                    </value>
-                                    <type>map</type>
-                                  </key>
-                                  <key>
-                                    <name>0</name>
-                                    <value>
-                                      <map>
-                                        <key>
-                                          <name>iw_method_param_handler</name>
-                                          <type>java.lang.String</type>
-                                          <value />
-                                        </key>
-                                        <key>
-                                          <name>iw_method_param_prim_key</name>
-                                          <type>java.lang.Boolean</type>
-                                          <value>true</value>
-                                        </key>
-                                        <key>
-                                          <name>iw_method_param_desc</name>
-                                          <type>java.lang.String</type>
-                                          <value>Index</value>
-                                        </key>
-                                      </map>
-                                    </value>
-                                    <type>map</type>
-                                  </key>
-                                </map>
-                              </value>
-                              <type>map</type>
-                            </key>
-                            <key>
-                              <name>iw_method_option_multiv</name>
-                              <type>java.lang.Boolean</type>
-                              <value>true</value>
-                            </key>
-                            <key>
-                              <name>iw_method_description</name>
-                              <type>java.lang.String</type>
-                              <value>Relation type</value>
-                            </key>
-                            <key>
-                              <name>iw_method_identifier</name>
-                              <type>java.lang.String</type>
-                              <value>:method:1:implied:void:addRelationType:int:java.lang.String:</value>
-                            </key>
-                          </map>
-                        </value>
-                        <type>map</type>
-                      </key>
-                    </map>
-                  </value>
-                  <type>map</type>
+                  <value>is.idega.idegaweb.member.presentation.UserEditor.pxml</value>
                 </key>
               </map>
             </value>
