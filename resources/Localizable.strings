@@ -199,6 +199,7 @@ usr_stat_parent3_status=
 usr_stat_parent_status=
 usr_stat_status=
 usr_stat_tab_name=
+usrch_overflow_message=There are more hits in your search than shown, you have to narrow down your searchcriteria
 usrch_search_fname=First name
 usrch_search_lname=Last name
 usrch_search_pid=Personal ID
