@@ -1,4 +1,3 @@
-#Mon Oct 27 19:22:34 GMT 2003
 =
 Address.CITY=
 Close=
@@ -90,6 +89,7 @@ cplay_division=
 cplay_name=
 cplay_tab_name=Flokkar/h\u00F3par - grunng\u00F6gn
 cplay_union=
+delete_group=
 email=
 faxPhone=
 female=
@@ -133,6 +133,7 @@ status=
 the_following_users_were_not\ moved=
 type=
 update=
+updatecdiv=
 updatecdiv_info=
 updatecdiv_name=
 updatecdiv_wrongtype=
