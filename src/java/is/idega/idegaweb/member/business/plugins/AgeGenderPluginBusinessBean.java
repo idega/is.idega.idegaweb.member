@@ -277,6 +277,9 @@ public class AgeGenderPluginBusinessBean extends IBOServiceBean implements  AgeG
   public boolean isUserAssignableFromGroupToGroup(User user, Group sourceGroup, Group targetGroup) {
     // get date of birth
     Date date = user.getDateOfBirth();
+    if (date == null) {
+      return false;
+    }
     GregorianCalendar dateOfBirth = new GregorianCalendar();
     dateOfBirth.setTime(date);
     // get gender of user
