@@ -83,19 +83,27 @@
             </value>
             <type>map</type>
           </key>
-<key>
+          <key>
+            <name>is.idega.idegaweb.member.presentation.UserEditor</name>
+            <value>
+              <map>
+                <key>
+                  <name>component_property_file</name>
+                  <type>java.lang.String</type>
+                  <value>is.idega.idegaweb.member.presentation.UserEditor.pxml</value>
+                </key>
+              </map>
+            </value>
+            <type>map</type>
+          </key>
+          <key>
             <name>is.idega.idegaweb.member.business.plugins.ClubDivisionHandlerPluginBusinessBean</name>
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>ClubDivisionHandlerPluginBusinessBean</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.ClubDivisionHandlerPluginBusinessBean.pxml</value>
                 </key>
               </map>
             </value>
@@ -106,14 +114,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>UserStatusPluginBusinessBean</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.UserStatusPluginBusinessBean.pxml</value>
                 </key>
               </map>
             </value>
@@ -124,14 +127,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>GroupBoardPluginBusinessBean</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.GroupBoardPluginBusinessBean.pxml</value>
                 </key>
               </map>
             </value>
@@ -142,14 +140,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
+                  <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>GroupLogoPluginBusinessBean</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
+                  <value>is.idega.idegaweb.member.business.plugins.GroupLogoPluginBusinessBean.pxml</value>
                 </key>
               </map>
             </value>
@@ -160,27 +153,9 @@
             <value>
               <map>
                 <key>
-                  <name>component_name</name>
-                  <type>java.lang.String</type>
-                  <value>UserHistoryPluginBusinessBean</value>
-                </key>
-                <key>
-                  <name>component_type</name>
-                  <type>java.lang.String</type>
-                  <value>iw.application.component</value>
-                </key>
-              </map>
-            </value>
-            <type>map</type>
-          </key>
-          <key>
-            <name>is.idega.idegaweb.member.presentation.UserEditor</name>
-            <value>
-              <map>
-                <key>
                   <name>component_property_file</name>
                   <type>java.lang.String</type>
-                  <value>is.idega.idegaweb.member.presentation.UserEditor.pxml</value>
+                  <value>is.idega.idegaweb.member.business.plugins.UserHistoryPluginBusinessBean.pxml</value>
                 </key>
               </map>
             </value>
