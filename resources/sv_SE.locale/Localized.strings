@@ -1,5 +1,6 @@
-#Tue Sep 09 17:03:06 CEST 2003
+#Fri Oct 24 11:46:23 CEST 2003
 =
+CommuneReportBusiness.parent2_ssn=
 Delete\ selection=
 FAM_CHILD=Barn
 FAM_CUSTODIAN=V\u00E5rdnadshavare
@@ -9,6 +10,7 @@ Mobile_phone=Mobil
 abrv=
 attach=Skapa relation
 belongs=tillh\u00F6r
+cancel=Cancel
 clear=Rensa
 current_user=Anv\u00E4ndare
 detach=Ta bort relation
@@ -42,14 +44,19 @@ number=
 operation=
 premier=
 regional=
+related_as=related as
 relation_type=Typ av relation
 relation_user=Relation anv\u00E4ndare
 reverse_relation_type=Reverse relation type
 school.placement_date=
+search_user_module.button_back=Back
+search_user_module.button_reset=Rensa
+search_user_module.button_search=S\u00F6k
 short=
 special=
 ssn=
 status=
+to=to
 type=
 usingSystem=
 usr_fam_attach=Bifoga

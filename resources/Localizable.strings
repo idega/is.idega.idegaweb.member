@@ -1,5 +1,6 @@
-#Tue Sep 09 17:03:06 CEST 2003
+#Fri Oct 24 12:54:48 CEST 2003
 =
+CommuneReportBusiness.parent2_ssn=
 Delete\ selection=
 FAM_CHILD=
 FAM_CUSTODIAN=
@@ -9,6 +10,7 @@ Mobile_phone=
 abrv=
 attach=
 belongs=
+cancel=
 clear=
 current_user=
 detach=
@@ -42,14 +44,19 @@ number=
 operation=
 premier=
 regional=
+related_as=
 relation_type=
 relation_user=
 reverse_relation_type=
 school.placement_date=
+search_user_module.button_back=
+search_user_module.button_reset=
+search_user_module.button_search=
 short=
 special=
 ssn=
 status=
+to=
 type=
 usingSystem=
 usr_fam_attach=
