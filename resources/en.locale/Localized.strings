@@ -1,10 +1,11 @@
-#Sun Jun 01 13:09:07 GMT 2003
+#Thu Oct 30 23:03:37 CET 2003
 =
 Address.CITY=
 Close=
 Delete=
 Delete\ selection=
 GroupOfficeAddressTab.postalcodewindow.add=
+LH=
 Mobile_phone=
 UMcity=City
 UMcountry=Country
@@ -77,6 +78,12 @@ clubexchangewindow.no_values=
 clubexchangewindow.save=Save
 clubexchangewindow.text=Please select the member to transfer and the dates for the transfer to take place.
 clubexchangewindow.title=Club exchange
+clubinformationtab.club_with_no_players=
+clubinformationtab.multi_division_club=
+clubinformationtab.single_division_club=
+clubinformationtab.state_active=
+clubinformationtab.state_banned_from_comp=
+clubinformationtab.state_inactive=
 cplay_coach=
 cplay_comp=
 cplay_division=
@@ -139,6 +146,8 @@ usr_fam_spouse=Spouse
 usr_fam_tab_name=Family
 usr_fam_win_cancel=Cancel
 usr_fam_win_child=Child
+usr_fam_win_custodian=
+usr_fam_win_custodian_and_parent=
 usr_fam_win_name=Family
 usr_fam_win_parent=Parent
 usr_fam_win_pin=Personal ID
