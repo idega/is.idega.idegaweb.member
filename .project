@@ -6,8 +6,8 @@
   </comment>
   <projects>
     <project>com.idega.core</project>
-    <project>com.idega.user</project>
     <project>com.idega.builder</project>
+    <project>com.idega.user</project>
     <project>com.idega.block.media</project>
     <project>com.idega.block.cal</project>
     <project>com.idega.block.importer</project>
