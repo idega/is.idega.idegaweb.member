@@ -15,6 +15,7 @@ UMstreet=
 UserStatsBusiness.current_date=Current date
 UserStatsBusiness.date_of_birth=Date of Birth
 UserStatsBusiness.group_name=Group
+UserStatsBusiness.group_path=Group Path
 UserStatsBusiness.name=Name
 UserStatsBusiness.personal_id=Personal ID
 UserStatsBusiness.phone=Phone
