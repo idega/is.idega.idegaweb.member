@@ -25,6 +25,10 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.importer">
   </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.datareport-SNAPSHOT.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jasperreports/jars/jasperreports-0.6.1.jar">
+  </classpathentry>
   <classpathentry kind="src" path="/is.idega.block.family">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
