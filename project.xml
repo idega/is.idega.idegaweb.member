@@ -4,7 +4,8 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Member Application</name>
   <artifactId>is.idega.idegaweb.member</artifactId>
-  <currentVersion>1.0-SNAPSHOT</currentVersion>
+  <currentVersion>1.0.1</currentVersion>
+  <!--currentVersion>1.0-SNAPSHOT</currentVersion-->
   <inceptionYear>2000</inceptionYear>
   <shortDescription>idegaWeb Member Application (Felix)</shortDescription>
   <versions>
@@ -75,8 +76,8 @@
     </dependency>
     <dependency>
       <groupId>myfaces</groupId>
-      <artifactId>jsf-api</artifactId>
-      <version>1.0</version>
+      <artifactId>myfaces-jsf-api</artifactId>
+      <version>1.0.9</version>
       <type>jar</type>
       <url>http://java.sun.com/j2ee/javaserverfaces/</url>
       <properties/>
@@ -84,7 +85,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
-      <!--<version>1.9.1</version>-->
+      <!--version>3.0.5</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -95,7 +96,7 @@
      <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
-      <!--<version>1.1</version>-->
+      <!--version>1.4.2</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -106,7 +107,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.user</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.1.2</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -117,7 +118,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.media</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.1.2</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -128,7 +129,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.cal</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.0.1</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -139,7 +140,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.importer</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.1.1</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -150,7 +151,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.datareport</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.0.1</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -165,7 +166,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.block.family</artifactId>
-      <!--<version>1.0</version>-->
+      <!--version>1.0.1</version-->
       <version>SNAPSHOT</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
