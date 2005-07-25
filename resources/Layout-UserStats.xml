@@ -67,7 +67,7 @@
 	<variable name="divisionVar" class="java.lang.String" resetType="None" calculation="Nothing">
 		<variableExpression><![CDATA[$F{group_name}]]></variableExpression>	</variable>
 	<variable name="members_in_group" class="java.lang.Integer" resetType="Group" resetGroup="division_group" calculation="Count">
-		<variableExpression><![CDATA[$F{group_path}]]></variableExpression>	</variable>
+		<variableExpression><![CDATA[$F{personal_id}]]></variableExpression>	</variable>
 		<group  name="division_group" isStartNewColumn="false" isStartNewPage="false" isResetPageNumber="false" isReprintHeaderOnEachPage="true" minHeightToStartNewPage="0" >
 			<groupExpression><![CDATA[$V{divisionVar}]]></groupExpression>
 			<groupHeader>
