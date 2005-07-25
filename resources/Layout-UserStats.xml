@@ -66,6 +66,8 @@
 		<variableExpression><![CDATA[new String( $P{label_current_date}+":")]]></variableExpression>	</variable>
 	<variable name="divisionVar" class="java.lang.String" resetType="None" calculation="Nothing">
 		<variableExpression><![CDATA[$F{group_name}]]></variableExpression>	</variable>
+	<variable name="members_in_group" class="java.lang.Integer" resetType="Group" resetGroup="division_group" calculation="Count">
+		<variableExpression><![CDATA[$F{group_path}]]></variableExpression>	</variable>
 		<group  name="division_group" isStartNewColumn="false" isStartNewPage="false" isResetPageNumber="false" isReprintHeaderOnEachPage="true" minHeightToStartNewPage="0" >
 			<groupExpression><![CDATA[$V{divisionVar}]]></groupExpression>
 			<groupHeader>
@@ -97,7 +99,7 @@
 						mode="Transparent"
 						x="1"
 						y="2"
-						width="96"
+						width="55"
 						height="15"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -127,6 +129,24 @@
 						isPrintWhenDetailOverflows="false"/>
 					<graphicElement stretchType="NoStretch" pen="Dotted" fill="Solid" />
 				</line>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None" >					<reportElement
+						mode="Opaque"
+						x="56"
+						y="2"
+						width="40"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{members_in_group}]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupFooter>
 		</group>
