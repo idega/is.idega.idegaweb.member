@@ -181,6 +181,7 @@ updateclubdivisiontemplate.close=Close
 updateclubdivisiontemplate.confirm_message=Are you sure you want to start the update process? The process will start in the background and once it is running you can not stop it nor start a new one.
 updateclubdivisiontemplate.update=Update
 user_status_bar.no_group_selected=No group selected
+userstatswindow.groupstats=H\u00F3payfirlit
 userstatswindow.userstats=F\u00E9lagsmanna og i\u00F0kendat\u00F6lfr\u00E6\u00F0i
 usingSystem=
 usr_fam_attach=
