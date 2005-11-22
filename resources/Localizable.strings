@@ -17,6 +17,7 @@ UserStatsBusiness.date_of_birth=Date of Birth
 UserStatsBusiness.email=Email
 UserStatsBusiness.group_name=Group
 UserStatsBusiness.group_path=Group Path
+UserStatsBusiness.group_type=Group Type
 UserStatsBusiness.name=Name
 UserStatsBusiness.personal_id=Personal ID
 UserStatsBusiness.phone=Phone
