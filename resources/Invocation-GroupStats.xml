@@ -17,6 +17,14 @@
 <localized_name name="Hópsgerðir" locale="is_IS"/>
 <class_handler class="com.idega.user.presentation.inputhandler.GroupTypeSelectionBoxInputHandler" />
 </class_description>
+<class_description class="java.lang.String" default_display_name="Dynamic layoutfile" name="dynamicLayoutFile">
+<localized_name name="Útlit skýrslu" locale="is_IS"/>
+<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.DynamicLayoutDropDownMenu" value="GroupStatsLayout" />
+</class_description>
+<class_description class="java.lang.String" default_display_name="Order by" name="orderBy">
+<localized_name name="Röðun" locale="is_IS"/>
+<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.OrderByGroupDetailsDropDownMenu" />
+</class_description>
 </input>
 <output>
 <class_description class="com.idega.block.datareport.util.ReportableCollection" default_display_name="">
