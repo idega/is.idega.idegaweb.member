@@ -156,7 +156,7 @@ public class ClubDivisionTab extends UserGroupTab{
                     e.printStackTrace();
                 }
 
-                Group group = (Group) (home.findByPrimaryKey(new Integer(
+                Group group = (home.findByPrimaryKey(new Integer(
                         groupId)));
                 boardGroupField.setSelectedGroup(groupId, group.getName());
             }
@@ -319,7 +319,7 @@ public class ClubDivisionTab extends UserGroupTab{
     public boolean store(IWContext iwc) {
         Group group;
         try {
-            group = (Group) (((GroupHome) com.idega.data.IDOLookup
+            group = (((GroupHome) com.idega.data.IDOLookup
                     .getHome(Group.class)).findByPrimaryKey(new Integer(
                     getGroupId())));
 
@@ -368,7 +368,7 @@ public class ClubDivisionTab extends UserGroupTab{
     public void initFieldContents() {
         Group group;
         try {
-            group = (Group) (((GroupHome) com.idega.data.IDOLookup
+            group = (((GroupHome) com.idega.data.IDOLookup
                     .getHome(Group.class)).findByPrimaryKey(new Integer(
                     getGroupId())));
 

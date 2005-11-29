@@ -120,7 +120,7 @@ public class ClubPlayerTab extends UserGroupTab {
 					e.printStackTrace();
 				}
 				
-				Group group = (Group) (home.findByPrimaryKey(new Integer(groupId)));
+				Group group = home.findByPrimaryKey(new Integer(groupId));
 				_coachesField.setSelectedGroup(groupId,group.getName());
 			}
 
@@ -239,7 +239,7 @@ public class ClubPlayerTab extends UserGroupTab {
 	public boolean store(IWContext iwc) {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			String flokkur = (String) fieldValues.get(_cplayFieldName);
 			String name = (String) fieldValues.get(_nameFieldName);
@@ -275,7 +275,7 @@ public class ClubPlayerTab extends UserGroupTab {
 	public void initFieldContents() {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			String flokkur = group.getMetaData("CLUBPLAYER_FLOKKUR");
 			String name = group.getMetaData("CLUBPLAYER_NAME");

@@ -104,11 +104,11 @@ public class GroupBoardTab extends UserGroupTab {
 		try {
 			UserHome home = (UserHome) com.idega.data.IDOLookup.getHome(User.class);
 			if (ssn1 != null && !ssn1.equals(""))
-				user1 = (User) (home.findByPrimaryKey(new Integer(ssn1)));
+				user1 = (home.findByPrimaryKey(new Integer(ssn1)));
 			if (ssn2 != null && !ssn2.equals(""))
-				user2 = (User) (home.findByPrimaryKey(new Integer(ssn2)));
+				user2 = (home.findByPrimaryKey(new Integer(ssn2)));
 			if (ssn3 != null && !ssn3.equals(""))
-				user3 = (User) (home.findByPrimaryKey(new Integer(ssn3)));
+				user3 = (home.findByPrimaryKey(new Integer(ssn3)));
 
 			if (ssn1 != null && !ssn1.equals(""))		
 				_ssn1Field.setSelectedUser(ssn1,user1.getName());
@@ -209,7 +209,7 @@ public class GroupBoardTab extends UserGroupTab {
 	public boolean store(IWContext iwc) {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			String ssn1 = (String) fieldValues.get(_ssn1FieldName);
 			String ssn2 = (String) fieldValues.get(_ssn2FieldName);
@@ -238,7 +238,7 @@ public class GroupBoardTab extends UserGroupTab {
 	public void initFieldContents() {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			String ssn1 = group.getMetaData("BOARD_SSN1");
 			String ssn2 = group.getMetaData("BOARD_SSN2");

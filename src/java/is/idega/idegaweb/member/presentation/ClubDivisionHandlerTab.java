@@ -111,7 +111,7 @@ public class ClubDivisionHandlerTab extends UserGroupTab {
 			String userId = (String) fieldValues.get(_contactFieldName);
 
 			if (userId != null && !userId.equals("")) {
-				User user = (User) (home.findByPrimaryKey(new Integer(userId)));
+				User user = (home.findByPrimaryKey(new Integer(userId)));
 				_contactField.setSelectedUser(userId,user.getName());
 			}
 
@@ -224,7 +224,7 @@ public class ClubDivisionHandlerTab extends UserGroupTab {
 	public boolean store(IWContext iwc) {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 			// get corressponding service bean
 			ClubInformationPluginBusiness ageGenderPluginBusiness = getClubInformationPluginBusiness(iwc);
 
@@ -257,7 +257,7 @@ public class ClubDivisionHandlerTab extends UserGroupTab {
 	public void initFieldContents() {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			String number = group.getMetaData("CLUBDIVH_NUMBER");
 			String name = group.getMetaData("CLUBDIVH_NAME");

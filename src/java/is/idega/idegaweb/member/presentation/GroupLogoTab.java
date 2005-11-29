@@ -136,7 +136,7 @@ public class GroupLogoTab extends UserGroupTab {
 	public boolean store(IWContext iwc) {
 		try {
 			if (getGroupId() > -1) {
-				Group group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+				Group group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 				String image = (String)fieldValues.get(imageFieldName);
 
@@ -174,7 +174,7 @@ public class GroupLogoTab extends UserGroupTab {
 		try {
 			imageField.setImSessionImageName(imageFieldName + getGroupId());
 
-			Group group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+			Group group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 
 			try {
 				systemImageId = Integer.parseInt(group.getMetaData("group_image"));

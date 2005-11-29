@@ -328,7 +328,7 @@ public class ClubInformationTab extends UserGroupTab {
 		String type = "";
 		try {
 			if(getGroupId()>0){
-				Group group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
+				Group group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
 				type = group.getGroupType();
 			}
 		}
@@ -459,7 +459,7 @@ public class ClubInformationTab extends UserGroupTab {
 	public boolean store(IWContext iwc) {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
 					getGroupId())));
 			String groupType = group.getGroupType();
 			
@@ -535,7 +535,7 @@ public class ClubInformationTab extends UserGroupTab {
 	public void initFieldContents() {
 		Group group;
 		try {
-			group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
+			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
 					getGroupId())));
 			List parents = group.getParentGroups();
 			Iterator it = parents.iterator();

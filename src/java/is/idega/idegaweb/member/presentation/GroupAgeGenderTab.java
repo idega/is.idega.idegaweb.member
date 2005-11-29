@@ -302,7 +302,7 @@ public class GroupAgeGenderTab extends UserGroupTab {
 		if (iwc != null) {
 			Group group;
 			try {
-				group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
+				group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
 						getGroupId())));
 				// special case because the age and gender stuff should be
 				// controlled by the club member template group
@@ -387,7 +387,7 @@ public class GroupAgeGenderTab extends UserGroupTab {
 	 */
 	public boolean store(IWContext iwc) {
 		try {
-			Group group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
+			Group group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
 					getGroupId())));
 			// special case because the age and gender stuff should be
 			// controlled by the club member template group
@@ -457,7 +457,7 @@ public class GroupAgeGenderTab extends UserGroupTab {
 		if (groupId > 0) {
 			Group group;
 			try {
-				group = (Group) (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
+				group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(
 						getGroupId())));
 				// special case because the age and gender stuff should be
 				// controlled by the club member template group
