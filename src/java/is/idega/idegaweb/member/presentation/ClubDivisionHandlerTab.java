@@ -225,8 +225,6 @@ public class ClubDivisionHandlerTab extends UserGroupTab {
 		Group group;
 		try {
 			group = (((GroupHome) com.idega.data.IDOLookup.getHome(Group.class)).findByPrimaryKey(new Integer(getGroupId())));
-			// get corressponding service bean
-			ClubInformationPluginBusiness ageGenderPluginBusiness = getClubInformationPluginBusiness(iwc);
 
 			String number = (String) fieldValues.get(_numberFieldName);
 			String name = (String) fieldValues.get(_nameFieldName);

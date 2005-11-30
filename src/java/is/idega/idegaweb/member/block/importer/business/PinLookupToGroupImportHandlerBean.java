@@ -102,7 +102,6 @@ public class PinLookupToGroupImportHandlerBean extends IBOSessionBean implements
 		User user = null;
 		//variables
 		String statusId = null;
-		String name = null;
 		String PIN = null;
 		
 		try{

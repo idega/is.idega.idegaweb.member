@@ -82,7 +82,6 @@ public class GroupApplicationOverView extends Page implements IWBrowserView {
     String denied = gABiz.getDeniedStatusString();
   
     
-    int userCount = 0;
     if(selectedGroup  != null){
     	Collection applications = gABiz.getGroupApplicationsByStatusAndApplicationGroup(pending,selectedGroup);
     	
@@ -171,9 +170,6 @@ public class GroupApplicationOverView extends Page implements IWBrowserView {
 	
 	
 	        if(tempUser != null){
-	
-	          boolean userIsSuperAdmin = iwc.getAccessController().getAdministratorUser().equals(tempUser);
-	          
 	          //name
 	          Link aLink = new Link(new Text(tempUser.getName()));
 	          aLink.setWindowToOpen(UserPropertyWindow.class);
