@@ -1,5 +1,6 @@
 package is.idega.idegaweb.member.business;
 import is.idega.idegaweb.member.util.IWMemberConstants;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +10,9 @@ import java.util.Vector;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.mail.MessagingException;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
+import com.idega.core.business.ICApplicationBindingBusiness;
 import com.idega.core.contact.data.Email;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.idegaweb.IWUserContext;
@@ -324,11 +328,19 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	
 	
 	public boolean sendEmailFromIWMemberSystemAdministrator(String toEmailAddress, String CC, String BCC,String subject, String theMessageBody) throws MessagingException{
-		String systemEmailAddress = this.getIWApplicationContext().getApplicationSettings().getProperty(IWMemberConstants.APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL);
-		String systemMailServer = this.getIWApplicationContext().getApplicationSettings().getProperty(IWMemberConstants.APPLICATION_PARAMETER_MAIL_SERVER);
-		com.idega.util.SendMail.send(systemEmailAddress,toEmailAddress,CC,BCC,systemMailServer,subject,theMessageBody);
-		
-		return true;
+	    try {
+	    	ICApplicationBindingBusiness applicationBindingBusiness = (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), ICApplicationBindingBusiness.class);
+			String systemEmailAddress = applicationBindingBusiness.get(IWMemberConstants.APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL);
+			String systemMailServer = applicationBindingBusiness.get(IWMemberConstants.APPLICATION_PARAMETER_MAIL_SERVER);
+			com.idega.util.SendMail.send(systemEmailAddress,toEmailAddress,CC,BCC,systemMailServer,subject,theMessageBody);
+			return true;
+	    }
+	    catch (IBOLookupException ex) {
+	    	throw new MessagingException("[MemberUserBusiness] Could not look up parameter " + IWMemberConstants.APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL + " and/or " + IWMemberConstants.APPLICATION_PARAMETER_MAIL_SERVER, ex);
+	    }
+	    catch (IOException ex) {
+	    	throw new MessagingException("[MemberUserBusiness] Could not look up parameter " + IWMemberConstants.APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL + " and/or " + IWMemberConstants.APPLICATION_PARAMETER_MAIL_SERVER, ex);
+	    }
 	}
 	
 
