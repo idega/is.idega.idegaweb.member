@@ -18,6 +18,8 @@ import com.idega.business.IBOServiceBean;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWResourceBundle;
+import com.idega.idegaweb.UnavailableIWContext;
+import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObject;
 import com.idega.user.business.UserGroupPlugInBusiness;
 import com.idega.user.data.Gender;
@@ -378,9 +380,18 @@ public class AgeGenderPluginBusinessBean extends IBOServiceBean implements  AgeG
     return calendar;
   }   
 
-  private IWResourceBundle getResourceBundle() {
+  protected IWResourceBundle getResourceBundle() {
     IWMainApplication mainApp = getIWApplicationContext().getIWMainApplication();
     Locale locale = mainApp.getSettings().getDefaultLocale();
+    
+    try {
+		IWContext iwc = IWContext.getInstance();
+		locale = iwc.getCurrentLocale();
+	}
+	catch (UnavailableIWContext e) {
+
+	}
+	
     IWBundle bundle = mainApp.getBundle(getBundleIdentifier());
     return bundle.getResourceBundle(locale);
   }
