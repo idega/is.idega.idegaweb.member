@@ -1,5 +1,5 @@
 /*
- * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.2 2005/12/16 12:23:46 thomas Exp $
+ * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.3 2005/12/23 12:46:08 thomas Exp $
  * Created on Sep 1, 2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -9,17 +9,12 @@
  */
 package is.idega.idegaweb.member.block.importer.business;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import com.idega.block.importer.data.ColumnSeparatedImportFile;
 import com.idega.block.importer.presentation.Importer;
-import com.idega.business.IBOLookup;
-import com.idega.business.IBOLookupException;
-import com.idega.business.IBORuntimeException;
-import com.idega.core.business.ICApplicationBindingBusiness;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
@@ -28,10 +23,10 @@ import com.idega.user.app.ToolbarElement;
 
 /**
  * 
- *  Last modified: $Date: 2005/12/16 12:23:46 $ by $Author: thomas $
+ *  Last modified: $Date: 2005/12/23 12:46:08 $ by $Author: thomas $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PinLookupToGroupImportHandlerPlugin implements ToolbarElement {
 	
@@ -84,19 +79,11 @@ public class PinLookupToGroupImportHandlerPlugin implements ToolbarElement {
 	 * @see com.idega.user.app.ToolbarElement#isValid(com.idega.presentation.IWContext)
 	 */
 	public boolean isValid(IWContext iwc) {
-        try {
-        	ICApplicationBindingBusiness applicationBindingBusiness = (ICApplicationBindingBusiness) IBOLookup.getServiceInstance(iwc, ICApplicationBindingBusiness.class);
-        	String showStuff =applicationBindingBusiness.get("temp_show_is_related_stuff");
-        	// original condition, everything is true if not null
-        	return (showStuff != null);
-        }
-        catch (IBOLookupException ex) {
-        	throw new IBORuntimeException(ex);
-        }
-        catch (IOException ex) {
-        	Logger.getLogger(PinLookupToGroupImportHandlerPlugin.class.getName()).warning("[PinLookupToGroupImportHandlerPlugin] Could not look up parameter temp_show_is_related_stuff");
-        	return false;
-        }
+		IWMainApplicationSettings settings = iwc.getApplicationSettings();
+       	String showStuff =settings.getProperty("temp_show_is_related_stuff");
+       	// original condition, everything is true if not null
+       	return (showStuff != null);
+
 	}
 
 	/* (non-Javadoc)
