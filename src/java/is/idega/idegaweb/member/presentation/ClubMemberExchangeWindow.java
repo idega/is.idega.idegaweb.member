@@ -170,11 +170,11 @@ public class ClubMemberExchangeWindow extends StyledIWAdminWindow { //changed fr
 		DropdownMenu divisionFrom = getGroupDropDown(groups,PARAMETER_FROM_CLUB_DIVISION_ID);
 		DropdownMenu divisionTo = getGroupDropDown(groups,PARAMETER_TO_CLUB_DIVISION_ID);
 		
-		DateInput initDate = new DateInput(this.PARAMETER_INIT_DATE);
+		DateInput initDate = new DateInput(ClubMemberExchangeWindow.PARAMETER_INIT_DATE);
 		//initDate.setToCurrentDate();
 		initDate.setAsNotEmpty(iwrb.getLocalizedString("clubexchangewindow.must_set_init_date","You must select an initilization date for the transfer."));
 		
-		DateInput termDate = new DateInput(this.PARAMETER_TERM_DATE);
+		DateInput termDate = new DateInput(ClubMemberExchangeWindow.PARAMETER_TERM_DATE);
 		termDate.setAsNotEmpty(iwrb.getLocalizedString("clubexchangewindow.must_set_term_date","You must select a termination date for the transfer."));
 		//termDate.setToCurrentDate();
 		
@@ -288,7 +288,7 @@ public class ClubMemberExchangeWindow extends StyledIWAdminWindow { //changed fr
 	}
 	
 	public String getBundleIdentifier(){
-		return this.IW_BUNDLE_IDENTIFIER;
+		return ClubMemberExchangeWindow.IW_BUNDLE_IDENTIFIER;
 	}
 	
 

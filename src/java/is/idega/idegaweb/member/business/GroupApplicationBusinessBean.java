@@ -352,7 +352,7 @@ public class GroupApplicationBusinessBean extends IBOServiceBean implements Grou
 	    try {
 	      GenderHome home = (GenderHome) getIDOHome(Gender.class);
       
-	        if( gender.equals(this.GENDER_MALE) ){
+	        if( gender.equals(GroupApplicationBusinessBean.GENDER_MALE) ){
 	          return home.getMaleGender();
 	        }
 	        else return home.getFemaleGender();
