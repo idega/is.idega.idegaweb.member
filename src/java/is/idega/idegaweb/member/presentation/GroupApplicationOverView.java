@@ -32,8 +32,6 @@ public class GroupApplicationOverView extends Page implements IWBrowserView {
 	//implements IWBrowserView, StatefullPresentation, UserGroupPlugInPresentable {
 
 
-  private String _controlTarget = null;
-  private IWPresentationEvent _controlEvent = null;
   private IWResourceBundle iwrb = null ;
 
   //private GroupApplicationOverViewPS _presentationState = null; 
@@ -51,11 +49,9 @@ public class GroupApplicationOverView extends Page implements IWBrowserView {
 
 
   public void setControlEventModel(IWPresentationEvent model){
-    _controlEvent = model;
   }
 
   public void setControlTarget(String controlTarget){
-    _controlTarget = controlTarget;
   }
 
 

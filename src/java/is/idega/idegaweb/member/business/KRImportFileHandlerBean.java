@@ -1,12 +1,9 @@
 package is.idega.idegaweb.member.business;
-import is.idega.block.family.business.FamilyLogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.transaction.UserTransaction;
 
 import com.idega.block.importer.data.ImportFile;
 import com.idega.business.IBOServiceBean;
@@ -26,9 +23,7 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Gender;
 import com.idega.user.data.GenderHome;
 import com.idega.user.data.Group;
-import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
-import com.idega.user.data.UserHome;
 import com.idega.util.IWTimestamp;
 import com.idega.util.Timer;
 import com.idega.util.text.TextSoap;
@@ -49,14 +44,9 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 
   private UserBusiness biz;
   private GroupBusiness groupBiz;
-  private UserHome home;
   private AddressBusiness addressBiz;
-  private FamilyLogic relationBiz;
-  private GroupHome groupHome;
   private Group rootGroup;
   private ImportFile file;
-  private UserTransaction transaction;
-  private UserTransaction transaction2;
   private PhoneHome phoneHome;
   private EmailHome eHome;
 
@@ -90,8 +80,6 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
     try {
       //initialize business beans and data homes
       biz = (UserBusiness) this.getServiceInstance(UserBusiness.class);
-      relationBiz = (FamilyLogic) this.getServiceInstance(FamilyLogic.class);
-      home = biz.getUserHome();
       addressBiz = (AddressBusiness) this.getServiceInstance(AddressBusiness.class);
       groupBiz = biz.getGroupBusiness();
       phoneHome = biz.getPhoneHome();
