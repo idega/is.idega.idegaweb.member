@@ -12,19 +12,21 @@ import is.idega.idegaweb.member.business.NoClubFoundException;
 import is.idega.idegaweb.member.business.NoLeagueClubCollectionGroup;
 import is.idega.idegaweb.member.presentation.ClubInformationTab;
 import is.idega.idegaweb.member.util.IWMemberConstants;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBOServiceBean;
-import com.idega.core.accesscontrol.business.AccessControl;
 import com.idega.core.accesscontrol.business.AccessController;
 import com.idega.core.accesscontrol.data.ICRole;
 import com.idega.data.IDOLookup;
@@ -691,8 +693,8 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	 * @param clubId
 	 */
 	protected void addRoleAccessToGroup(AccessController access, String roleKey, Integer groupId) {
-		access.addRoleToGroup(roleKey, AccessControl.PERMISSION_KEY_VIEW, groupId, this.getIWApplicationContext());
-		access.addRoleToGroup(roleKey, AccessControl.PERMISSION_KEY_EDIT, groupId, this.getIWApplicationContext());
+		access.addRoleToGroup(roleKey, AccessController.PERMISSION_KEY_VIEW, groupId, this.getIWApplicationContext());
+		access.addRoleToGroup(roleKey, AccessController.PERMISSION_KEY_EDIT, groupId, this.getIWApplicationContext());
 	}
 
 	/**

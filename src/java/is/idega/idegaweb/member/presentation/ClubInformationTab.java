@@ -11,7 +11,7 @@ import is.idega.idegaweb.member.business.plugins.ClubInformationPluginBusiness;
 import is.idega.idegaweb.member.util.IWMemberConstants;
 
 import java.rmi.RemoteException;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -241,7 +241,7 @@ public class ClubInformationTab extends UserGroupTab {
 		_numberField = new TextInput(_numberFieldName);
 		_ssnField = new TextInput(_ssnFieldName);
 		_foundedField = new DateInput(_foundedFieldName);
-		_foundedField.setYearRange(1900, GregorianCalendar.getInstance().get(GregorianCalendar.YEAR));
+		_foundedField.setYearRange(1900, Calendar.getInstance().get(Calendar.YEAR));
 		//_typeField = new DropdownMenu(_typeFieldName);
 		_memberUMFIField = new CheckBox(_memberUMFIFieldName);
 		_memberUMFIField.setWidth("10");

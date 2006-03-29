@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneType;
+import com.idega.data.GenericEntity;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.idegaweb.help.presentation.Help;
@@ -101,7 +102,7 @@ public class GroupOfficeContactTab extends UserGroupTab {
 	public void initializeFields() {
 		PhoneType[] phoneTypes = null;
 		try {
-			phoneTypes = (PhoneType[]) com.idega.core.contact.data.PhoneTypeBMPBean.getStaticInstance(PhoneType.class).findAll();
+			phoneTypes = (PhoneType[]) GenericEntity.getStaticInstance(PhoneType.class).findAll();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
