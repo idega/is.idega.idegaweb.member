@@ -87,24 +87,24 @@ public class UserStatusTab extends UserTab {
 	 */
 	public void initializeFieldNames() {
 	//	_inactiveFieldName = "usr_stat_inactive";
-		_groupFieldName = "usr_grp_status";
-		_statusFieldName = "usr_stat_status";
+		this._groupFieldName = "usr_grp_status";
+		this._statusFieldName = "usr_stat_status";
 //		_parent1StatusFieldName = "usr_stat_parent1_status";
 //		_parent2StatusFieldName = "usr_stat_parent2_status";
-		_parent3StatusFieldName = "usr_stat_parent3_status";
+		this._parent3StatusFieldName = "usr_stat_parent3_status";
 	}
 
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initializeFieldValues()
 	 */
 	public void initializeFieldValues() {
-		fieldValues = new Hashtable();
+		this.fieldValues = new Hashtable();
 	//	fieldValues.put(_inactiveFieldName, Boolean.FALSE);
 		
-		fieldValues.put(_statusFieldName, "");
+		this.fieldValues.put(this._statusFieldName, "");
 //		fieldValues.put(_parent1StatusFieldName, Boolean.FALSE);
 //		fieldValues.put(_parent2StatusFieldName, Boolean.FALSE);
-		fieldValues.put(_parent3StatusFieldName, Boolean.FALSE);
+		this.fieldValues.put(this._parent3StatusFieldName, Boolean.FALSE);
 	}
 
 	/* (non-Javadoc)
@@ -115,18 +115,18 @@ public class UserStatusTab extends UserTab {
 		if (getGroupID() > 0) {
 			Group selectedGroup = getGroup();
 			if (selectedGroup != null) {
-				_groupField.setText(selectedGroup.getName());
+				this._groupField.setText(selectedGroup.getName());
 			}
 		}
 		else {
 			IWContext iwc = IWContext.getInstance();
 			IWResourceBundle iwrb = getResourceBundle(iwc);
-			_groupField.setText(iwrb.getLocalizedString("user_status_bar.no_group_selected","No group selected"));
+			this._groupField.setText(iwrb.getLocalizedString("user_status_bar.no_group_selected","No group selected"));
 		}
-		_statusField.setSelectedOption((String) fieldValues.get(_statusFieldName));
+		this._statusField.setSelectedOption((String) this.fieldValues.get(this._statusFieldName));
 //		_parent1StatusField.setChecked(((Boolean) fieldValues.get(_parent1StatusFieldName)).booleanValue());
 //		_parent2StatusField.setChecked(((Boolean) fieldValues.get(_parent2StatusFieldName)).booleanValue());
-		_parent3StatusField.setChecked(((Boolean) fieldValues.get(_parent3StatusFieldName)).booleanValue());
+		this._parent3StatusField.setChecked(((Boolean) this.fieldValues.get(this._parent3StatusFieldName)).booleanValue());
 	}
 
 	/* (non-Javadoc)
@@ -137,13 +137,13 @@ public class UserStatusTab extends UserTab {
 	//	_inactiveField.setWidth("10");
 	//	_inactiveField.setHeight("10");
 
-		_groupField = new Text(); //see initFieldContents
+		this._groupField = new Text(); //see initFieldContents
 
-		_parent3StatusField = new CheckBox(_parent3StatusFieldName);
-		_parent3StatusField.setWidth("10");
-		_parent3StatusField.setHeight("10");
+		this._parent3StatusField = new CheckBox(this._parent3StatusFieldName);
+		this._parent3StatusField.setWidth("10");
+		this._parent3StatusField.setHeight("10");
 
-		_statusField = new SelectDropdown(_statusFieldName);
+		this._statusField = new SelectDropdown(this._statusFieldName);
 
 		IWContext iwc = IWContext.getInstance();
 		List status = null;
@@ -160,7 +160,7 @@ public class UserStatusTab extends UserTab {
 		if (status != null) {
 			if (status.size() > 0) {
 				final IWResourceBundle iwrb = getResourceBundle(iwc);
-				_statusField.addOption(new SelectOption(" ",-1));
+				this._statusField.addOption(new SelectOption(" ",-1));
 				
 				
 				final Collator collator = Collator.getInstance(iwc.getLocale());
@@ -176,7 +176,7 @@ public class UserStatusTab extends UserTab {
 					String n = s.getStatusKey();
 					if (n != null) {
 						String l = iwrb.getLocalizedString("usr_stat_" + n, n);
-						_statusField.addOption(new SelectOption(l, ((Integer) s.getPrimaryKey()).intValue()));
+						this._statusField.addOption(new SelectOption(l, ((Integer) s.getPrimaryKey()).intValue()));
 					}
 				}
 			}
@@ -193,16 +193,16 @@ public class UserStatusTab extends UserTab {
 		//_inactiveText = new Text(iwrb.getLocalizedString(_inactiveFieldName, "In-active"));
 		//_inactiveText.setBold();
 		
-		_groupText = new Text(iwrb.getLocalizedString(_groupFieldName, "Group"));
-		_groupText.setBold();
+		this._groupText = new Text(iwrb.getLocalizedString(this._groupFieldName, "Group"));
+		this._groupText.setBold();
 		
-		_statusText = new Text(iwrb.getLocalizedString(_statusFieldName, "Status"));
-		_statusText.setBold();
+		this._statusText = new Text(iwrb.getLocalizedString(this._statusFieldName, "Status"));
+		this._statusText.setBold();
 		
 //		_parent1StatusText = new Text(iwrb.getLocalizedString(_parent1StatusFieldName, "Parent status1") + ":");
 //		_parent2StatusText = new Text(iwrb.getLocalizedString(_parent2StatusFieldName, "Parent status2") + ":");
-		_parent3StatusText = new Text(iwrb.getLocalizedString(_parent3StatusFieldName, "Parent status3"));
-		_parent3StatusText.setBold();
+		this._parent3StatusText = new Text(iwrb.getLocalizedString(this._parent3StatusFieldName, "Parent status3"));
+		this._parent3StatusText.setBold();
 	}
 
 	/* (non-Javadoc)
@@ -214,10 +214,10 @@ public class UserStatusTab extends UserTab {
 		Table t = new Table(2, 4);
 		t.setCellpadding(5);
 		t.setCellspacing(0);
-		t.add(_groupText, 1, 1);
-		t.add(_groupField, 2, 1);
-		t.add(_statusText, 1, 2);
-		t.add(_statusField, 2, 2);
+		t.add(this._groupText, 1, 1);
+		t.add(this._groupField, 2, 1);
+		t.add(this._statusText, 1, 2);
+		t.add(this._statusField, 2, 2);
 //		t.add(_parent1StatusText, 1, 4);
 //		t.add(_parent1StatusField, 2, 4);
 //		t.add(_parent2StatusText, 1, 5);
@@ -226,8 +226,8 @@ public class UserStatusTab extends UserTab {
 	//	t.add(_inactiveField, 1, 4);
 	//	t.add(_inactiveText, 1, 4);
 	//	t.mergeCells(1, 5, 2, 5);
-		t.add(_parent3StatusField, 1, 4);
-		t.add(_parent3StatusText, 1, 4);
+		t.add(this._parent3StatusField, 1, 4);
+		t.add(this._parent3StatusText, 1, 4);
 		add(t);
 	}
 
@@ -243,24 +243,24 @@ public class UserStatusTab extends UserTab {
 	public boolean collect(IWContext iwc) {
 		if (iwc != null) {
 	//		String inactive = iwc.getParameter(_inactiveFieldName);
-			String status = iwc.getParameter(_statusFieldName);
+			String status = iwc.getParameter(this._statusFieldName);
 			
 		System.out.println("Collect: status = " + status);
 		
 //			String parent1Status = iwc.getParameter(_parent1StatusFieldName);
 //			String parent2Status = iwc.getParameter(_parent2StatusFieldName);
-			String parent3Status = iwc.getParameter(_parent3StatusFieldName);
+			String parent3Status = iwc.getParameter(this._parent3StatusFieldName);
 
 			if (status != null) {
-				fieldValues.put(_statusFieldName, status);
+				this.fieldValues.put(this._statusFieldName, status);
 			}
 			else {
-				fieldValues.put(_statusFieldName, " ");
+				this.fieldValues.put(this._statusFieldName, " ");
 			}
 
 //			fieldValues.put(_parent1StatusFieldName, new Boolean(parent1Status != null));
 //			fieldValues.put(_parent2StatusFieldName, new Boolean(parent2Status != null));
-			fieldValues.put(_parent3StatusFieldName, new Boolean(parent3Status != null));
+			this.fieldValues.put(this._parent3StatusFieldName, new Boolean(parent3Status != null));
 		//	fieldValues.put(_inactiveFieldName, new Boolean(inactive != null));
 
 			updateFieldsDisplayStatus();
@@ -274,7 +274,7 @@ public class UserStatusTab extends UserTab {
 	 */
 	public boolean store(IWContext iwc) {
 		try {
-			String status = (String)fieldValues.get(_statusFieldName);
+			String status = (String)this.fieldValues.get(this._statusFieldName);
 			System.out.println("Store: status = " + status);
 			if (status != null && !"".equals(status)) {
 				int user_id = this.getUserId();
@@ -296,7 +296,7 @@ public class UserStatusTab extends UserTab {
 	 */
 	public void initFieldContents() {
 		IWContext iwc = IWContext.getInstance();
-		fieldValues = new Hashtable();
+		this.fieldValues = new Hashtable();
 //		fieldValues.put(_inactiveFieldName, Boolean.FALSE);
 		
 		int status_id = -1;
@@ -309,13 +309,15 @@ public class UserStatusTab extends UserTab {
 			status_id = -1;
 		}
 		
-		if (status_id > 0)
-			fieldValues.put(_statusFieldName, Integer.toString(status_id));
-		else
-			fieldValues.put(_statusFieldName, "");
+		if (status_id > 0) {
+			this.fieldValues.put(this._statusFieldName, Integer.toString(status_id));
+		}
+		else {
+			this.fieldValues.put(this._statusFieldName, "");
+		}
 //		fieldValues.put(_parent1StatusFieldName, Boolean.FALSE);
 //		fieldValues.put(_parent2StatusFieldName, Boolean.FALSE);
-		fieldValues.put(_parent3StatusFieldName, Boolean.FALSE);
+		this.fieldValues.put(this._parent3StatusFieldName, Boolean.FALSE);
 
 		updateFieldsDisplayStatus();
 	}

@@ -1,5 +1,5 @@
 /*
- * $Id: SpecialConnectionUpdateThread.java,v 1.5 2005/06/21 22:49:57 palli Exp $
+ * $Id: SpecialConnectionUpdateThread.java,v 1.6 2006/04/09 11:55:30 laddi Exp $
  * Created on Jan 4, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -32,10 +32,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- * Last modified: $Date: 2005/06/21 22:49:57 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:55:30 $ by $Author: laddi $
  * 
  * @author <a href="mailto:palli@idega.com">palli </a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class SpecialConnectionUpdateThread extends Thread {
 
@@ -60,11 +60,11 @@ public class SpecialConnectionUpdateThread extends Thread {
 		System.out.println("Starting update thread : " + IWTimestamp.getTimestampRightNow());
 		Group league = null;
 		Group template = null;
-		if (special.getGroupType().equals(IWMemberConstants.GROUP_TYPE_LEAGUE)) {
-			league = special;
+		if (this.special.getGroupType().equals(IWMemberConstants.GROUP_TYPE_LEAGUE)) {
+			league = this.special;
 			Group child = null;
 			boolean foundIt = false;
-			List children = special.getChildGroups();
+			List children = this.special.getChildGroups();
 			Iterator it = children.iterator();
 			while (it.hasNext()) {
 				child = (Group) it.next();
@@ -77,8 +77,8 @@ public class SpecialConnectionUpdateThread extends Thread {
 				template = child;
 			}
 		}
-		else if (special.getGroupType().equals(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_TEMPLATE)) {
-			template = special;
+		else if (this.special.getGroupType().equals(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_TEMPLATE)) {
+			template = this.special;
 			league = findLeagueForTemplate(template);
 		}
 
@@ -406,7 +406,7 @@ public class SpecialConnectionUpdateThread extends Thread {
 	private GroupBusiness getGroupBusiness() {
 		GroupBusiness business = null;
 		try {
-			business = (GroupBusiness) IBOLookup.getServiceInstance(iwac, GroupBusiness.class);
+			business = (GroupBusiness) IBOLookup.getServiceInstance(this.iwac, GroupBusiness.class);
 		}
 		catch (IBOLookupException e) {
 			e.printStackTrace();

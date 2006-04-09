@@ -39,12 +39,12 @@ public class UserStatsWindow extends StyledIWAdminWindow {
 
     public void main(IWContext iwc) throws Exception {
         super.main(iwc);
-        iwrb = getResourceBundle(iwc);
-        iwb = getBundle(iwc);     
+        this.iwrb = getResourceBundle(iwc);
+        this.iwb = getBundle(iwc);     
         
         String windowTitle = iwc.getParameter(STATS_LOCALIZABLE_KEY_NAME);
-        setTitle(iwrb.getLocalizedString(windowTitle));
-        addTitle(iwrb.getLocalizedString(windowTitle), TITLE_STYLECLASS);
+        setTitle(this.iwrb.getLocalizedString(windowTitle));
+        addTitle(this.iwrb.getLocalizedString(windowTitle), TITLE_STYLECLASS);
         Table table = new Table(2, 1);
         table.setWidthAndHeightToHundredPercent();
         table.setColumnWidth(1, "200");
@@ -60,20 +60,20 @@ public class UserStatsWindow extends StyledIWAdminWindow {
 		String invocationFileName = iwc.getParameter(STATS_INVOCATION_NAME_FROM_BUNDLE);
 		String layoutFileName = iwc.getParameter(STATS_LAYOUT_NAME_FROM_BUNDLE);
 	    String localizedNameKey = iwc.getParameter(STATS_LOCALIZABLE_KEY_NAME);
-	    repGen.setMethodInvocationBundleAndFileName(iwb, invocationFileName);
+	    repGen.setMethodInvocationBundleAndFileName(this.iwb, invocationFileName);
 		String layoutFileID = iwc.getParameter(STATS_DYNAMIC_LAYOUT_FILE_ID);
 		if (layoutFileID != null) {
 			if (layoutFileName != null && layoutFileID.equals("-1")) {
-		    	repGen.setLayoutBundleAndFileName(iwb, layoutFileName);
+		    	repGen.setLayoutBundleAndFileName(this.iwb, layoutFileName);
 		    }
 		    else if (layoutFileID != null) {
 		    	repGen.setLayoutICFileID(new Integer(layoutFileID));
 		    }
 		} else if (layoutFileName != null) {
-			repGen.setLayoutBundleAndFileName(iwb, layoutFileName);
+			repGen.setLayoutBundleAndFileName(this.iwb, layoutFileName);
 		}
 	    if (localizedNameKey != null) {
-	        String reportName = iwrb.getLocalizedString(localizedNameKey);
+	        String reportName = this.iwrb.getLocalizedString(localizedNameKey);
 	        repGen.setReportName(reportName);
 	        table.add(formatHeadline(reportName), 1, 1); //not a selector
 	        table.addBreak(1, 1);

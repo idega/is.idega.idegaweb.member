@@ -90,11 +90,11 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	private Map cachedParents = new HashMap();
 	
 	private void initializeBundlesIfNeeded() {
-		if (_iwb == null) {
-			_iwb = this.getIWApplicationContext().getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
+		if (this._iwb == null) {
+			this._iwb = this.getIWApplicationContext().getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
 		}
-		_iwrb = _iwb.getResourceBundle(this.getUserContext().getCurrentLocale());
-		_userIwrb = this.getIWApplicationContext().getIWMainApplication().getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(this.getUserContext().getCurrentLocale());
+		this._iwrb = this._iwb.getResourceBundle(this.getUserContext().getCurrentLocale());
+		this._userIwrb = this.getIWApplicationContext().getIWMainApplication().getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(this.getUserContext().getCurrentLocale());
 	}
 
     
@@ -108,46 +108,46 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		//Add extra...because the inputhandlers supply the basic header texts
 		
 		reportCollection.addExtraHeaderParameter(
-				"label_current_date", _iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
+				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
 				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
  	
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
 		 //The name you give the field/parameter must not contain spaces or special characters		
 		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
-		 nameField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
+		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
 		 reportCollection.addField(nameField);
 		 
 		 ReportableField personalIDField = new ReportableField(FIELD_NAME_PERSONAL_ID, String.class);
-		 personalIDField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_PERSONAL_ID, "Personal ID"),currentLocale);
+		 personalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PERSONAL_ID, "Personal ID"),currentLocale);
 		 reportCollection.addField(personalIDField);
 		 
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
-		 groupPathField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
+		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
 		 reportCollection.addField(groupPathField);
 		 
 		 ReportableField userStatusField = new ReportableField(FIELD_NAME_USER_STATUS, String.class);
-		 userStatusField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_USER_STATUS, "User Status"), currentLocale);
+		 userStatusField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_STATUS, "User Status"), currentLocale);
 		 reportCollection.addField(userStatusField);
 		 
 		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
-		 streetAddressField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
+		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
 		 reportCollection.addField(streetAddressField);
 		 
 		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
-		 postalAddressField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
+		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
 		 reportCollection.addField(postalAddressField); 
 
 		 ReportableField countryField = new ReportableField(FIELD_NAME_COUNTRY, String.class);
-		 countryField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_COUNTRY, "Country"), currentLocale);
+		 countryField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_COUNTRY, "Country"), currentLocale);
 		 reportCollection.addField(countryField);
 		 
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
-		 phoneField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
+		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
 		 reportCollection.addField(phoneField);
 		 
 		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
-		 emailField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
+		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
 		 reportCollection.addField(emailField);
 		
 		Group group = null;
@@ -249,7 +249,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			                 continue;
 			             }
 			             else {
-			                 userStatusString = _iwrb.getLocalizedString(USR_STAT_PREFIX+userStatusKey, userStatusKey);
+			                 userStatusString = this._iwrb.getLocalizedString(USR_STAT_PREFIX+userStatusKey, userStatusKey);
 			             }
 			             
 			         }
@@ -268,8 +268,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				     data.addData(countryField, countryString);
 				     data.addData(phoneField, getPhoneNumber(user));
 				     List statsForGroup = (List) usersByGroups.get(parentGroup.getPrimaryKey());
-						if (statsForGroup == null)
+						if (statsForGroup == null) {
 							statsForGroup = new Vector();
+						}
 						statsForGroup.add(data);
 						usersByGroups.put(parentGroup.getPrimaryKey(), statsForGroup);
 				}
@@ -319,38 +320,38 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		//Add extra...because the inputhandlers supply the basic header texts
 		
 		reportCollection.addExtraHeaderParameter(
-				"label_current_date", _iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
+				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
 				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
  	
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
 		 //The name you give the field/parameter must not contain spaces or special characters		
 		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
-		 nameField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
+		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
 		 reportCollection.addField(nameField);
 
 		 ReportableField groupTypeField = new ReportableField(FIELD_NAME_GROUP_TYPE, String.class);
-		 groupTypeField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_GROUP_TYPE, "Group Type"),currentLocale);
+		 groupTypeField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_TYPE, "Group Type"),currentLocale);
 		 reportCollection.addField(groupTypeField);
 
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
-		 groupPathField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
+		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
 		 reportCollection.addField(groupPathField);
 		 
 		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
-		 streetAddressField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
+		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
 		 reportCollection.addField(streetAddressField);
 		 
 		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
-		 postalAddressField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
+		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
 		 reportCollection.addField(postalAddressField); 
 		 
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
-		 phoneField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
+		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
 		 reportCollection.addField(phoneField);
 		 
 		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
-		 emailField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
+		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
 		 reportCollection.addField(emailField);
 		
 		Group topGroup = null;
@@ -391,7 +392,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			     }
 			     Iterator parIt = parentGroupCollection.iterator();
 
-			    String groupTypeString = _userIwrb.getLocalizedString(group.getGroupType(), group.getGroupType());
+			    String groupTypeString = this._userIwrb.getLocalizedString(group.getGroupType(), group.getGroupType());
 			   	Collection emails =  group.getEmails();
 			   	Email email = null;
 			   	String emailString = null;
@@ -433,8 +434,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				    data.addData(postalAddressField, postalAddressString);
 				    data.addData(phoneField, getPhoneNumber(group));
 				    List statsForGroup = (List) usersByGroups.get(group.getPrimaryKey());
-					if (statsForGroup == null)
+					if (statsForGroup == null) {
 						statsForGroup = new Vector();
+					}
 					statsForGroup.add(data);
 					usersByGroups.put(group.getPrimaryKey(), statsForGroup);
 				}
@@ -513,20 +515,20 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	    
 	    while (parentGroup != null && !topNodes.contains(parentGroup)) {
 	        String parentKey = parentGroup.getPrimaryKey().toString();
-	        if (cachedParents.containsKey((parentKey))) {
-		        Collection col = (Collection)cachedParents.get(parentKey);
+	        if (this.cachedParents.containsKey((parentKey))) {
+		        Collection col = (Collection)this.cachedParents.get(parentKey);
 		        Iterator it = col.iterator();
 		        Integer parentID = null;
 		        if (it.hasNext()) {
 	                 parentID = (Integer)it.next();
 	                 String groupKey = parentID.toString();
-	                 if (cachedGroups.containsKey(groupKey)) {
-	                     parentGroup = (Group)cachedGroups.get(groupKey); 
+	                 if (this.cachedGroups.containsKey(groupKey)) {
+	                     parentGroup = (Group)this.cachedGroups.get(groupKey); 
 	                 }
 	                 else {
 	                     try {
-		                     parentGroup = groupBiz.getGroupByGroupID(parentID.intValue());
-			                 cachedGroups.put(groupKey, parentGroup);
+		                     parentGroup = this.groupBiz.getGroupByGroupID(parentID.intValue());
+			                 this.cachedGroups.put(groupKey, parentGroup);
 	                     } catch (Exception e) {
 	                         break;
 	                     }
@@ -536,7 +538,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		        	break;
 		        }
 			} else {
-			         parentGroupCollection = parentGroup.getParentGroups(cachedParents, cachedGroups);
+			         parentGroupCollection = parentGroup.getParentGroups(this.cachedParents, this.cachedGroups);
 			         
 			     if (!parentGroupCollection.isEmpty()) {
 			         parentGroup = (Group)parentGroupCollection.iterator().next();
@@ -559,16 +561,16 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
     }
 
     private GroupBusiness getGroupBusiness() throws RemoteException {
-		if (groupBiz == null) {
-			groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), GroupBusiness.class);
+		if (this.groupBiz == null) {
+			this.groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), GroupBusiness.class);
 		}	
-		return groupBiz;
+		return this.groupBiz;
 	}
 
 	private UserBusiness getUserBusiness() throws RemoteException {
-		if (userBiz == null) {
-			userBiz = (UserBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserBusiness.class);
+		if (this.userBiz == null) {
+			this.userBiz = (UserBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserBusiness.class);
 		}	
-		return userBiz;
+		return this.userBiz;
 	}
 }

@@ -19,12 +19,12 @@ public class LinkToUserStatsImpl implements LinkToUserStats {
     
     public Link getLink() {
         Link link = new Link();
-		link.addParameter(UserStatsWindow.STATS_INVOCATION_NAME_FROM_BUNDLE, invocationFileName);
-		link.addParameter(UserStatsWindow.STATS_LAYOUT_NAME_FROM_BUNDLE, layoutFileName);
-		link.addParameter(UserStatsWindow.STATS_LOCALIZABLE_KEY_NAME, localizableKeyName);
+		link.addParameter(UserStatsWindow.STATS_INVOCATION_NAME_FROM_BUNDLE, this.invocationFileName);
+		link.addParameter(UserStatsWindow.STATS_LAYOUT_NAME_FROM_BUNDLE, this.layoutFileName);
+		link.addParameter(UserStatsWindow.STATS_LOCALIZABLE_KEY_NAME, this.localizableKeyName);
 		link.setWindowToOpen(UserStatsWindow.class);
-		if (selectedGroup!= null) {
-		    link.addParameter("dr_group", selectedGroup.getNodeID());
+		if (this.selectedGroup!= null) {
+		    link.addParameter("dr_group", this.selectedGroup.getNodeID());
 		}
         return link;
     }

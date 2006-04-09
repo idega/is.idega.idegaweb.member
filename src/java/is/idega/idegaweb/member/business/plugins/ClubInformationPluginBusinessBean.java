@@ -716,7 +716,8 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 				return access.createRoleWithRoleKey(role);
 			}
 		}
-		else
+		else {
 			throw new NoAbbreviationException(league.getName());
+		}
 	}
 }
