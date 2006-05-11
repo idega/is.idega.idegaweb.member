@@ -13,6 +13,7 @@
     <project>com.idega.block.importer</project>
     <project>com.idega.block.datareport</project>
     <project>is.idega.block.family</project>
+    <project>com.idega.block.web2.0</project>
   </projects>
   <buildSpec>
     <buildCommand>
