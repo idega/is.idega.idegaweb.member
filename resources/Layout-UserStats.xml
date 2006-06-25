@@ -61,9 +61,9 @@
 	<variable name="groupVar" class="java.lang.String" resetType="None" calculation="Nothing">
 		<variableExpression><![CDATA[$F{group_path}]]></variableExpression>	</variable>
 	<variable name="members_in_group" class="java.lang.Integer" resetType="Group" resetGroup="division_group" calculation="Count">
-		<variableExpression><![CDATA[$F{personal_id}]]></variableExpression>	</variable>
+		<variableExpression><![CDATA[$F{name}]]></variableExpression>	</variable>
 	<variable name="members_in_report" class="java.lang.Integer" resetType="Report" calculation="Count">
-		<variableExpression><![CDATA[$F{personal_id}]]></variableExpression>	</variable>
+		<variableExpression><![CDATA[$F{name}]]></variableExpression>	</variable>
 		<group  name="division_group" isStartNewColumn="false" isStartNewPage="false" isResetPageNumber="false" isReprintHeaderOnEachPage="true" minHeightToStartNewPage="0" >
 			<groupExpression><![CDATA[$V{groupVar}]]></groupExpression>
 			<groupHeader>
