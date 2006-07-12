@@ -1,10 +1,17 @@
 <document>
   <properties>
-    <title>changes</title>
+    <title>Member changes</title>
     <author email="tryggvi@idega.com">Tryggvi Larusson</author>
   </properties>
   <body>
-      <release version="1.0.1" date="2005-05-25">
+
+    <release version="1.0.2" date="2006-07-11">
+      <action dev="laddi" type="update">
+        Changed version for use with core 3.1.x
+      </action>              
+    </release>
+
+    <release version="1.0.1" date="2005-05-25">
       <action dev="tryggvil" type="update">
         Changed version for use with core 3.0.5
       </action>              
