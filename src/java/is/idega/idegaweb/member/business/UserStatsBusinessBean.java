@@ -71,23 +71,29 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 
 	private static final String LOCALIZED_CURRENT_DATE = "UserStatsBusiness.current_date";
 	private static final String LOCALIZED_NAME = "UserStatsBusiness.name";
+    private static final String LOCALIZED_USER_ID = "UserStatsBusiness.user_id";
 	private static final String LOCALIZED_PERSONAL_ID = "UserStatsBusiness.personal_id";
 	private static final String LOCALIZED_GROUP_TYPE = "UserStatsBusiness.group_type";
+	private static final String LOCALIZED_PARENT_GROUP = "UserStatsBusiness.parent_group";
 	private static final String LOCALIZED_GROUP_PATH = "UserStatsBusiness.group_path";
 	private static final String LOCALIZED_USER_STATUS = "UserStatsBusiness.user_status";
 	private static final String LOCALIZED_STREET_ADDRESS = "UserStatsBusiness.street_address";
 	private static final String LOCALIZED_POSTAL_ADDRESS = "UserStatsBusiness.postal_address";
+	private static final String LOCALIZED_POST_BOX = "UserStatsBusiness.post_box";
 	private static final String LOCALIZED_COUNTRY = "UserStatsBusiness.country";
 	private static final String LOCALIZED_PHONE = "UserStatsBusiness.phone";
 	private static final String LOCALIZED_EMAIL = "UserStatsBusiness.email";
 
 	private static final String FIELD_NAME_NAME = "name";
+	private static final String FIELD_NAME_USER_ID = "user_id";
 	private static final String FIELD_NAME_PERSONAL_ID = "personal_id";
 	private static final String FIELD_NAME_GROUP_TYPE = "group_type";
+	private static final String FIELD_NAME_PARENT_GROUP = "parent_group";
 	private static final String FIELD_NAME_GROUP_PATH = "group_path";
 	private static final String FIELD_NAME_USER_STATUS = "user_status";
 	private static final String FIELD_NAME_STREET_ADDRESS = "street_address";
 	private static final String FIELD_NAME_POSTAL_ADDRESS = "postal_address";
+	private static final String FIELD_NAME_POST_BOX = "post_box";
 	private static final String FIELD_NAME_COUNTRY = "country";
 	private static final String FIELD_NAME_PHONE = "phone";
 	private static final String FIELD_NAME_EMAIL = "email";
@@ -119,15 +125,23 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
  	
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
-		 //The name you give the field/parameter must not contain spaces or special characters		
+		 //The name you give the field/parameter must not contain spaces or special characters		 
 		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
 		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
 		 reportCollection.addField(nameField);
 		 
+		 ReportableField userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
+		 userIDField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
+		 reportCollection.addField(userIDField);
+
 		 ReportableField personalIDField = new ReportableField(FIELD_NAME_PERSONAL_ID, String.class);
 		 personalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PERSONAL_ID, "Personal ID"),currentLocale);
 		 reportCollection.addField(personalIDField);
-		 
+
+		 ReportableField parentGroupField = new ReportableField(FIELD_NAME_PARENT_GROUP, String.class);
+		 parentGroupField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
+		 reportCollection.addField(parentGroupField);
+
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
 		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
 		 reportCollection.addField(groupPathField);
@@ -264,8 +278,10 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				     // create a new ReportData for each row	    
 			         ReportableData data = new ReportableData();
 				     //	add the data to the correct fields/columns
-				     data.addData(nameField, user.getName() );
+			         data.addData(nameField, user.getName() );
+			         data.addData(userIDField, user.getPrimaryKey() );
 				     data.addData(personalIDField, personalID);
+				     data.addData(parentGroupField, parentGroup.getName());
 				     data.addData(groupPathField, parentGroupPath);
 				     data.addData(userStatusField, userStatusString);
 				     data.addData(emailField, emailString);
@@ -351,7 +367,11 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
 		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
 		 reportCollection.addField(postalAddressField); 
-		 
+
+		 ReportableField pBoxField = new ReportableField(FIELD_NAME_POST_BOX, String.class);
+		 pBoxField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_POST_BOX, "Postbox"), currentLocale);
+		 reportCollection.addField(pBoxField);
+
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
 		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
 		 reportCollection.addField(phoneField);
@@ -421,10 +441,12 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			    Address address = null;
 			    String streetAddressString = null;
 			    String postalAddressString = null;
+			    String postBoxString = null;
 			   	if (addresses != null && !addresses.isEmpty()) {
 			   	    address = (Address)addresses.iterator().next();
 			   	    streetAddressString = address.getStreetAddress();
 			   	    postalAddressString = address.getPostalAddress();
+			   	    postBoxString = address.getPOBox();
 			   	}
 			   	while (parIt.hasNext()) {				     
 			        Group parentGroup = (Group)parIt.next();
@@ -438,6 +460,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				    data.addData(emailField, emailString);
 				    data.addData(streetAddressField, streetAddressString);
 				    data.addData(postalAddressField, postalAddressString);
+				    data.addData(pBoxField, postBoxString);
 				    data.addData(phoneField, getPhoneNumber(group));
 				    List statsForGroup = (List) usersByGroups.get(group.getPrimaryKey());
 					if (statsForGroup == null) {
