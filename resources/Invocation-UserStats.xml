@@ -33,6 +33,10 @@
 <localized_name name="Kyn" locale="is_IS"/>
 <class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.GenderDropDownMenu" />
 </class_description>
+<class_description class="java.util.Collection" default_display_name="Postal code" name="postalCode">
+<localized_name name="Póstfang" locale="is_IS"/>
+<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.PostalCodeBox" />
+</class_description>
 <class_description class="java.lang.String" default_display_name="Dynamic layoutfile" name="dynamicLayoutFile">
 <localized_name name="Útlit skýrslu" locale="is_IS"/>
 <class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.DynamicLayoutDropDownMenu" value="UserStatsLayout" />
