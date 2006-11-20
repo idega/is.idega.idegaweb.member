@@ -1,5 +1,5 @@
 /*
- * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.3 2005/12/23 12:46:08 thomas Exp $
+ * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.4 2006/11/20 19:45:21 idegaweb Exp $
  * Created on Sep 1, 2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -23,10 +23,10 @@ import com.idega.user.app.ToolbarElement;
 
 /**
  * 
- *  Last modified: $Date: 2005/12/23 12:46:08 $ by $Author: thomas $
+ *  Last modified: $Date: 2006/11/20 19:45:21 $ by $Author: idegaweb $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PinLookupToGroupImportHandlerPlugin implements ToolbarElement {
 	
@@ -79,10 +79,7 @@ public class PinLookupToGroupImportHandlerPlugin implements ToolbarElement {
 	 * @see com.idega.user.app.ToolbarElement#isValid(com.idega.presentation.IWContext)
 	 */
 	public boolean isValid(IWContext iwc) {
-		IWMainApplicationSettings settings = iwc.getApplicationSettings();
-       	String showStuff =settings.getProperty("temp_show_is_related_stuff");
-       	// original condition, everything is true if not null
-       	return (showStuff != null);
+		return true;
 
 	}
 
