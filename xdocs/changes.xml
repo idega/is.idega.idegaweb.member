@@ -5,6 +5,12 @@
   </properties>
   <body>
 
+    <release version="1.0.3" date="2006-11-20">
+      <action dev="sigtryggur" type="update">
+        Changed isValid logic in PinLookupToGroupImportHandlerPlugin. Is now allway true
+      </action>              
+    </release>
+    
     <release version="1.0.2" date="2006-07-11">
       <action dev="laddi" type="update">
         Changed version for use with core 3.1.x
