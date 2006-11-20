@@ -5,11 +5,9 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Member Application</name>
   <artifactId>is.idega.idegaweb.member</artifactId>
-  <currentVersion>1.0.2</currentVersion>
-
+  <currentVersion>1.0.3</currentVersion>
   <inceptionYear>2000</inceptionYear>
   <shortDescription>idegaWeb Member Application (Felix)</shortDescription>
-
   <versions>
     <version>
       <id>1.0.1</id>
@@ -21,8 +19,12 @@
       <name>1.0.2</name>
       <tag>MEMBER_1_0_2</tag>
     </version>
+    <version>
+      <id>1.0.3</id>
+      <name>1.0.3</name>
+      <tag>MEMBER_1_0_3</tag>
+    </version>
   </versions>
-
   <branches/>
   <developers>
     <developer>
@@ -74,7 +76,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
       <version>3.1.2</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -85,7 +86,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
       <version>3.1.0</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -96,7 +96,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.user</artifactId>
       <version>3.1.2</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -107,7 +106,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.media</artifactId>
       <version>3.1.0</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -118,7 +116,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.cal</artifactId>
       <version>3.1.0</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -129,7 +126,6 @@
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.importer</artifactId>
       <version>3.1.0</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -157,7 +153,6 @@
       <groupId>bundles</groupId>
       <artifactId>is.idega.block.family</artifactId>
       <version>1.0.1</version>
-
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
