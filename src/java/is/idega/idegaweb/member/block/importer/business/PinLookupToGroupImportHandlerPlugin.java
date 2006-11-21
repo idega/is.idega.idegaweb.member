@@ -1,5 +1,5 @@
 /*
- * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.4 2006/11/20 19:45:21 idegaweb Exp $
+ * $Id: PinLookupToGroupImportHandlerPlugin.java,v 1.5 2006/11/21 12:56:58 laddi Exp $
  * Created on Sep 1, 2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -11,10 +11,10 @@ package is.idega.idegaweb.member.block.importer.business;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import com.idega.block.importer.data.ColumnSeparatedImportFile;
 import com.idega.block.importer.presentation.Importer;
 import com.idega.idegaweb.IWBundle;
-import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
@@ -23,10 +23,10 @@ import com.idega.user.app.ToolbarElement;
 
 /**
  * 
- *  Last modified: $Date: 2006/11/20 19:45:21 $ by $Author: idegaweb $
+ *  Last modified: $Date: 2006/11/21 12:56:58 $ by $Author: laddi $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PinLookupToGroupImportHandlerPlugin implements ToolbarElement {
 	
