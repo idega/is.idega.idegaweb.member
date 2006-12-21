@@ -137,7 +137,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 reportCollection.addField(nameField);
 		 
 		 ReportableField userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
-		 userIDField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
+		 userIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
 		 reportCollection.addField(userIDField);
 
 		 ReportableField personalIDField = new ReportableField(FIELD_NAME_PERSONAL_ID, String.class);
@@ -145,7 +145,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 reportCollection.addField(personalIDField);
 
 		 ReportableField parentGroupField = new ReportableField(FIELD_NAME_PARENT_GROUP, String.class);
-		 parentGroupField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
+		 parentGroupField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
 		 reportCollection.addField(parentGroupField);
 
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
@@ -359,15 +359,15 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 reportCollection.addField(nameField);
 
 		 ReportableField shortNameField = new ReportableField(FIELD_NAME_SHORT_NAME, String.class);
-		 shortNameField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_SHORT_NAME, "Short Name"), currentLocale);
+		 shortNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_SHORT_NAME, "Short Name"), currentLocale);
 		 reportCollection.addField(shortNameField);
 
 		 ReportableField abbrevationField = new ReportableField(FIELD_NAME_ABBREVATION, String.class);
-		 abbrevationField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_ABBREVATION, "Abbrevation"), currentLocale);
+		 abbrevationField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_ABBREVATION, "Abbrevation"), currentLocale);
 		 reportCollection.addField(abbrevationField);
 
 		 ReportableField displayNameField = new ReportableField(FIELD_NAME_DISPLAY_NAME, String.class);
-		 displayNameField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_DISPLAY_NAME, "Display Name"), currentLocale);
+		 displayNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_DISPLAY_NAME, "Display Name"), currentLocale);
 		 reportCollection.addField(displayNameField);
 
 		 ReportableField groupTypeField = new ReportableField(FIELD_NAME_GROUP_TYPE, String.class);
@@ -387,7 +387,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 reportCollection.addField(postalAddressField); 
 
 		 ReportableField pBoxField = new ReportableField(FIELD_NAME_POST_BOX, String.class);
-		 pBoxField.setLocalizedName(_iwrb.getLocalizedString(LOCALIZED_POST_BOX, "Postbox"), currentLocale);
+		 pBoxField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POST_BOX, "Postbox"), currentLocale);
 		 reportCollection.addField(pBoxField);
 
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
@@ -446,7 +446,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			    } else {
 			    	displayNameString = nameString;
 			    }
-			    String groupTypeString = _userIwrb.getLocalizedString(group.getGroupType(), group.getGroupType());
+			    String groupTypeString = this._userIwrb.getLocalizedString(group.getGroupType(), group.getGroupType());
 			   	Collection emails =  group.getEmails();
 			   	Email email = null;
 			   	String emailString = null;
@@ -494,8 +494,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				    data.addData(pBoxField, postBoxString);
 				    data.addData(phoneField, getPhoneNumber(group));
 				    List statsForGroup = (List) usersByGroups.get(group.getPrimaryKey());
-					if (statsForGroup == null)
+					if (statsForGroup == null) {
 						statsForGroup = new Vector();
+					}
 					statsForGroup.add(data);
 					usersByGroups.put(group.getPrimaryKey(), statsForGroup);
 				}
