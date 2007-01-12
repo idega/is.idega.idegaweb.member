@@ -3,10 +3,14 @@
  */
 package is.idega.idegaweb.member.business;
 
+import is.idega.block.nationalregister.business.NationalRegisterBusiness;
+import is.idega.block.nationalregister.data.NationalRegister;
 import is.idega.idegaweb.member.presentation.GroupStatsWindowPlugin;
 import is.idega.idegaweb.member.presentation.UserStatsWindowPlugin;
 import is.idega.idegaweb.member.util.IWMemberConstants;
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +40,7 @@ import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressType;
 import com.idega.core.location.data.AddressTypeHome;
 import com.idega.core.location.data.Country;
+import com.idega.core.location.data.PostalCode;
 import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
@@ -46,9 +51,13 @@ import com.idega.presentation.PresentationObject;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.business.UserGroupPlugInBusiness;
+import com.idega.user.business.UserInfoColumnsBusiness;
+import com.idega.user.business.UserStatusBusiness;
+import com.idega.user.business.UserStatusBusinessBean;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
+import com.idega.user.data.UserInfoColumns;
 import com.idega.user.data.UserStatus;
 import com.idega.user.data.UserStatusHome;
 import com.idega.util.IWTimestamp;
@@ -62,20 +71,30 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
     
     private UserBusiness userBiz = null;
     private GroupBusiness groupBiz = null;
+    private NationalRegisterBusiness nationalRegisterBiz = null;
+    private UserInfoColumnsBusiness userInfoColumnsBiz = null;
+    private UserStatusBusiness userStatusBiz = null;
 	private IWBundle _iwb = null;
 	private IWResourceBundle _iwrb = null;
 	private IWResourceBundle _userIwrb = null;
 	private final static String IW_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member";
 	private final static String USER_IW_BUNDLE_IDENTIFIER = "com.idega.user";
 	private static final String USR_STAT_PREFIX = "usr_stat_";
+	private static final double MILLISECONDS_IN_YEAR = 31557600000d;
 
 	private static final String LOCALIZED_CURRENT_DATE = "UserStatsBusiness.current_date";
+	private static final String LOCALIZED_USER_ID = "UserStatsBusiness.user_id";
+	private static final String LOCALIZED_GROUP_ID = "UserStatsBusiness.group_id";
 	private static final String LOCALIZED_NAME = "UserStatsBusiness.name";
 	private static final String LOCALIZED_SHORT_NAME = "UserStatsBusiness.short_name";
 	private static final String LOCALIZED_ABBREVATION = "UserStatsBusiness.abbrevation";
 	private static final String LOCALIZED_DISPLAY_NAME = "UserStatsBusiness.display_name";
-    private static final String LOCALIZED_USER_ID = "UserStatsBusiness.user_id";
 	private static final String LOCALIZED_PERSONAL_ID = "UserStatsBusiness.personal_id";
+	private static final String LOCALIZED_CUSTODIAN_NAME = "UserStatsBusiness.custodian_name";
+	private static final String LOCALIZED_CUSTODIAN_PERSONAL_ID = "UserStatsBusiness.custodian_personal_id";
+	private static final String LOCALIZED_CUSTODIAN_PHONE = "UserStatsBusiness.custodian_phone";
+	private static final String LOCALIZED_DATE_OF_BIRTH = "UserStatsBusiness.date_of_birth";
+	private static final String LOCALIZED_AGE = "UserStatsBusiness.age";
 	private static final String LOCALIZED_GROUP_TYPE = "UserStatsBusiness.group_type";
 	private static final String LOCALIZED_PARENT_GROUP = "UserStatsBusiness.parent_group";
 	private static final String LOCALIZED_GROUP_PATH = "UserStatsBusiness.group_path";
@@ -86,13 +105,21 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	private static final String LOCALIZED_COUNTRY = "UserStatsBusiness.country";
 	private static final String LOCALIZED_PHONE = "UserStatsBusiness.phone";
 	private static final String LOCALIZED_EMAIL = "UserStatsBusiness.email";
-
+	private static final String LOCALIZED_USER_INFO_1 = "UserStatsBusiness.user_info_1";
+	private static final String LOCALIZED_USER_INFO_2 = "UserStatsBusiness.user_info_2";
+	private static final String LOCALIZED_USER_INFO_3 = "UserStatsBusiness.user_info_3";
+	private static final String FIELD_NAME_USER_ID = "ic_user_id";
+	private static final String FIELD_NAME_GROUP_ID = "ic_group_id";
 	private static final String FIELD_NAME_NAME = "name";
 	private static final String FIELD_NAME_SHORT_NAME = "short_name";
 	private static final String FIELD_NAME_ABBREVATION = "abbrevation";
 	private static final String FIELD_NAME_DISPLAY_NAME = "display_name";
-	private static final String FIELD_NAME_USER_ID = "user_id";
 	private static final String FIELD_NAME_PERSONAL_ID = "personal_id";
+	private static final String FIELD_NAME_CUSTODIAN_NAME = "custodian_name";
+	private static final String FIELD_NAME_CUSTODIAN_PERSONAL_ID = "custodian_personal_id";
+	private static final String FIELD_NAME_CUSTODIAN_PHONE = "custodian_phone";
+	private static final String FIELD_NAME_DATE_OF_BIRTH = "date_of_birth";
+	private static final String FIELD_NAME_AGE = "age";
 	private static final String FIELD_NAME_GROUP_TYPE = "group_type";
 	private static final String FIELD_NAME_PARENT_GROUP = "parent_group";
 	private static final String FIELD_NAME_GROUP_PATH = "group_path";
@@ -103,6 +130,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	private static final String FIELD_NAME_COUNTRY = "country";
 	private static final String FIELD_NAME_PHONE = "phone";
 	private static final String FIELD_NAME_EMAIL = "email";
+	private static final String FIELD_NAME_USER_INFO_1 = "user_info_1";
+	private static final String FIELD_NAME_USER_INFO_2 = "user_info_2";
+	private static final String FIELD_NAME_USER_INFO_3 = "user_info_3";
 	
 	private Map cachedGroups = new HashMap();
 	private Map cachedParents = new HashMap();
@@ -116,12 +146,12 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	}
 
     
-    public ReportableCollection getStatisticsForUsers(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, Collection userStatusesFilter, Integer yearOfBirthFromFilter, Integer yearOfBirthToFilter, String genderFilter, String dynamicLayout, String orderBy) throws RemoteException {        
+    public ReportableCollection getStatisticsForUsers(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, Collection userStatusesFilter, Integer yearOfBirthFromFilter, Integer yearOfBirthToFilter, String genderFilter, Collection postalCodeFilter, String dynamicLayout, String orderBy) throws RemoteException {        
 
         initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
-		
+		boolean isSuperAdmin = isSuperAdmin();
 		//PARAMETES
 		//Add extra...because the inputhandlers supply the basic header texts
 		
@@ -132,17 +162,27 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
 		 //The name you give the field/parameter must not contain spaces or special characters		 
+		ReportableField userIDField = null;
+		if (isSuperAdmin) {
+			userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
+			userIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
+			reportCollection.addField(userIDField);
+		}
 		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
 		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
 		 reportCollection.addField(nameField);
-		 
-		 ReportableField userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
-		 userIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
-		 reportCollection.addField(userIDField);
 
 		 ReportableField personalIDField = new ReportableField(FIELD_NAME_PERSONAL_ID, String.class);
 		 personalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PERSONAL_ID, "Personal ID"),currentLocale);
 		 reportCollection.addField(personalIDField);
+
+		 ReportableField dateOfBirthField = new ReportableField(FIELD_NAME_DATE_OF_BIRTH, String.class);
+		 dateOfBirthField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_DATE_OF_BIRTH, "Date of birth"),currentLocale);
+		 reportCollection.addField(dateOfBirthField);
+
+		 ReportableField ageField = new ReportableField(FIELD_NAME_AGE, String.class);
+		 ageField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_AGE, "Age"),currentLocale);
+		 reportCollection.addField(ageField);
 
 		 ReportableField parentGroupField = new ReportableField(FIELD_NAME_PARENT_GROUP, String.class);
 		 parentGroupField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
@@ -175,6 +215,30 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
 		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
 		 reportCollection.addField(emailField);
+
+		 ReportableField userInfo1Field = new ReportableField(FIELD_NAME_USER_INFO_1, String.class);
+		 userInfo1Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_1, "User info 1"), currentLocale);
+		 reportCollection.addField(userInfo1Field);
+
+		 ReportableField userInfo2Field = new ReportableField(FIELD_NAME_USER_INFO_2, String.class);
+		 userInfo2Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_2, "User info 2"), currentLocale);
+		 reportCollection.addField(userInfo2Field);
+
+		 ReportableField userInfo3Field = new ReportableField(FIELD_NAME_USER_INFO_3, String.class);
+		 userInfo3Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_3, "User info 3"), currentLocale);
+		 reportCollection.addField(userInfo3Field);
+
+		 ReportableField custodianNameField = new ReportableField(FIELD_NAME_CUSTODIAN_NAME, String.class);
+		 custodianNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_NAME, "Custodian name"), currentLocale);
+		 reportCollection.addField(custodianNameField);
+
+		 ReportableField custodianPersonalIDField = new ReportableField(FIELD_NAME_CUSTODIAN_PERSONAL_ID, String.class);
+		 custodianPersonalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_PERSONAL_ID, "Custodian personal ID"),currentLocale);
+		 reportCollection.addField(custodianPersonalIDField);
+
+		 ReportableField custodianPhoneField = new ReportableField(FIELD_NAME_CUSTODIAN_PHONE, String.class);
+		 custodianPhoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
+		 reportCollection.addField(custodianPhoneField);
 		
 		Group group = null;
 		Collection groups = null;
@@ -218,6 +282,37 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			     Iterator parIt = parentGroupCollection.iterator();
 			   
 			   	String personalID = user.getPersonalID();
+			   	String dateOfBirthString = null;
+			   	String ageString = null;
+			   	String custodianString = null;
+				String custodianPersonalID = null;
+				String custodianPhoneString = null;
+//			 	Collection custodians = null; 
+				try {
+					Date date_of_birth = user.getDateOfBirth();
+					if (date_of_birth != null) {
+						dateOfBirthString = new IWTimestamp(date_of_birth).getDateString("dd.MM.yyyy");
+						long ageInMillisecs = IWTimestamp.getMilliSecondsBetween(new IWTimestamp(date_of_birth),new IWTimestamp());
+						BigDecimal age = new BigDecimal(ageInMillisecs/MILLISECONDS_IN_YEAR);
+						ageString = String.valueOf(age.intValue());
+						if (age.doubleValue() < 18) {
+							NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
+							custodianPersonalID = userRegister.getFamilyId();
+							User custodian = getUserBusiness().getUser(custodianPersonalID);
+							custodianString = custodian.getName();
+							custodianPhoneString = getPhoneNumber(custodian);
+							
+						} else {
+							custodianPersonalID = personalID;
+						}
+						if (custodianPersonalID != null && custodianPersonalID.length() == 10) {
+							custodianPersonalID = custodianPersonalID.substring(0,6)+"-"+custodianPersonalID.substring(6,10);
+					 	}
+					}
+					//custodians = getMemberFamilyLogic(getIWApplicationContext()).getCustodiansFor(user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			   	if (personalID != null && personalID.length() == 10) {
 			 		personalID = personalID.substring(0,6)+"-"+personalID.substring(6,10);
 			 	}
@@ -247,12 +342,26 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			    String countryString = null;
 			   	if (addresses != null && !addresses.isEmpty()) {
 			   	    address = (Address)addresses.iterator().next();
+			   	    PostalCode postalCode = address.getPostalCode();
+			   	    if (postalCode != null) {
+			   	    	String postalCodeString = postalCode.getPostalCode();
+			   	    	if (!postalCodeFilter.isEmpty() && !postalCodeFilter.contains(postalCodeString)) {
+			   	    		continue;
+			   	    	}
+			   	    }
 			   	    streetAddressString = address.getStreetAddress();
 			   	    postalAddressString = address.getPostalAddress();
 			   	    Country country = address.getCountry();
 			   	    if (country != null) {
 			   	    	countryString = country.getName();
+	        			Locale locale = new Locale(currentLocale.getLanguage(), country.getIsoAbbreviation());
+	                    String localizedCountryName = locale.getDisplayCountry(currentLocale);
+	                    if (localizedCountryName != null && !localizedCountryName.equals("")) {
+	                    	countryString = localizedCountryName;
+	                    }
 			   	    }
+			   	} else if (!postalCodeFilter.isEmpty()) {
+			   		continue;
 			   	}
 			     while (parIt.hasNext()) {
 			         Group parentGroup = (Group)parIt.next();
@@ -260,6 +369,12 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			         String userStatusString = null;
 			         try {
 			             userStatuses = (List) ((UserStatusHome)IDOLookup.getHome(UserStatus.class)).findAllActiveByUserIdAndGroupId(Integer.parseInt(user.getPrimaryKey().toString()),Integer.parseInt(parentGroup.getPrimaryKey().toString()));
+			             if (userStatuses != null && userStatuses.isEmpty() && userStatusesFilter.contains(UserStatusBusinessBean.STATUS_DECEASED)) {
+			            	 UserStatus userStatus = getUserStatusBusiness().getDeceasedUserStatus((Integer)user.getPrimaryKey());
+			            	 if (userStatus != null) {
+			            		 userStatuses.add(userStatus);
+			            	 }
+			             }
 			         } catch (FinderException e) {
 			             System.out.println(e.getMessage());
 			         }
@@ -279,22 +394,40 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			             }
 			             
 			         }
-			         
+			         String userInfo1String = "";
+			         String userInfo2String = "";
+			         String userInfo3String = "";
+			         UserInfoColumns userInfoColumns = getUserInfoColumnsBusiness().getUserInfo(Integer.parseInt(user.getPrimaryKey().toString()),Integer.parseInt(group.getPrimaryKey().toString()));
+			          if (userInfoColumns!= null) {
+			        	  userInfo1String = userInfoColumns.getUserInfo1();
+			        	  userInfo2String = userInfoColumns.getUserInfo2();
+			        	  userInfo3String = userInfoColumns.getUserInfo3();
+			          }
 			         String parentGroupPath = getParentGroupPath(parentGroup, topNodes);
 				     // create a new ReportData for each row	    
 			         ReportableData data = new ReportableData();
 				     //	add the data to the correct fields/columns
+			         if (isSuperAdmin) {
+			        	 data.addData(userIDField, user.getPrimaryKey().toString() );
+			         }
 			         data.addData(nameField, user.getName() );
-			         data.addData(userIDField, user.getPrimaryKey() );
 				     data.addData(personalIDField, personalID);
+				     data.addData(dateOfBirthField, dateOfBirthString);
+				     data.addData(ageField, ageString);
 				     data.addData(parentGroupField, parentGroup.getName());
 				     data.addData(groupPathField, parentGroupPath);
 				     data.addData(userStatusField, userStatusString);
-				     data.addData(emailField, emailString);
 				     data.addData(streetAddressField, streetAddressString);
 				     data.addData(postalAddressField, postalAddressString);
 				     data.addData(countryField, countryString);
 				     data.addData(phoneField, getPhoneNumber(user));
+				     data.addData(emailField, emailString);
+				     data.addData(userInfo1Field, userInfo1String);
+				     data.addData(userInfo2Field, userInfo2String);
+				     data.addData(userInfo3Field, userInfo3String);
+				     data.addData(custodianNameField, custodianString );
+				 	 data.addData(custodianPersonalIDField, custodianPersonalID );
+				     data.addData(custodianPhoneField, custodianPhoneString );
 				     List statsForGroup = (List) usersByGroups.get(parentGroup.getPrimaryKey());
 						if (statsForGroup == null) {
 							statsForGroup = new Vector();
@@ -343,7 +476,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	    initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
-		
+		boolean isSuperAdmin = isSuperAdmin();
 		//PARAMETES
 		//Add extra...because the inputhandlers supply the basic header texts
 		
@@ -354,6 +487,12 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
 		 //The name you give the field/parameter must not contain spaces or special characters		
+		ReportableField groupIDField = null;
+		if (isSuperAdmin) {
+			groupIDField = new ReportableField(FIELD_NAME_GROUP_ID, String.class);
+			groupIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_ID, "Group ID"), currentLocale);
+			reportCollection.addField(groupIDField);
+		}
 		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
 		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
 		 reportCollection.addField(nameField);
@@ -482,6 +621,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				    // create a new ReportData for each row	    
 			        ReportableData data = new ReportableData();
 			        //	add the data to the correct fields/columns
+			        if (isSuperAdmin) {
+			        	 data.addData(groupIDField, group.getPrimaryKey().toString() );
+			        }
 				    data.addData(nameField, nameString );
 				    data.addData(shortNameField, shortNameString );
 				    data.addData(abbrevationField, abbrevation );
@@ -633,7 +775,28 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		}	
 		return this.userBiz;
 	}
-	
+
+	private NationalRegisterBusiness getNationalRegisterBusiness() throws RemoteException {
+		if (this.nationalRegisterBiz == null) {
+			this.nationalRegisterBiz = (NationalRegisterBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), NationalRegisterBusiness.class);
+		}	
+		return this.nationalRegisterBiz;
+	}
+
+	private UserInfoColumnsBusiness getUserInfoColumnsBusiness() throws RemoteException {
+		if (this.userInfoColumnsBiz == null) {
+			this.userInfoColumnsBiz = (UserInfoColumnsBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserInfoColumnsBusiness.class);
+		}	
+		return this.userInfoColumnsBiz;
+	}
+
+	private UserStatusBusiness getUserStatusBusiness() throws RemoteException {
+		if (this.userStatusBiz == null) {
+			this.userStatusBiz = (UserStatusBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserStatusBusiness.class);
+		}	
+		return this.userStatusBiz;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -700,5 +863,17 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	public String isUserSuitedForGroup(User user, Group targetGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean isSuperAdmin() {
+		boolean isSuperAdmin = false;
+		try {
+	         if (this.getCurrentUser().equals(this.getAccessController().getAdministratorUser())) {
+	        	 isSuperAdmin = true;
+	         }
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        return isSuperAdmin;
 	}
 }
