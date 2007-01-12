@@ -13,6 +13,7 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.IFrame;
+import com.idega.user.business.UserBusiness;
 import com.idega.user.data.GroupRelation;
 import com.idega.user.data.GroupRelationHome;
 import com.idega.user.data.User;
@@ -166,17 +167,24 @@ public class UserHistoryTab extends UserTab {
 	 */
 	private Collection getFilteredStatuses(IWContext iwc, Collection statuses, User user) {
 		Collection result = new ArrayList();
+		UserBusiness userBusiness = this.getUserBusiness(iwc);
 		Iterator statusIter = statuses.iterator();
 		while(statusIter.hasNext()) {
 			UserStatus status = (UserStatus) statusIter.next();
 			boolean ok = false;
 
-			ok = iwc.getAccessController().hasViewPermissionFor(status.getGroup(), iwc);
+			if (status.getGroupId() !=  -1) {
+				ok = iwc.getAccessController().hasViewPermissionFor(status.getGroup(), iwc);
+			}
 
 			if(ok) {
 				result.add(status);
 			} else {
-				System.out.println("User status in group " + status.getGroup().getName() + " not shown");
+				if (status.getGroupId() !=  -1) {
+					System.out.println("User status in group " + status.getGroup().getName() + " is filtered out");
+				} else {
+					System.out.println("User status: "+status.getStatus().getStatusKey()+" that was set: "+status.getDateFrom() + " is filtered out");
+				}
 			}
 		}
 		
