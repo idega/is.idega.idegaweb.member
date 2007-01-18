@@ -143,6 +143,16 @@
       </properties>
     </dependency>
     <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>is.idega.idegaweb.nationalregister</artifactId>
+      <version>1.0.2</version>
+      <type>jar</type>
+      <url>http://www.idega.com/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+    <dependency>
       <groupId>jasperreports</groupId>
       <artifactId>jasperreports</artifactId>
       <version>0.6.1</version>
