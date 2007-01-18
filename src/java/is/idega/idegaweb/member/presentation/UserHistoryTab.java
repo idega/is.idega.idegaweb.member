@@ -13,7 +13,6 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.IFrame;
-import com.idega.user.business.UserBusiness;
 import com.idega.user.data.GroupRelation;
 import com.idega.user.data.GroupRelationHome;
 import com.idega.user.data.User;
@@ -167,7 +166,6 @@ public class UserHistoryTab extends UserTab {
 	 */
 	private Collection getFilteredStatuses(IWContext iwc, Collection statuses, User user) {
 		Collection result = new ArrayList();
-		UserBusiness userBusiness = this.getUserBusiness(iwc);
 		Iterator statusIter = statuses.iterator();
 		while(statusIter.hasNext()) {
 			UserStatus status = (UserStatus) statusIter.next();
