@@ -7,7 +7,7 @@
 <input>
 <class_description class="java.lang.String" default_display_name="Group chooser" name="group">
 <localized_name name="Hópur" locale="is_IS"/>
-<class_handler class="com.idega.user.presentation.inputhandler.GroopChooserInputHandler" />
+<class_handler class="com.idega.user.presentation.inputhandler.GroupChooserInputHandler" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Groups recursive" name="groupsRecursive" >
 <localized_name name="Einnig undirhópar" locale="is_IS"/>
@@ -19,11 +19,11 @@
 </class_description>
 <class_description class="java.lang.String" default_display_name="Dynamic layoutfile" name="dynamicLayoutFile">
 <localized_name name="Útlit skýrslu" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.DynamicLayoutDropDownMenu" value="GroupStatsLayout" />
+<class_handler class="com.idega.presentation.ui.DynamicLayoutDropDownMenu" value="GroupStatsLayout" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Order by" name="orderBy">
 <localized_name name="Röðun" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.OrderByGroupDetailsDropDownMenu" />
+<class_handler class="com.idega.presentation.ui.OrderByGroupDetailsDropDownMenu" />
 </class_description>
 </input>
 <output>

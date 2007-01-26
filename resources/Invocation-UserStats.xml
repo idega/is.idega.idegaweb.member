@@ -7,7 +7,7 @@
 <input>
 <class_description class="java.lang.String" default_display_name="Group chooser" name="group">
 <localized_name name="Hópur" locale="is_IS"/>
-<class_handler class="com.idega.user.presentation.inputhandler.GroopChooserInputHandler" />
+<class_handler class="com.idega.user.presentation.inputhandler.GroupChooserInputHandler" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Groups recursive" name="groupsRecursive" >
 <localized_name name="Einnig undirhópar" locale="is_IS"/>
@@ -23,27 +23,27 @@
 </class_description>
 <class_description class="java.lang.Integer" default_display_name="Year of birth from" name="yearOfBirthFrom">
 <localized_name name="Fæðingarár frá" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.BirthYearDropDownMenu" />
+<class_handler class="com.idega.presentation.ui.BirthYearDropDownMenu" />
 </class_description>
 <class_description class="java.lang.Integer" default_display_name="Year of birth to" name="yearOfBirthTo">
 <localized_name name="Fæðingarár til" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.BirthYearDropDownMenu" />
+<class_handler class="com.idega.presentation.ui.BirthYearDropDownMenu" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Gender" name="gender">
 <localized_name name="Kyn" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.GenderDropDownMenu" />
+<class_handler class="com.idega.presentation.ui.GenderDropDownMenu" />
 </class_description>
 <class_description class="java.util.Collection" default_display_name="Postal code" name="postalCode">
 <localized_name name="Póstfang" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.PostalCodeBox" />
+<class_handler class="com.idega.presentation.ui.PostalCodeBox" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Dynamic layoutfile" name="dynamicLayoutFile">
 <localized_name name="Útlit skýrslu" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.DynamicLayoutDropDownMenu" value="UserStatsLayout" />
+<class_handler class="com.idega.presentation.ui.DynamicLayoutDropDownMenu" value="UserStatsLayout" />
 </class_description>
 <class_description class="java.lang.String" default_display_name="Order by" name="orderBy">
 <localized_name name="Röðun" locale="is_IS"/>
-<class_handler class="is.idega.idegaweb.member.isi.block.reports.presentation.inputhandler.OrderByUserDetailsDropDownMenu" />
+<class_handler class="com.idega.presentation.ui.OrderByUserDetailsDropDownMenu" />
 </class_description>
 </input>
 <output>
