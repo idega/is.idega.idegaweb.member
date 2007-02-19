@@ -1,7 +1,7 @@
 package is.idega.idegaweb.member.presentation;
 
-import com.idega.core.user.presentation.UserTab;
 import com.idega.presentation.IWContext;
+import com.idega.user.presentation.UserTab;
 
 /**
  * @author Laddi
