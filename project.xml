@@ -5,7 +5,7 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Member Application</name>
   <artifactId>is.idega.idegaweb.member</artifactId>
-  <currentVersion>1.0.4</currentVersion>
+  <currentVersion>1.0.5</currentVersion>
   <inceptionYear>2000</inceptionYear>
   <shortDescription>idegaWeb Member Application (Felix)</shortDescription>
   <versions>
@@ -80,26 +80,34 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
-      <version>3.1.27</version>
+      <version>3.1.39</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.2</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.user</artifactId>
+      <version>3.1.4</version>
+      <type>jar</type>
+      <url>http://www.idega.com/</url>
+    </dependency>
+    <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>com.idega.block.media</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <url>http://www.idega.com/</url>
+    </dependency>
+    <dependency>
+      <groupId>bundles</groupId>
+      <artifactId>com.idega.block.cal</artifactId>
       <version>3.1.3</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -109,38 +117,15 @@
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
-      <artifactId>com.idega.block.media</artifactId>
-      <version>3.1.0</version>
-      <type>jar</type>
-      <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>bundles</groupId>
-      <artifactId>com.idega.block.cal</artifactId>
-      <version>3.1.0</version>
-      <type>jar</type>
-      <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>bundles</groupId>
       <artifactId>com.idega.block.importer</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.2</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.datareport</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.1</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -150,12 +135,9 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.block.nationalregister</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>jasperreports</groupId>
@@ -167,12 +149,9 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>is.idega.block.family</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
   </dependencies>
   <build>
