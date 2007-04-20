@@ -176,7 +176,7 @@ public class ClubDivisionTab extends UserGroupTab{
 		  		IWResourceBundle iwrb = getResourceBundle(iwc);
         this.numberField = new TextInput(this.numberFieldName);
         this.ssnField = new TextInput(this.ssnFieldName);
-        //		_ssnField.setAsIcelandicSSNumber("Vart�lupr�fun stemmir ekki");
+        //		_ssnField.setAsIcelandicSSNumber("Vartoluprofun stemmir ekki");
         this.foundedField = new DateInput(this.foundedFieldName);
         this.connectionToSpecialField = new DropdownMenu(
                 this.connectionToSpecialFieldName);

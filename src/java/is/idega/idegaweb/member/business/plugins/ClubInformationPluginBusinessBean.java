@@ -598,8 +598,8 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 		Group clubColl = null;
 		try {
 			clubColl = getMemberUserBusiness().getClubCollectionGroupForLeague(league);
-			if (!clubColl.getName().equalsIgnoreCase("Aðildarfélög")) {
-				clubColl.setName("Aðildarfélög");
+			if (!clubColl.getName().equalsIgnoreCase("AÃ°ildarfÃ©lÃ¶g")) {
+				clubColl.setName("AÃ°ildarfÃ©lÃ¶g");
 				clubColl.store();
 			}
 			return clubColl;
@@ -607,7 +607,7 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 		catch (NoLeagueClubCollectionGroup e) {
 			log("No club collection group for league: " + league.getName() + ", creating one...");
 			// TODO change sloppy none localized group name
-			clubColl = getGroupBusiness().createGroupUnder("Aðildarfélög", null,
+			clubColl = getGroupBusiness().createGroupUnder("AÃ°ildarfÃ©lÃ¶g", null,
 					IWMemberConstants.GROUP_TYPE_LEAGUE_CLUB_COLLECTION, league);
 			Collection leagueOwners = getGroupBusiness().getOwnerUsersForGroup(league);
 			for (Iterator owners = leagueOwners.iterator(); owners.hasNext();) {

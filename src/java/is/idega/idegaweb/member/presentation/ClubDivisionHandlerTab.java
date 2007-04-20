@@ -127,7 +127,7 @@ public class ClubDivisionHandlerTab extends UserGroupTab {
 	public void initializeFields() {
 		this._numberField = new TextInput(this._numberFieldName);
 		this._nameField = new TextInput(this._nameFieldName);
-//		_ssnField.setAsIcelandicSSNumber("Vart�lupr�fun stemmir ekki");
+//		_ssnField.setAsIcelandicSSNumber("Vartoluprofun stemmir ekki");
 		this._divField = new TextInput(this._divFieldName);
 		this._contactField = new UserChooserBrowser(this._contactFieldName);
 	}

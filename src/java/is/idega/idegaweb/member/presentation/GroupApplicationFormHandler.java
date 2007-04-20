@@ -90,23 +90,23 @@ public class GroupApplicationFormHandler extends Block {
 					}
 					
 					if( credit && cardNumber!=null ){
-						adminComment = "Vill borga meğ kredit korti:\n"
-										+"Kortanúmer : "+cardNumber+"\n"
+						adminComment = "Vill borga meÃ° kredit korti:\n"
+										+"KortanÃºmer : "+cardNumber+"\n"
 										+"Gildir til : "+validMonth+"/"+validYear+"\n"
 										+"Korthafi : "+nameOnCard+"\n"
 										+"Kennitala korthafa : "+pinOnCard+"\n";						
 					}
 					else if( !credit ){
-						adminComment = "Vill stadgreiğa\n";
+						adminComment = "Vill staÃ°greiÃ°a\n";
 					}
 					else {
-						adminComment = "Vill borga med korti en kortanúmeriğ vantar!\n";	
+						adminComment = "Vill borga meÃ° korti en kortanÃºmeriÃ° vantar!\n";	
 					}
 					
 					if( caretakerName!=null ){
-						adminComment += "Forráğamağur : "+caretakerName+"\n"
-									+"Kennitala forráğamanns : "+caretakerPin+"\n"
-									+"Netfang forráğamanns : "+caretakerEmail+"\n";
+						adminComment += "ForrÃ¡Ã°amaÃ°ur : "+caretakerName+"\n"
+									+"Kennitala forrÃ¡Ã°amanns : "+caretakerPin+"\n"
+									+"Netfang forrÃ¡Ã°amanns : "+caretakerEmail+"\n";
 					}
 					
 					

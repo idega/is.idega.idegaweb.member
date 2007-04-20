@@ -1,5 +1,5 @@
 /*
- * $Id: UserFamilyPluginBusinessBean.java,v 1.7 2007/01/12 22:05:14 idegaweb Exp $
+ * $Id: UserFamilyPluginBusinessBean.java,v 1.8 2007/04/20 10:52:36 sigtryggur Exp $
  * Created on Aug 31, 2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -26,15 +26,15 @@ import com.idega.user.data.User;
 
 /**
  * 
- *  Last modified: $Date: 2007/01/12 22:05:14 $ by $Author: idegaweb $
+ *  Last modified: $Date: 2007/04/20 10:52:36 $ by $Author: sigtryggur $
  * 
  * @author <a href="mailto:thomas@idega.com">thomas</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class UserFamilyPluginBusinessBean extends IBOServiceBean implements UserFamilyPluginBusiness, UserGroupPlugInBusiness {
 
 	public static final String ROLE_KEY_CASHIER = "Gjaldkeri";
-	public static final String ROLE_KEY_LOCAL_ADMIN = "Kerfisstjóri";
+	public static final String ROLE_KEY_LOCAL_ADMIN = "KerfisstjÃ³ri";
 
 	/* (non-Javadoc)
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#beforeUserRemove(com.idega.user.data.User)

@@ -52,7 +52,7 @@ private Group rootGroup;
   private ArrayList failedRecords = new ArrayList();
 
 //ID;FEL-NR;NAFN;KT;HEIMILI;POSTNR;SV-FEL;GR-MATI;
-//klubbsflokkur;BYRJAÐI;H-SIMI;V-SIMI;F-SIMI;NETFANG
+//klubbsflokkur;BYRJADI;H-SIMI;V-SIMI;F-SIMI;NETFANG
 
   private final int COLUMN_NAME = 2;  
   private final int COLUMN_PERSONAL_ID = 3;
