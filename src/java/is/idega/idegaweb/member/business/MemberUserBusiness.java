@@ -1,5 +1,5 @@
 /*
- * $Id: MemberUserBusiness.java,v 1.14 2006/02/08 15:17:19 sigtryggur Exp $
+ * $Id: MemberUserBusiness.java,v 1.15 2007/04/24 13:35:01 eiki Exp $
  * Created on Jan 4, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -23,13 +23,13 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2006/02/08 15:17:19 $ by $Author: sigtryggur $
+ *  Last modified: $Date: 2007/04/24 13:35:01 $ by $Author: eiki $
  * 
  * @author <a href="mailto:palli@idega.com">palli</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public interface MemberUserBusiness extends IBOService, UserBusiness {
-
+	
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#moveUserBetweenDivisions
 	 */

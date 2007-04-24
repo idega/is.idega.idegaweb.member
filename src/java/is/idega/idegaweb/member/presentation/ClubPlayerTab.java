@@ -151,7 +151,7 @@ public class ClubPlayerTab extends UserGroupTab {
 			IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 
-		this._unionText = new Text(iwrb.getLocalizedString(this._unionFieldName, "Sérsamband"));
+		this._unionText = new Text(iwrb.getLocalizedString(this._unionFieldName, "S�érsamband"));
 		this._unionText.setBold();
 		
 		this._cplayText = new Text(iwrb.getLocalizedString(this._cplayFieldName, "Flokkur"));
@@ -163,7 +163,7 @@ public class ClubPlayerTab extends UserGroupTab {
 		this._competitionText = new Text(iwrb.getLocalizedString(this._competitionFieldName, "Keppendamerking"));
 		this._competitionText.setBold();
 		
-		this._coachesText = new Text(iwrb.getLocalizedString(this._coachesFieldName, "Þjálfarar"));
+		this._coachesText = new Text(iwrb.getLocalizedString(this._coachesFieldName, "Þjállfarar"));
 		this._coachesText.setBold();
 	}
 

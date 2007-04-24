@@ -106,7 +106,7 @@ public class AgeGenderPluginBusinessBean extends IBOServiceBean implements  AgeG
 			// meta data was not set
       // return NEUTRAL
       return NEUTRAL;
-		}
+	}
     Integer genderId = new Integer(genderIdString);
     return getMyGenderIdForGenderId(genderId);
   }
@@ -121,9 +121,9 @@ public class AgeGenderPluginBusinessBean extends IBOServiceBean implements  AgeG
   	}
   	
     if (genderId.equals(this.malePrimaryKeyFromDatastore)) {
-			return MALE;
-		}
-		else if (genderId.equals(this.femalePrimaryKeyFromDatastore)){
+		return MALE;
+	}
+	else if (genderId.equals(this.femalePrimaryKeyFromDatastore)){
       return FEMALE;
     }
     throw new FinderException("Id of gender was not found"); 

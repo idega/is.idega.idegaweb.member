@@ -1,9 +1,12 @@
 package is.idega.idegaweb.member.business;
+import is.idega.block.family.business.FamilyLogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.transaction.UserTransaction;
 
 import com.idega.block.importer.data.ImportFile;
 import com.idega.business.IBOServiceBean;
@@ -23,7 +26,9 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Gender;
 import com.idega.user.data.GenderHome;
 import com.idega.user.data.Group;
+import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
+import com.idega.user.data.UserHome;
 import com.idega.util.IWTimestamp;
 import com.idega.util.Timer;
 import com.idega.util.text.TextSoap;
@@ -44,9 +49,14 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 
   private UserBusiness biz;
   private GroupBusiness groupBiz;
+  private UserHome home;
   private AddressBusiness addressBiz;
+  private FamilyLogic relationBiz;
+  private GroupHome groupHome;
   private Group rootGroup;
   private ImportFile file;
+  private UserTransaction transaction;
+  private UserTransaction transaction2;
   private PhoneHome phoneHome;
   private EmailHome eHome;
 
@@ -80,6 +90,8 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
     try {
       //initialize business beans and data homes
       this.biz = (UserBusiness) this.getServiceInstance(UserBusiness.class);
+      this.relationBiz = (FamilyLogic) this.getServiceInstance(FamilyLogic.class);
+      this.home = this.biz.getUserHome();
       this.addressBiz = (AddressBusiness) this.getServiceInstance(AddressBusiness.class);
       this.groupBiz = this.biz.getGroupBusiness();
       this.phoneHome = this.biz.getPhoneHome();
@@ -98,8 +110,8 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 
 		
            if( ! processRecord(item) ) {
-						this.failedRecords.add(item);
-					}
+			this.failedRecords.add(item);
+		}
 
         if( (count % 500) == 0 ){
           System.out.println("KRFileHandler processing RECORD ["+count+"] time: "+IWTimestamp.getTimestampRightNow().toString());
@@ -182,18 +194,18 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
     String postalCode =  getUserProperty(this.COLUMN_POSTAL_CODE);
           
     if(PIN==null) {
-			return false;
-		}
-		else{
+		return false;
+	}
+	else{
     	PIN = TextSoap.findAndCut(PIN,"-");
     	if( PIN.length()!=10 ) {
-				return false;
-			}
+			return false;
+		}
     }
        
     if(name == null ) {
-			return false;
-		}
+		return false;
+	}
 	if(groupId==null && this.rootGroup==null) {
 		return false;
 	}
@@ -420,11 +432,11 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
     int yyyy = Integer.parseInt(pin.substring(4,6));
     
     if(pin.endsWith("9")) {
-			yyyy += 1900;
-		}
-		else {
-			yyyy += 2000;
-		}
+		yyyy += 1900;
+	}
+	else {
+		yyyy += 2000;
+	}
     
     IWTimestamp dob = new IWTimestamp(dd,mm,yyyy);
     return dob;

@@ -5,8 +5,8 @@
   <comment>
   </comment>
   <projects>
+    <project>com.idega.user</project>
     <project>com.idega.block.cal</project>
-    <project>com.idega.block.datareport</project>
   </projects>
   <buildSpec>
     <buildCommand>

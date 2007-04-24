@@ -367,9 +367,9 @@ public class GroupApplicationBusinessBean extends IBOServiceBean implements Grou
 	        if( gender.equals(GroupApplicationBusinessBean.GENDER_MALE) ){
 	          return home.getMaleGender();
 	        }
-					else {
-						return home.getFemaleGender();
-					}
+			else {
+				return home.getFemaleGender();
+			}
 
 	    }
 	    catch (Exception ex) {

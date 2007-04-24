@@ -142,8 +142,8 @@ public class ClubDivisionTab extends UserGroupTab{
                 .get(this.connectionToSpecialFieldName);
         this.connectionToSpecialField.setSelectedElement(connection);
         if (connection != null && !connection.equals("")) {
-					this.connectionToSpecialField.setDisabled(true);
-				}
+			this.connectionToSpecialField.setDisabled(true);
+		}
         try {
             GroupHome home = (GroupHome) com.idega.data.IDOLookup
                     .getHome(Group.class);
@@ -286,36 +286,36 @@ public class ClubDivisionTab extends UserGroupTab{
             String boardGroup = iwc.getParameter(this.boardGroupFieldName);
 
             if (number != null) {
-							this.fieldValues.put(this.numberFieldName, number);
-						}
-						else {
-							this.fieldValues.put(this.numberFieldName, "");
-						}
+				this.fieldValues.put(this.numberFieldName, number);
+			}
+			else {
+				this.fieldValues.put(this.numberFieldName, "");
+			}
             if (ssn != null) {
-							this.fieldValues.put(this.ssnFieldName, ssn);
-						}
-						else {
-							this.fieldValues.put(this.ssnFieldName, "");
-						}
+				this.fieldValues.put(this.ssnFieldName, ssn);
+			}
+			else {
+				this.fieldValues.put(this.ssnFieldName, "");
+			}
             if (founded != null) {
-							this.fieldValues.put(this.foundedFieldName, founded);
-						}
-						else {
-							this.fieldValues.put(this.foundedFieldName, "");
-						}
+				this.fieldValues.put(this.foundedFieldName, founded);
+			}
+			else {
+				this.fieldValues.put(this.foundedFieldName, "");
+			}
             if (connection != null) {
-							this.fieldValues.put(this.connectionToSpecialFieldName, connection);
-						}
-						else {
-							this.fieldValues.put(this.connectionToSpecialFieldName, "");
-						}
+				this.fieldValues.put(this.connectionToSpecialFieldName, connection);
+			}
+			else {
+				this.fieldValues.put(this.connectionToSpecialFieldName, "");
+			}
             if (boardGroup != null) {
             	boardGroup = boardGroup.substring(boardGroup.lastIndexOf("_") + 1);
                 this.fieldValues.put(this.boardGroupFieldName, boardGroup);
             }
-						else {
-							this.fieldValues.put(this.boardGroupFieldName, "");
-						}
+			else {
+				this.fieldValues.put(this.boardGroupFieldName, "");
+			}
 
             updateFieldsDisplayStatus();
         }

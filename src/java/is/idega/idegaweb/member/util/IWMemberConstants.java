@@ -47,6 +47,8 @@ public class IWMemberConstants {
 	public static final String META_DATA_CLUB_STATE_ACTIVE = "ACTIVE";
 	public static final String META_DATA_CLUB_STATE_COMPETITION_BAN = "COMP_BAN";
 	
+	public static final String META_DATA_CLUB_USING_NETBOKHALD = "CLUBINFO_NETBOKHALD";
+	
 	
 	public static final String META_DATA_USER_CLUB_MEMBER_NUMBER_PREFIX = "CLUB_MEMB_NR_";//suffix with club id (group)
 	

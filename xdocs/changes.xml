@@ -4,6 +4,12 @@
 		<author email="tryggvi@idega.com">Tryggvi Larusson</author>
 	</properties>
 	<body>
+	    <release version="3.1.0" date="2007-03-19">
+      		<action dev="eiki" type="update">
+      			Merged changes made in v.2.0 to v3.1
+      		</action>       
+    	</release>
+    
 		<release version="1.0.5" date="2007-03-09">
 			<action dev="palli" type="update">
 				Updating and fixing dependencies to create a new sunnan3

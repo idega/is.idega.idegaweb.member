@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.FinderException;
+import javax.transaction.UserTransaction;
 
 import com.idega.block.importer.data.ImportFile;
 import com.idega.business.IBOServiceBean;
@@ -24,7 +25,9 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Gender;
 import com.idega.user.data.GenderHome;
 import com.idega.user.data.Group;
+import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
+import com.idega.user.data.UserHome;
 import com.idega.util.IWTimestamp;
 import com.idega.util.Timer;
 import com.idega.util.text.TextSoap;
@@ -43,16 +46,22 @@ import com.idega.util.text.TextSoap;
 public class KRClubImportFileHandlerBean extends IBOServiceBean implements KRClubImportFileHandler{
 
   private UserBusiness biz;
+  private UserHome home;
   private AddressBusiness addressBiz;
   private PhoneHome phoneHome;
   private EmailHome eHome;
-private Group rootGroup;
+//  private MemberFamilyLogic relationBiz;
+  private GroupHome groupHome;
+  private Group rootGroup;
   private ImportFile file;
+  private UserTransaction transaction;
+  private UserTransaction transaction2;
+
   private ArrayList userValues;
   private ArrayList failedRecords = new ArrayList();
 
 //ID;FEL-NR;NAFN;KT;HEIMILI;POSTNR;SV-FEL;GR-MATI;
-//klubbsflokkur;BYRJADI;H-SIMI;V-SIMI;F-SIMI;NETFANG
+//klubbsflokkur;BYRJA�I;H-SIMI;V-SIMI;F-SIMI;NETFANG
 
   private final int COLUMN_NAME = 2;  
   private final int COLUMN_PERSONAL_ID = 3;
@@ -60,8 +69,12 @@ private Group rootGroup;
   private final int COLUMN_POSTAL_CODE = 5;
   private final int COLUMN_POSTAL_CODE_NAME = 6;
   
+  private final int COLUMN_PAYMENT_TYPE = 7;
+    
   private final int COLUMN_MEMBER_TYPE = 8; 
   
+  private final int COLUMN_STARTED = 9;
+     
   private final int COLUMN_HOME_PHONE_NUMBER = 10;
   private final int COLUMN_WORK_PHONE_NUMBER = 11;
   private final int COLUMN_MOBILE_PHONE_NUMBER = 12;
@@ -72,6 +85,7 @@ private Group rootGroup;
   
   private Group A;
   private Group B;
+  private Group C;
 	
   public KRClubImportFileHandlerBean(){}
   
@@ -85,12 +99,14 @@ private Group rootGroup;
     try {
       //initialize business beans and data homes
       this.biz = (UserBusiness) this.getServiceInstance(UserBusiness.class);
+      this.home = this.biz.getUserHome();
       this.addressBiz = (AddressBusiness) this.getServiceInstance(AddressBusiness.class);
       this.phoneHome = this.biz.getPhoneHome();
       this.eHome = this.biz.getEmailHome();
       
       this.A = this.biz.getGroupBusiness().getGroupByGroupID(466);//hacks
       this.B = this.biz.getGroupBusiness().getGroupByGroupID(467);
+      this.C = this.biz.getGroupBusiness().getGroupByGroupID(468);
 
       //if the transaction failes all the users and their relations are removed
       //transaction.begin();
@@ -104,8 +120,8 @@ private Group rootGroup;
 
 		
         if( ! processRecord(item) ) {
-					this.failedRecords.add(item);
-				}
+			this.failedRecords.add(item);
+		}
 
         if( (count % 100) == 0 ){
           System.out.println("KRClubFileHandler processing RECORD ["+count+"] time: "+IWTimestamp.getTimestampRightNow().toString());
@@ -176,20 +192,20 @@ private Group rootGroup;
     String PIN = getUserProperty(this.COLUMN_PERSONAL_ID);
     
     if(PIN==null) {
-			return false;
-		}
-		else{
+		return false;
+	}
+	else{
     	PIN = TextSoap.findAndCut(PIN,"-");
     	if( PIN.length()!=10 ) {
-				return false;
-			}
+			return false;
+		}
     }
     
     
     String name = getUserProperty(this.COLUMN_NAME);
     if(name == null ) {
-			return false;
-		}
+		return false;
+	}
 
     Gender gender = guessGenderFromName(name);
     IWTimestamp dateOfBirth = getBirthDateFromPin(PIN);
@@ -247,14 +263,14 @@ try{
 
         address.setCountry(iceland);
         if(code!=null) {
-					address.setPostalCode(code);
-				}
+			address.setPostalCode(code);
+		}
         
         //address.setCity("Reykjavik");
         address.setStreetName(streetName);
         if( streetNumber!=null ) {
-					address.setStreetNumber(streetNumber);
-				}
+			address.setStreetNumber(streetNumber);
+		}
 
         address.store();
 
@@ -431,11 +447,11 @@ try{
     int yyyy = Integer.parseInt(pin.substring(4,6));
     
     if(pin.endsWith("9")) {
-			yyyy += 1900;
-		}
-		else {
-			yyyy += 2000;
-		}
+		yyyy += 1900;
+	}
+	else {
+		yyyy += 2000;
+	}
     
     IWTimestamp dob = new IWTimestamp(dd,mm,yyyy);
     return dob;
