@@ -20,6 +20,10 @@ insert into ic_user_plugin(PLUG_IN_NAME,PRESENTATION_IC_OBJECT ,PLUG_IN_TYPE ,PL
 126 is.idega.idegaweb.member.business.plugins.AgeGenderPluginBusiness
 insert into ic_user_plugin(PLUG_IN_NAME,PRESENTATION_IC_OBJECT ,PLUG_IN_TYPE ,PLUG_IN_DESC ,BUSINESS_IC_OBJECT)  values('Age and Gender Plugin',null,'group',null, 126)
 
+xx com.idega.block.cal.business.CalBusiness
+insert into ic_user_plugin(PLUG_IN_NAME,PRESENTATION_IC_OBJECT ,PLUG_IN_TYPE ,PLUG_IN_DESC ,BUSINESS_IC_OBJECT)  values('Cal Plugin',null,'group',null, 11)
+
+
 insert into middle table
 insert into ic_group_type_ic_user_plugin values(3,'iwme_club')
 insert into ic_group_type_ic_user_plugin values(2,'iwme_club')
