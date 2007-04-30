@@ -5,7 +5,7 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Member Application</name>
   <artifactId>is.idega.idegaweb.member</artifactId>
-  <currentVersion>3.1.0</currentVersion>
+  <currentVersion>3.1.1</currentVersion>
   <inceptionYear>2000</inceptionYear>
   <shortDescription>idegaWeb Member Application (Felix)</shortDescription>
   <versions>
@@ -107,9 +107,6 @@
       <version>3.1.5</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
