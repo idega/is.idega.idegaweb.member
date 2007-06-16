@@ -4,6 +4,12 @@
 		<author email="tryggvi@idega.com">Tryggvi Larusson</author>
 	</properties>
 	<body>
+		<release version="3.1.2" date="2007-06-16">
+      		<action dev="eiki" type="update">
+      			Now using mail server property names from CoreConstants
+      		</action>       
+    	</release>
+    	
 	    <release version="3.1.1" date="2007-04-30">
       		<action dev="palli" type="fix">
       			Small change to classpath to make bundle non eclipse-dependant on platform bundles.

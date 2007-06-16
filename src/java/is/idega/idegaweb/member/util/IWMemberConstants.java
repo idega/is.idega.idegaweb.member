@@ -2,6 +2,8 @@ package is.idega.idegaweb.member.util;
 
 import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.util.ICUserConstants;
+import com.idega.util.CoreConstants;
+import com.idega.util.CoreUtil;
 
 /**
  * A collection of the static variables used in the member system like group type names.
@@ -15,8 +17,8 @@ public class IWMemberConstants {
 	
 	public static final String REQUEST_PARAMETER_SELECTED_GROUP_ID = "r_sel_gr_id";
 
-	public static final String APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL = "IW_MEMBER_ADMINISTRATOR_MAIN_EMAIL";
-	public static final String APPLICATION_PARAMETER_MAIL_SERVER = "IW_MEMBER_MAIL_SERVER_ADDRESS";
+	public static final String APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL = CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS;
+	public static final String APPLICATION_PARAMETER_MAIL_SERVER = CoreConstants.PROP_SYSTEM_SMTP_MAILSERVER;
 	
 	public static final String GROUP_RELATION_TYPE_PARENT = "GROUP_PARENT";
 	
