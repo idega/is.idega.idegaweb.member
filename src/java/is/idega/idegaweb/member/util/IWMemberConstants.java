@@ -3,7 +3,6 @@ package is.idega.idegaweb.member.util;
 import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.util.ICUserConstants;
 import com.idega.util.CoreConstants;
-import com.idega.util.CoreUtil;
 
 /**
  * A collection of the static variables used in the member system like group type names.
