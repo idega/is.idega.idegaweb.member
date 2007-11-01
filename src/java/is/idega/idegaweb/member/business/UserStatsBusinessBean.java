@@ -247,6 +247,9 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		    if (groupIDFilter != null && !groupIDFilter.equals("")) {
 		        groupIDFilter = groupIDFilter.substring(groupIDFilter.lastIndexOf("_")+1);
 		        group = getGroupBusiness().getGroupByGroupID(Integer.parseInt((groupIDFilter)));
+		        if (group.isAlias()) {
+		        	group = group.getAlias();
+		        }
 		    }
 			if (group != null) {
 			    if (groupsRecursiveFilter != null && groupsRecursiveFilter.equals("checked")) {
