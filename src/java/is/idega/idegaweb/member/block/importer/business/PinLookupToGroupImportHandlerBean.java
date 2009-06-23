@@ -224,6 +224,10 @@ public class PinLookupToGroupImportHandlerBean extends IBOSessionBean implements
 	public List getFailedRecords() {
 		return this.failedRecords;
 	}
+	
+	public List getSuccessRecords() throws RemoteException {
+		return null;
+	}
 	/* (non-Javadoc)
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#beforeUserRemove(com.idega.user.data.User)
 	 */

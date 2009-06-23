@@ -486,5 +486,8 @@ public class KRClubImportFileHandlerBean extends IBOServiceBean implements KRClu
 	public List getFailedRecords() {
 		return this.failedRecords;
 	}
-
+	
+	public List getSuccessRecords() throws RemoteException {
+		return null;
+	}
 }
