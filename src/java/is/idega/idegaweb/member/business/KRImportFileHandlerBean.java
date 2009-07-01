@@ -481,6 +481,6 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 	}
 	
 	public List getSuccessRecords() throws RemoteException {
-		return null;
+		return new ArrayList();
 	}
 }
