@@ -45,6 +45,10 @@
 <localized_name name="Röðun" locale="is_IS"/>
 <class_handler class="com.idega.presentation.ui.OrderByUserDetailsDropDownMenu" />
 </class_description>
+<class_description class="java.lang.String" default_display_name="Do order" name="doOrder" >
+<localized_name name="Framkvæma röðun" locale="is_IS"/>
+<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="checked" />
+</class_description>
 </input>
 <output>
 <class_description class="com.idega.block.datareport.util.ReportableCollection" default_display_name="">

@@ -65,15 +65,16 @@ import com.idega.util.text.TextSoap;
 
 /**
  * @author Sigtryggur
- *
+ * 
  */
-public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsBusiness, UserGroupPlugInBusiness {
-    
-    private UserBusiness userBiz = null;
-    private GroupBusiness groupBiz = null;
-    private NationalRegisterBusiness nationalRegisterBiz = null;
-    private UserInfoColumnsBusiness userInfoColumnsBiz = null;
-    private UserStatusBusiness userStatusBiz = null;
+public class UserStatsBusinessBean extends IBOSessionBean implements
+		UserStatsBusiness, UserGroupPlugInBusiness {
+
+	private UserBusiness userBiz = null;
+	private GroupBusiness groupBiz = null;
+	private NationalRegisterBusiness nationalRegisterBiz = null;
+	private UserInfoColumnsBusiness userInfoColumnsBiz = null;
+	private UserStatusBusiness userStatusBiz = null;
 	private IWBundle _iwb = null;
 	private IWResourceBundle _iwrb = null;
 	private IWResourceBundle _userIwrb = null;
@@ -133,579 +134,734 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	private static final String FIELD_NAME_USER_INFO_1 = "user_info_1";
 	private static final String FIELD_NAME_USER_INFO_2 = "user_info_2";
 	private static final String FIELD_NAME_USER_INFO_3 = "user_info_3";
-	
+
 	private Map cachedGroups = new HashMap();
 	private Map cachedParents = new HashMap();
-	
+
 	private void initializeBundlesIfNeeded() {
 		if (this._iwb == null) {
-			this._iwb = this.getIWApplicationContext().getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
+			this._iwb = this.getIWApplicationContext().getIWMainApplication()
+					.getBundle(IW_BUNDLE_IDENTIFIER);
 		}
-		this._iwrb = this._iwb.getResourceBundle(this.getUserContext().getCurrentLocale());
-		this._userIwrb = this.getIWApplicationContext().getIWMainApplication().getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(this.getUserContext().getCurrentLocale());
+		this._iwrb = this._iwb.getResourceBundle(this.getUserContext()
+				.getCurrentLocale());
+		this._userIwrb = this.getIWApplicationContext().getIWMainApplication()
+				.getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(
+						this.getUserContext().getCurrentLocale());
 	}
 
-    
-    public ReportableCollection getStatisticsForUsers(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, Collection userStatusesFilter, Integer yearOfBirthFromFilter, Integer yearOfBirthToFilter, String genderFilter, Collection postalCodeFilter, String dynamicLayout, String orderBy) throws RemoteException {        
+	public ReportableCollection getStatisticsForUsers(String groupIDFilter,
+			String groupsRecursiveFilter, Collection groupTypesFilter,
+			Collection userStatusesFilter, Integer yearOfBirthFromFilter,
+			Integer yearOfBirthToFilter, String genderFilter,
+			Collection postalCodeFilter, String dynamicLayout, String orderBy,
+			String doOrderFilter) throws RemoteException {
 
-        initializeBundlesIfNeeded();
+		initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
 		boolean isSuperAdmin = isSuperAdmin();
-		//PARAMETES
-		//Add extra...because the inputhandlers supply the basic header texts
-		
-		reportCollection.addExtraHeaderParameter(
-				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
-				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
- 	
-		//PARAMETERS that are also FIELDS
-		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
-		 //The name you give the field/parameter must not contain spaces or special characters		 
+		// PARAMETES
+		// Add extra...because the inputhandlers supply the basic header texts
+
+		reportCollection.addExtraHeaderParameter("label_current_date",
+				this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE,
+						"Current date"), "current_date", TextSoap.findAndCut(
+						(new IWTimestamp()).getLocaleDateAndTime(currentLocale,
+								IWTimestamp.LONG, IWTimestamp.SHORT), "GMT"));
+
+		// PARAMETERS that are also FIELDS
+		// data from entity columns, can also be defined with an entity
+		// definition, see getClubMemberStatisticsForRegionalUnions method
+		// The name you give the field/parameter must not contain spaces or
+		// special characters
 		ReportableField userIDField = null;
 		if (isSuperAdmin) {
 			userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
-			userIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_ID, "User ID"), currentLocale);
+			userIDField.setLocalizedName(this._iwrb.getLocalizedString(
+					LOCALIZED_USER_ID, "User ID"), currentLocale);
 			reportCollection.addField(userIDField);
 		}
-		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
-		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
-		 reportCollection.addField(nameField);
+		ReportableField nameField = new ReportableField(FIELD_NAME_NAME,
+				String.class);
+		nameField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_NAME, "Name"), currentLocale);
+		reportCollection.addField(nameField);
 
-		 ReportableField personalIDField = new ReportableField(FIELD_NAME_PERSONAL_ID, String.class);
-		 personalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PERSONAL_ID, "Personal ID"),currentLocale);
-		 reportCollection.addField(personalIDField);
+		ReportableField personalIDField = new ReportableField(
+				FIELD_NAME_PERSONAL_ID, String.class);
+		personalIDField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_PERSONAL_ID, "Personal ID"), currentLocale);
+		reportCollection.addField(personalIDField);
 
-		 ReportableField dateOfBirthField = new ReportableField(FIELD_NAME_DATE_OF_BIRTH, String.class);
-		 dateOfBirthField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_DATE_OF_BIRTH, "Date of birth"),currentLocale);
-		 reportCollection.addField(dateOfBirthField);
+		ReportableField dateOfBirthField = new ReportableField(
+				FIELD_NAME_DATE_OF_BIRTH, String.class);
+		dateOfBirthField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_DATE_OF_BIRTH, "Date of birth"), currentLocale);
+		reportCollection.addField(dateOfBirthField);
 
-		 ReportableField ageField = new ReportableField(FIELD_NAME_AGE, String.class);
-		 ageField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_AGE, "Age"),currentLocale);
-		 reportCollection.addField(ageField);
+		ReportableField ageField = new ReportableField(FIELD_NAME_AGE,
+				String.class);
+		ageField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_AGE,
+				"Age"), currentLocale);
+		reportCollection.addField(ageField);
 
-		 ReportableField parentGroupField = new ReportableField(FIELD_NAME_PARENT_GROUP, String.class);
-		 parentGroupField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
-		 reportCollection.addField(parentGroupField);
+		ReportableField parentGroupField = new ReportableField(
+				FIELD_NAME_PARENT_GROUP, String.class);
+		parentGroupField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_PARENT_GROUP, "Parent group"), currentLocale);
+		reportCollection.addField(parentGroupField);
 
-		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
-		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
-		 reportCollection.addField(groupPathField);
-		 
-		 ReportableField userStatusField = new ReportableField(FIELD_NAME_USER_STATUS, String.class);
-		 userStatusField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_STATUS, "User Status"), currentLocale);
-		 reportCollection.addField(userStatusField);
-		 
-		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
-		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
-		 reportCollection.addField(streetAddressField);
-		 
-		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
-		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
-		 reportCollection.addField(postalAddressField); 
+		ReportableField groupPathField = new ReportableField(
+				FIELD_NAME_GROUP_PATH, String.class);
+		groupPathField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
+		reportCollection.addField(groupPathField);
 
-		 ReportableField countryField = new ReportableField(FIELD_NAME_COUNTRY, String.class);
-		 countryField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_COUNTRY, "Country"), currentLocale);
-		 reportCollection.addField(countryField);
-		 
-		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
-		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
-		 reportCollection.addField(phoneField);
-		 
-		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
-		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
-		 reportCollection.addField(emailField);
+		ReportableField userStatusField = new ReportableField(
+				FIELD_NAME_USER_STATUS, String.class);
+		userStatusField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_USER_STATUS, "User Status"), currentLocale);
+		reportCollection.addField(userStatusField);
 
-		 ReportableField userInfo1Field = new ReportableField(FIELD_NAME_USER_INFO_1, String.class);
-		 userInfo1Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_1, "User info 1"), currentLocale);
-		 reportCollection.addField(userInfo1Field);
+		ReportableField streetAddressField = new ReportableField(
+				FIELD_NAME_STREET_ADDRESS, String.class);
+		streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
+		reportCollection.addField(streetAddressField);
 
-		 ReportableField userInfo2Field = new ReportableField(FIELD_NAME_USER_INFO_2, String.class);
-		 userInfo2Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_2, "User info 2"), currentLocale);
-		 reportCollection.addField(userInfo2Field);
+		ReportableField postalAddressField = new ReportableField(
+				FIELD_NAME_POSTAL_ADDRESS, String.class);
+		postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
+		reportCollection.addField(postalAddressField);
 
-		 ReportableField userInfo3Field = new ReportableField(FIELD_NAME_USER_INFO_3, String.class);
-		 userInfo3Field.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_INFO_3, "User info 3"), currentLocale);
-		 reportCollection.addField(userInfo3Field);
+		ReportableField countryField = new ReportableField(FIELD_NAME_COUNTRY,
+				String.class);
+		countryField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_COUNTRY, "Country"), currentLocale);
+		reportCollection.addField(countryField);
 
-		 ReportableField custodianNameField = new ReportableField(FIELD_NAME_CUSTODIAN_NAME, String.class);
-		 custodianNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_NAME, "Custodian name"), currentLocale);
-		 reportCollection.addField(custodianNameField);
+		ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE,
+				String.class);
+		phoneField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_PHONE, "Phone"), currentLocale);
+		reportCollection.addField(phoneField);
 
-		 ReportableField custodianPersonalIDField = new ReportableField(FIELD_NAME_CUSTODIAN_PERSONAL_ID, String.class);
-		 custodianPersonalIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_PERSONAL_ID, "Custodian personal ID"),currentLocale);
-		 reportCollection.addField(custodianPersonalIDField);
+		ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL,
+				String.class);
+		emailField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_EMAIL, "Email"), currentLocale);
+		reportCollection.addField(emailField);
 
-		 ReportableField custodianPhoneField = new ReportableField(FIELD_NAME_CUSTODIAN_PHONE, String.class);
-		 custodianPhoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
-		 reportCollection.addField(custodianPhoneField);
-		
+		ReportableField userInfo1Field = new ReportableField(
+				FIELD_NAME_USER_INFO_1, String.class);
+		userInfo1Field.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_USER_INFO_1, "User info 1"), currentLocale);
+		reportCollection.addField(userInfo1Field);
+
+		ReportableField userInfo2Field = new ReportableField(
+				FIELD_NAME_USER_INFO_2, String.class);
+		userInfo2Field.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_USER_INFO_2, "User info 2"), currentLocale);
+		reportCollection.addField(userInfo2Field);
+
+		ReportableField userInfo3Field = new ReportableField(
+				FIELD_NAME_USER_INFO_3, String.class);
+		userInfo3Field.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_USER_INFO_3, "User info 3"), currentLocale);
+		reportCollection.addField(userInfo3Field);
+
+		ReportableField custodianNameField = new ReportableField(
+				FIELD_NAME_CUSTODIAN_NAME, String.class);
+		custodianNameField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_CUSTODIAN_NAME, "Custodian name"), currentLocale);
+		reportCollection.addField(custodianNameField);
+
+		ReportableField custodianPersonalIDField = new ReportableField(
+				FIELD_NAME_CUSTODIAN_PERSONAL_ID, String.class);
+		custodianPersonalIDField.setLocalizedName(this._iwrb
+				.getLocalizedString(LOCALIZED_CUSTODIAN_PERSONAL_ID,
+						"Custodian personal ID"), currentLocale);
+		reportCollection.addField(custodianPersonalIDField);
+
+		ReportableField custodianPhoneField = new ReportableField(
+				FIELD_NAME_CUSTODIAN_PHONE, String.class);
+		custodianPhoneField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
+		reportCollection.addField(custodianPhoneField);
+
 		Group group = null;
 		Collection groups = null;
 		Collection users = null;
 		try {
-		    if (groupIDFilter != null && !groupIDFilter.equals("")) {
-		        groupIDFilter = groupIDFilter.substring(groupIDFilter.lastIndexOf("_")+1);
-		        group = getGroupBusiness().getGroupByGroupID(Integer.parseInt((groupIDFilter)));
-		        if (group.isAlias()) {
-		        	group = group.getAlias();
-		        }
-		    }
-			if (group != null) {
-			    if (groupsRecursiveFilter != null && groupsRecursiveFilter.equals("checked")) {
-				    groups = getGroupBusiness().getChildGroupsRecursiveResultFiltered(group, groupTypesFilter, true, true, true);
-				} else {
-				    groups = new ArrayList();
+			if (groupIDFilter != null && !groupIDFilter.equals("")) {
+				groupIDFilter = groupIDFilter.substring(groupIDFilter
+						.lastIndexOf("_") + 1);
+				group = getGroupBusiness().getGroupByGroupID(
+						Integer.parseInt((groupIDFilter)));
+				if (group.isAlias()) {
+					group = group.getAlias();
 				}
-			    groups.add(group);
+			}
+			if (group != null) {
+				if (groupsRecursiveFilter != null
+						&& groupsRecursiveFilter.equals("checked")) {
+					groups = getGroupBusiness()
+							.getChildGroupsRecursiveResultFiltered(group,
+									groupTypesFilter, true, true, true);
+				} else {
+					groups = new ArrayList();
+				}
+				groups.add(group);
 			}
 		} catch (FinderException e) {
-		    e.printStackTrace();
-    	}
-			users = getUserBusiness().getUsersBySpecificGroupsUserstatusDateOfBirthAndGender(groups, userStatusesFilter, yearOfBirthFromFilter,  yearOfBirthToFilter,  genderFilter);
-			Collection topNodes = getUserBusiness().getUsersTopGroupNodesByViewAndOwnerPermissions(getUserContext().getCurrentUser(),getUserContext());
-			Map usersByGroups = new TreeMap();
-			AddressTypeHome addressHome = (AddressTypeHome) IDOLookup.getHome(AddressType.class);
-			AddressType at1 = null;
-			try {
-			    at1 = addressHome.findAddressType2();
-			} catch (FinderException e) {
-			    e.printStackTrace();
-			}
-			Iterator iter = users.iterator();
-			 while (iter.hasNext()) {
-			     User user = (User) iter.next();
-			     Collection parentGroupCollection = null;
-			     try {
-			         parentGroupCollection = getGroupHome().findParentGroups(Integer.parseInt(user.getGroup().getPrimaryKey().toString()));
-			     } catch (FinderException e) {
-			         System.out.println(e.getMessage());
-			     }
-			     parentGroupCollection.retainAll(groups);
-			     Iterator parIt = parentGroupCollection.iterator();
-			   
-			   	String personalID = user.getPersonalID();
-			   	String dateOfBirthString = null;
-			   	String ageString = null;
-			   	String custodianString = null;
-				String custodianPersonalID = null;
-				String custodianPhoneString = null;
-//			 	Collection custodians = null; 
-				try {
-					Date date_of_birth = user.getDateOfBirth();
-					if (date_of_birth != null) {
-						dateOfBirthString = new IWTimestamp(date_of_birth).getDateString("dd.MM.yyyy");
-						long ageInMillisecs = IWTimestamp.getMilliSecondsBetween(new IWTimestamp(date_of_birth),new IWTimestamp());
-						BigDecimal age = new BigDecimal(ageInMillisecs/MILLISECONDS_IN_YEAR);
-						ageString = String.valueOf(age.intValue());
-						if (age.doubleValue() < 18) {
-							NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
-							if (userRegister != null) {
-								custodianPersonalID = userRegister.getFamilyId();
-								User custodian = getUserBusiness().getUser(custodianPersonalID);
-								custodianString = custodian.getName();
-								custodianPhoneString = getPhoneNumber(custodian);
-							}
-							
-						} else {
-							custodianPersonalID = personalID;
-						}
-						if (custodianPersonalID != null && custodianPersonalID.length() == 10) {
-							custodianPersonalID = custodianPersonalID.substring(0,6)+"-"+custodianPersonalID.substring(6,10);
-					 	}
-					}
-					//custodians = getMemberFamilyLogic(getIWApplicationContext()).getCustodiansFor(user);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			   	if (personalID != null && personalID.length() == 10) {
-			 		personalID = personalID.substring(0,6)+"-"+personalID.substring(6,10);
-			 	}
-			   	Collection emails =  user.getEmails();
-			   	Email email = null;
-			   	String emailString = null;
-			   	if (!emails.isEmpty()) {
-			   	    email = (Email)emails.iterator().next();
-			   	    emailString = email.getEmailAddress();
-			   	}
-			   	Collection addresses = null;
-			   	if (at1 != null) {
-			   	    
-					   	try {
-                            addresses = user.getAddresses(at1);
-                        } catch (IDOLookupException e1) {
-                            e1.printStackTrace();
-                        } catch (IDOCompositePrimaryKeyException e1) {
-                            e1.printStackTrace();
-                        } catch (IDORelationshipException e1) {
-                            e1.printStackTrace();
-                        }
-			   	}
-			    Address address = null;
-			    String streetAddressString = null;
-			    String postalAddressString = null;
-			    String countryString = null;
-			   	if (addresses != null && !addresses.isEmpty()) {
-			   	    address = (Address)addresses.iterator().next();
-			   	    PostalCode postalCode = address.getPostalCode();
-			   	    if (postalCode != null) {
-			   	    	String postalCodeString = postalCode.getPostalCode();
-			   	    	if (!postalCodeFilter.isEmpty() && !postalCodeFilter.contains(postalCodeString)) {
-			   	    		continue;
-			   	    	}
-			   	    }
-			   	    streetAddressString = address.getStreetAddress();
-			   	    postalAddressString = address.getPostalAddress();
-			   	    Country country = address.getCountry();
-			   	    if (country != null) {
-			   	    	countryString = country.getName();
-	        			Locale locale = new Locale(currentLocale.getLanguage(), country.getIsoAbbreviation());
-	                    String localizedCountryName = locale.getDisplayCountry(currentLocale);
-	                    if (localizedCountryName != null && !localizedCountryName.equals("")) {
-	                    	countryString = localizedCountryName;
-	                    }
-			   	    }
-			   	} else if (!postalCodeFilter.isEmpty()) {
-			   		continue;
-			   	}
-			     while (parIt.hasNext()) {
-			         Group parentGroup = (Group)parIt.next();
-			         List userStatuses = null;
-			         String userStatusString = null;
-			         try {
-			             userStatuses = (List) ((UserStatusHome)IDOLookup.getHome(UserStatus.class)).findAllActiveByUserIdAndGroupId(Integer.parseInt(user.getPrimaryKey().toString()),Integer.parseInt(parentGroup.getPrimaryKey().toString()));
-			             if (userStatuses != null && userStatuses.isEmpty() && userStatusesFilter.contains(UserStatusBusinessBean.STATUS_DECEASED)) {
-			            	 UserStatus userStatus = getUserStatusBusiness().getDeceasedUserStatus((Integer)user.getPrimaryKey());
-			            	 if (userStatus != null) {
-			            		 userStatuses.add(userStatus);
-			            	 }
-			             }
-			         } catch (FinderException e) {
-			             System.out.println(e.getMessage());
-			         }
-			         if (userStatuses.isEmpty()) {
-			             if (userStatusesFilter != null && !userStatusesFilter.isEmpty()) {
-			                 continue;
-			             }
-			         }
-			         else {
-			             UserStatus userStatus =(UserStatus)userStatuses.iterator().next();
-			             String userStatusKey = userStatus.getStatus().getStatusKey();
-			             if (!userStatusesFilter.isEmpty() && !userStatusesFilter.contains(userStatusKey)) {			                 
-			                 continue;
-			             }
-			             else {
-			                 userStatusString = this._iwrb.getLocalizedString(USR_STAT_PREFIX+userStatusKey, userStatusKey);
-			             }
-			             
-			         }
-			         String userInfo1String = "";
-			         String userInfo2String = "";
-			         String userInfo3String = "";
-			         UserInfoColumns userInfoColumns = getUserInfoColumnsBusiness().getUserInfo(Integer.parseInt(user.getPrimaryKey().toString()),Integer.parseInt(group.getPrimaryKey().toString()));
-			          if (userInfoColumns!= null) {
-			        	  userInfo1String = userInfoColumns.getUserInfo1();
-			        	  userInfo2String = userInfoColumns.getUserInfo2();
-			        	  userInfo3String = userInfoColumns.getUserInfo3();
-			          }
-			         String parentGroupPath = getParentGroupPath(parentGroup, topNodes);
-				     // create a new ReportData for each row	    
-			         ReportableData data = new ReportableData();
-				     //	add the data to the correct fields/columns
-			         if (isSuperAdmin) {
-			        	 data.addData(userIDField, user.getPrimaryKey().toString() );
-			         }
-			         data.addData(nameField, user.getName() );
-				     data.addData(personalIDField, personalID);
-				     data.addData(dateOfBirthField, dateOfBirthString);
-				     data.addData(ageField, ageString);
-				     data.addData(parentGroupField, parentGroup.getName());
-				     data.addData(groupPathField, parentGroupPath);
-				     data.addData(userStatusField, userStatusString);
-				     data.addData(streetAddressField, streetAddressString);
-				     data.addData(postalAddressField, postalAddressString);
-				     data.addData(countryField, countryString);
-				     data.addData(phoneField, getPhoneNumber(user));
-				     data.addData(emailField, emailString);
-				     data.addData(userInfo1Field, userInfo1String);
-				     data.addData(userInfo2Field, userInfo2String);
-				     data.addData(userInfo3Field, userInfo3String);
-				     data.addData(custodianNameField, custodianString );
-				 	 data.addData(custodianPersonalIDField, custodianPersonalID );
-				     data.addData(custodianPhoneField, custodianPhoneString );
-				     List statsForGroup = (List) usersByGroups.get(parentGroup.getPrimaryKey());
-						if (statsForGroup == null) {
-							statsForGroup = new Vector();
-						}
-						statsForGroup.add(data);
-						usersByGroups.put(parentGroup.getPrimaryKey(), statsForGroup);
-				}
-			}
-			// iterate through the ordered map and ordered lists and add to the final collection
-			Iterator statsDataIter = usersByGroups.keySet().iterator();
-			while (statsDataIter.hasNext()) {
-				
-				List datas = (List) usersByGroups.get(statsDataIter.next());
-				// don't forget to add the row to the collection
-				reportCollection.addAll(datas);
-			}			 	
-
-    	ReportableField[] sortFields = null;
-    	List orderByFields = new ArrayList();
-    	if (dynamicLayout.equals("-1")) {
-    		orderByFields.add(groupPathField);
-    	}
-		if (orderBy != null) {
-			if (!dynamicLayout.equals("-1") && orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
-	    		orderByFields.add(groupPathField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_USER_STATUS)) {
-	    		orderByFields.add(userStatusField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
-	    		orderByFields.add(streetAddressField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
-	    		orderByFields.add(postalAddressField);
-	    	}
+			e.printStackTrace();
 		}
-    	orderByFields.add(nameField);
-		
-		sortFields = new ReportableField[orderByFields.size()];
-    	for (int i=0; i<orderByFields.size(); i++) {
-    		sortFields[i] = (ReportableField)orderByFields.get(i);
-    	}
-		Comparator comparator = new FieldsComparator(sortFields);
-		Collections.sort(reportCollection, comparator);
-		return reportCollection;
-    }
+		users = getUserBusiness()
+				.getUsersBySpecificGroupsUserstatusDateOfBirthAndGender(groups,
+						userStatusesFilter, yearOfBirthFromFilter,
+						yearOfBirthToFilter, genderFilter);
+		Collection topNodes = getUserBusiness()
+				.getUsersTopGroupNodesByViewAndOwnerPermissions(
+						getUserContext().getCurrentUser(), getUserContext());
+		Map usersByGroups = new TreeMap();
+		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
+				.getHome(AddressType.class);
+		AddressType at1 = null;
+		try {
+			at1 = addressHome.findAddressType2();
+		} catch (FinderException e) {
+			e.printStackTrace();
+		}
+		Iterator iter = users.iterator();
+		while (iter.hasNext()) {
+			User user = (User) iter.next();
+			Collection parentGroupCollection = null;
+			try {
+				parentGroupCollection = getGroupHome().findParentGroups(
+						Integer.parseInt(user.getGroup().getPrimaryKey()
+								.toString()));
+			} catch (FinderException e) {
+				System.out.println(e.getMessage());
+			}
+			parentGroupCollection.retainAll(groups);
+			Iterator parIt = parentGroupCollection.iterator();
 
-	public ReportableCollection getStatisticsForGroups(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, String dynamicLayout, String orderBy) throws RemoteException {
-	    initializeBundlesIfNeeded();
+			String personalID = user.getPersonalID();
+			String dateOfBirthString = null;
+			String ageString = null;
+			String custodianString = null;
+			String custodianPersonalID = null;
+			String custodianPhoneString = null;
+			// Collection custodians = null;
+			try {
+				Date date_of_birth = user.getDateOfBirth();
+				if (date_of_birth != null) {
+					dateOfBirthString = new IWTimestamp(date_of_birth)
+							.getDateString("dd.MM.yyyy");
+					long ageInMillisecs = IWTimestamp.getMilliSecondsBetween(
+							new IWTimestamp(date_of_birth), new IWTimestamp());
+					BigDecimal age = new BigDecimal(ageInMillisecs
+							/ MILLISECONDS_IN_YEAR);
+					ageString = String.valueOf(age.intValue());
+					if (age.doubleValue() < 18) {
+						NationalRegister userRegister = getNationalRegisterBusiness()
+								.getEntryBySSN(user.getPersonalID());
+						if (userRegister != null) {
+							custodianPersonalID = userRegister.getFamilyId();
+							User custodian = getUserBusiness().getUser(
+									custodianPersonalID);
+							custodianString = custodian.getName();
+							custodianPhoneString = getPhoneNumber(custodian);
+						}
+
+					} else {
+						custodianPersonalID = personalID;
+					}
+					if (custodianPersonalID != null
+							&& custodianPersonalID.length() == 10) {
+						custodianPersonalID = custodianPersonalID.substring(0,
+								6)
+								+ "-" + custodianPersonalID.substring(6, 10);
+					}
+				}
+				// custodians =
+				// getMemberFamilyLogic(getIWApplicationContext()).getCustodiansFor(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (personalID != null && personalID.length() == 10) {
+				personalID = personalID.substring(0, 6) + "-"
+						+ personalID.substring(6, 10);
+			}
+			Collection emails = user.getEmails();
+			Email email = null;
+			String emailString = null;
+			if (!emails.isEmpty()) {
+				email = (Email) emails.iterator().next();
+				emailString = email.getEmailAddress();
+			}
+			Collection addresses = null;
+			if (at1 != null) {
+
+				try {
+					addresses = user.getAddresses(at1);
+				} catch (IDOLookupException e1) {
+					e1.printStackTrace();
+				} catch (IDOCompositePrimaryKeyException e1) {
+					e1.printStackTrace();
+				} catch (IDORelationshipException e1) {
+					e1.printStackTrace();
+				}
+			}
+			Address address = null;
+			String streetAddressString = null;
+			String postalAddressString = null;
+			String countryString = null;
+			if (addresses != null && !addresses.isEmpty()) {
+				address = (Address) addresses.iterator().next();
+				PostalCode postalCode = address.getPostalCode();
+				if (postalCode != null) {
+					String postalCodeString = postalCode.getPostalCode();
+					if (!postalCodeFilter.isEmpty()
+							&& !postalCodeFilter.contains(postalCodeString)) {
+						continue;
+					}
+				}
+				streetAddressString = address.getStreetAddress();
+				postalAddressString = address.getPostalAddress();
+				Country country = address.getCountry();
+				if (country != null) {
+					countryString = country.getName();
+					Locale locale = new Locale(currentLocale.getLanguage(),
+							country.getIsoAbbreviation());
+					String localizedCountryName = locale
+							.getDisplayCountry(currentLocale);
+					if (localizedCountryName != null
+							&& !localizedCountryName.equals("")) {
+						countryString = localizedCountryName;
+					}
+				}
+			} else if (!postalCodeFilter.isEmpty()) {
+				continue;
+			}
+			while (parIt.hasNext()) {
+				Group parentGroup = (Group) parIt.next();
+				List userStatuses = null;
+				String userStatusString = null;
+				try {
+					userStatuses = (List) ((UserStatusHome) IDOLookup
+							.getHome(UserStatus.class))
+							.findAllActiveByUserIdAndGroupId(Integer
+									.parseInt(user.getPrimaryKey().toString()),
+									Integer.parseInt(parentGroup
+											.getPrimaryKey().toString()));
+					if (userStatuses != null
+							&& userStatuses.isEmpty()
+							&& userStatusesFilter
+									.contains(UserStatusBusinessBean.STATUS_DECEASED)) {
+						UserStatus userStatus = getUserStatusBusiness()
+								.getDeceasedUserStatus(
+										(Integer) user.getPrimaryKey());
+						if (userStatus != null) {
+							userStatuses.add(userStatus);
+						}
+					}
+				} catch (FinderException e) {
+					System.out.println(e.getMessage());
+				}
+				if (userStatuses.isEmpty()) {
+					if (userStatusesFilter != null
+							&& !userStatusesFilter.isEmpty()) {
+						continue;
+					}
+				} else {
+					UserStatus userStatus = (UserStatus) userStatuses
+							.iterator().next();
+					String userStatusKey = userStatus.getStatus()
+							.getStatusKey();
+					if (!userStatusesFilter.isEmpty()
+							&& !userStatusesFilter.contains(userStatusKey)) {
+						continue;
+					} else {
+						userStatusString = this._iwrb.getLocalizedString(
+								USR_STAT_PREFIX + userStatusKey, userStatusKey);
+					}
+
+				}
+				String userInfo1String = "";
+				String userInfo2String = "";
+				String userInfo3String = "";
+				UserInfoColumns userInfoColumns = getUserInfoColumnsBusiness()
+						.getUserInfo(
+								Integer.parseInt(user.getPrimaryKey()
+										.toString()),
+								Integer.parseInt(group.getPrimaryKey()
+										.toString()));
+				if (userInfoColumns != null) {
+					userInfo1String = userInfoColumns.getUserInfo1();
+					userInfo2String = userInfoColumns.getUserInfo2();
+					userInfo3String = userInfoColumns.getUserInfo3();
+				}
+				String parentGroupPath = getParentGroupPath(parentGroup,
+						topNodes);
+				// create a new ReportData for each row
+				ReportableData data = new ReportableData();
+				// add the data to the correct fields/columns
+				if (isSuperAdmin) {
+					data.addData(userIDField, user.getPrimaryKey().toString());
+				}
+				data.addData(nameField, user.getName());
+				data.addData(personalIDField, personalID);
+				data.addData(dateOfBirthField, dateOfBirthString);
+				data.addData(ageField, ageString);
+				data.addData(parentGroupField, parentGroup.getName());
+				data.addData(groupPathField, parentGroupPath);
+				data.addData(userStatusField, userStatusString);
+				data.addData(streetAddressField, streetAddressString);
+				data.addData(postalAddressField, postalAddressString);
+				data.addData(countryField, countryString);
+				data.addData(phoneField, getPhoneNumber(user));
+				data.addData(emailField, emailString);
+				data.addData(userInfo1Field, userInfo1String);
+				data.addData(userInfo2Field, userInfo2String);
+				data.addData(userInfo3Field, userInfo3String);
+				data.addData(custodianNameField, custodianString);
+				data.addData(custodianPersonalIDField, custodianPersonalID);
+				data.addData(custodianPhoneField, custodianPhoneString);
+				List statsForGroup = (List) usersByGroups.get(parentGroup
+						.getPrimaryKey());
+				if (statsForGroup == null) {
+					statsForGroup = new Vector();
+				}
+				statsForGroup.add(data);
+				usersByGroups.put(parentGroup.getPrimaryKey(), statsForGroup);
+			}
+		}
+		// iterate through the ordered map and ordered lists and add to the
+		// final collection
+		Iterator statsDataIter = usersByGroups.keySet().iterator();
+		while (statsDataIter.hasNext()) {
+
+			List datas = (List) usersByGroups.get(statsDataIter.next());
+			// don't forget to add the row to the collection
+			reportCollection.addAll(datas);
+		}
+
+		if (doOrderFilter != null
+				&& doOrderFilter.equals("checked")) {
+
+			ReportableField[] sortFields = null;
+			List orderByFields = new ArrayList();
+			if (dynamicLayout.equals("-1")) {
+				orderByFields.add(groupPathField);
+			}
+			if (orderBy != null) {
+				if (!dynamicLayout.equals("-1")
+						&& orderBy
+								.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
+					orderByFields.add(groupPathField);
+				} else if (orderBy
+						.equals(IWMemberConstants.ORDER_BY_USER_STATUS)) {
+					orderByFields.add(userStatusField);
+				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
+					orderByFields.add(streetAddressField);
+				} else if (orderBy
+						.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
+					orderByFields.add(postalAddressField);
+				}
+			}
+			orderByFields.add(nameField);
+
+			sortFields = new ReportableField[orderByFields.size()];
+			for (int i = 0; i < orderByFields.size(); i++) {
+				sortFields[i] = (ReportableField) orderByFields.get(i);
+			}
+			Comparator comparator = new FieldsComparator(sortFields);
+			Collections.sort(reportCollection, comparator);
+
+		}
+
+		return reportCollection;
+	}
+
+	public ReportableCollection getStatisticsForGroups(String groupIDFilter,
+			String groupsRecursiveFilter, Collection groupTypesFilter,
+			String dynamicLayout, String orderBy) throws RemoteException {
+		initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
 		boolean isSuperAdmin = isSuperAdmin();
-		//PARAMETES
-		//Add extra...because the inputhandlers supply the basic header texts
-		
-		reportCollection.addExtraHeaderParameter(
-				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
-				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
- 	
-		//PARAMETERS that are also FIELDS
-		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
-		 //The name you give the field/parameter must not contain spaces or special characters		
+		// PARAMETES
+		// Add extra...because the inputhandlers supply the basic header texts
+
+		reportCollection.addExtraHeaderParameter("label_current_date",
+				this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE,
+						"Current date"), "current_date", TextSoap.findAndCut(
+						(new IWTimestamp()).getLocaleDateAndTime(currentLocale,
+								IWTimestamp.LONG, IWTimestamp.SHORT), "GMT"));
+
+		// PARAMETERS that are also FIELDS
+		// data from entity columns, can also be defined with an entity
+		// definition, see getClubMemberStatisticsForRegionalUnions method
+		// The name you give the field/parameter must not contain spaces or
+		// special characters
 		ReportableField groupIDField = null;
 		if (isSuperAdmin) {
-			groupIDField = new ReportableField(FIELD_NAME_GROUP_ID, String.class);
-			groupIDField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_ID, "Group ID"), currentLocale);
+			groupIDField = new ReportableField(FIELD_NAME_GROUP_ID,
+					String.class);
+			groupIDField.setLocalizedName(this._iwrb.getLocalizedString(
+					LOCALIZED_GROUP_ID, "Group ID"), currentLocale);
 			reportCollection.addField(groupIDField);
 		}
-		 ReportableField nameField = new ReportableField(FIELD_NAME_NAME, String.class);
-		 nameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_NAME, "Name"), currentLocale);
-		 reportCollection.addField(nameField);
+		ReportableField nameField = new ReportableField(FIELD_NAME_NAME,
+				String.class);
+		nameField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_NAME, "Name"), currentLocale);
+		reportCollection.addField(nameField);
 
-		 ReportableField shortNameField = new ReportableField(FIELD_NAME_SHORT_NAME, String.class);
-		 shortNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_SHORT_NAME, "Short Name"), currentLocale);
-		 reportCollection.addField(shortNameField);
+		ReportableField shortNameField = new ReportableField(
+				FIELD_NAME_SHORT_NAME, String.class);
+		shortNameField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_SHORT_NAME, "Short Name"), currentLocale);
+		reportCollection.addField(shortNameField);
 
-		 ReportableField abbrevationField = new ReportableField(FIELD_NAME_ABBREVATION, String.class);
-		 abbrevationField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_ABBREVATION, "Abbrevation"), currentLocale);
-		 reportCollection.addField(abbrevationField);
+		ReportableField abbrevationField = new ReportableField(
+				FIELD_NAME_ABBREVATION, String.class);
+		abbrevationField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_ABBREVATION, "Abbrevation"), currentLocale);
+		reportCollection.addField(abbrevationField);
 
-		 ReportableField displayNameField = new ReportableField(FIELD_NAME_DISPLAY_NAME, String.class);
-		 displayNameField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_DISPLAY_NAME, "Display Name"), currentLocale);
-		 reportCollection.addField(displayNameField);
+		ReportableField displayNameField = new ReportableField(
+				FIELD_NAME_DISPLAY_NAME, String.class);
+		displayNameField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_DISPLAY_NAME, "Display Name"), currentLocale);
+		reportCollection.addField(displayNameField);
 
-		 ReportableField groupTypeField = new ReportableField(FIELD_NAME_GROUP_TYPE, String.class);
-		 groupTypeField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_TYPE, "Group Type"),currentLocale);
-		 reportCollection.addField(groupTypeField);
+		ReportableField groupTypeField = new ReportableField(
+				FIELD_NAME_GROUP_TYPE, String.class);
+		groupTypeField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_GROUP_TYPE, "Group Type"), currentLocale);
+		reportCollection.addField(groupTypeField);
 
-		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
-		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
-		 reportCollection.addField(groupPathField);
-		 
-		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
-		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
-		 reportCollection.addField(streetAddressField);
-		 
-		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
-		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
-		 reportCollection.addField(postalAddressField); 
+		ReportableField groupPathField = new ReportableField(
+				FIELD_NAME_GROUP_PATH, String.class);
+		groupPathField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
+		reportCollection.addField(groupPathField);
 
-		 ReportableField pBoxField = new ReportableField(FIELD_NAME_POST_BOX, String.class);
-		 pBoxField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POST_BOX, "Postbox"), currentLocale);
-		 reportCollection.addField(pBoxField);
+		ReportableField streetAddressField = new ReportableField(
+				FIELD_NAME_STREET_ADDRESS, String.class);
+		streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
+		reportCollection.addField(streetAddressField);
 
-		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
-		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
-		 reportCollection.addField(phoneField);
-		 
-		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
-		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
-		 reportCollection.addField(emailField);
-		
+		ReportableField postalAddressField = new ReportableField(
+				FIELD_NAME_POSTAL_ADDRESS, String.class);
+		postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
+		reportCollection.addField(postalAddressField);
+
+		ReportableField pBoxField = new ReportableField(FIELD_NAME_POST_BOX,
+				String.class);
+		pBoxField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_POST_BOX, "Postbox"), currentLocale);
+		reportCollection.addField(pBoxField);
+
+		ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE,
+				String.class);
+		phoneField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_PHONE, "Phone"), currentLocale);
+		reportCollection.addField(phoneField);
+
+		ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL,
+				String.class);
+		emailField.setLocalizedName(this._iwrb.getLocalizedString(
+				LOCALIZED_EMAIL, "Email"), currentLocale);
+		reportCollection.addField(emailField);
+
 		Group topGroup = null;
 		Collection groups = null;
 		try {
-		    if (groupIDFilter != null && !groupIDFilter.equals("")) {
-		        groupIDFilter = groupIDFilter.substring(groupIDFilter.lastIndexOf("_")+1);
-		        topGroup = getGroupBusiness().getGroupByGroupID(Integer.parseInt((groupIDFilter)));
-		    }
+			if (groupIDFilter != null && !groupIDFilter.equals("")) {
+				groupIDFilter = groupIDFilter.substring(groupIDFilter
+						.lastIndexOf("_") + 1);
+				topGroup = getGroupBusiness().getGroupByGroupID(
+						Integer.parseInt((groupIDFilter)));
+			}
 			if (topGroup != null) {
-			    if (groupsRecursiveFilter != null && groupsRecursiveFilter.equals("checked")) {
-			        groups = getGroupBusiness().getChildGroupsRecursiveResultFiltered(topGroup, groupTypesFilter, true, true, false);
+				if (groupsRecursiveFilter != null
+						&& groupsRecursiveFilter.equals("checked")) {
+					groups = getGroupBusiness()
+							.getChildGroupsRecursiveResultFiltered(topGroup,
+									groupTypesFilter, true, true, false);
 				} else {
-				    groups = new ArrayList();
-				    groups.add(topGroup);
+					groups = new ArrayList();
+					groups.add(topGroup);
 				}
 			}
 		} catch (FinderException e) {
-		    e.printStackTrace();
-    	}
-			Collection topNodes = getUserBusiness().getUsersTopGroupNodesByViewAndOwnerPermissions(getUserContext().getCurrentUser(),getUserContext());
-			Map usersByGroups = new TreeMap();
-			AddressTypeHome addressHome = (AddressTypeHome) IDOLookup.getHome(AddressType.class);
-			AddressType at1 = null;
+			e.printStackTrace();
+		}
+		Collection topNodes = getUserBusiness()
+				.getUsersTopGroupNodesByViewAndOwnerPermissions(
+						getUserContext().getCurrentUser(), getUserContext());
+		Map usersByGroups = new TreeMap();
+		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
+				.getHome(AddressType.class);
+		AddressType at1 = null;
+		try {
+			at1 = addressHome.findAddressType1();
+		} catch (FinderException e) {
+			e.printStackTrace();
+		}
+		Iterator iter = groups.iterator();
+		while (iter.hasNext()) {
+			Group group = (Group) iter.next();
+			Collection parentGroupCollection = null;
 			try {
-			    at1 = addressHome.findAddressType1();
+				parentGroupCollection = getGroupHome().findParentGroups(
+						Integer.parseInt(group.getPrimaryKey().toString()));
 			} catch (FinderException e) {
-			    e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
-			Iterator iter = groups.iterator();
-			while (iter.hasNext()) {
-			    Group group = (Group) iter.next();
-			    Collection parentGroupCollection = null;
-			     try {
-			         parentGroupCollection = getGroupHome().findParentGroups(Integer.parseInt(group.getPrimaryKey().toString()));
-			     } catch (FinderException e) {
-			         System.out.println(e.getMessage());
-			     }
-			     Iterator parIt = parentGroupCollection.iterator();
+			Iterator parIt = parentGroupCollection.iterator();
 
-			    String nameString = group.getName();
-			    String shortNameString = group.getShortName();
-			    String abbrevation = group.getAbbrevation();
-			    String displayNameString = null;
-			    
-			    if (abbrevation!=null && !abbrevation.equals("")) {
-			    	displayNameString = abbrevation;
-			    } else {
-			    	displayNameString = nameString;
-			    }
-			    String groupTypeString = this._userIwrb.getLocalizedString(group.getGroupType(), group.getGroupType());
-			   	Collection emails =  group.getEmails();
-			   	Email email = null;
-			   	String emailString = null;
-			   	if (!emails.isEmpty()) {
-			   	    email = (Email)emails.iterator().next();
-			   	    emailString = email.getEmailAddress();
-			   	}
-			   	Collection addresses = null;
-			   	if (at1 != null) {			   	    
-				   	try {
-                        addresses = group.getAddresses(at1);
-                    } catch (IDOLookupException e1) {
-                        e1.printStackTrace();
-                    } catch (IDOCompositePrimaryKeyException e1) {
-                        e1.printStackTrace();
-                    } catch (IDORelationshipException e1) {
-                        e1.printStackTrace();
-                    }
-			   	}
-			    Address address = null;
-			    String streetAddressString = null;
-			    String postalAddressString = null;
-			    String postBoxString = null;
-			   	if (addresses != null && !addresses.isEmpty()) {
-			   	    address = (Address)addresses.iterator().next();
-			   	    streetAddressString = address.getStreetAddress();
-			   	    postalAddressString = address.getPostalAddress();
-			   	    postBoxString = address.getPOBox();
-			   	}
-			   	while (parIt.hasNext()) {				     
-			        Group parentGroup = (Group)parIt.next();
-			        String parentGroupPath = getParentGroupPath(parentGroup, topNodes);
-				    // create a new ReportData for each row	    
-			        ReportableData data = new ReportableData();
-			        //	add the data to the correct fields/columns
-			        if (isSuperAdmin) {
-			        	 data.addData(groupIDField, group.getPrimaryKey().toString() );
-			        }
-				    data.addData(nameField, nameString );
-				    data.addData(shortNameField, shortNameString );
-				    data.addData(abbrevationField, abbrevation );
-   				    data.addData(displayNameField, displayNameString );
-				    data.addData(groupTypeField, groupTypeString);
-				    data.addData(groupPathField, parentGroupPath);
-				    data.addData(emailField, emailString);
-				    data.addData(streetAddressField, streetAddressString);
-				    data.addData(postalAddressField, postalAddressString);
-				    data.addData(pBoxField, postBoxString);
-				    data.addData(phoneField, getPhoneNumber(group));
-				    List statsForGroup = (List) usersByGroups.get(group.getPrimaryKey());
-					if (statsForGroup == null) {
-						statsForGroup = new Vector();
-					}
-					statsForGroup.add(data);
-					usersByGroups.put(group.getPrimaryKey(), statsForGroup);
+			String nameString = group.getName();
+			String shortNameString = group.getShortName();
+			String abbrevation = group.getAbbrevation();
+			String displayNameString = null;
+
+			if (abbrevation != null && !abbrevation.equals("")) {
+				displayNameString = abbrevation;
+			} else {
+				displayNameString = nameString;
+			}
+			String groupTypeString = this._userIwrb.getLocalizedString(group
+					.getGroupType(), group.getGroupType());
+			Collection emails = group.getEmails();
+			Email email = null;
+			String emailString = null;
+			if (!emails.isEmpty()) {
+				email = (Email) emails.iterator().next();
+				emailString = email.getEmailAddress();
+			}
+			Collection addresses = null;
+			if (at1 != null) {
+				try {
+					addresses = group.getAddresses(at1);
+				} catch (IDOLookupException e1) {
+					e1.printStackTrace();
+				} catch (IDOCompositePrimaryKeyException e1) {
+					e1.printStackTrace();
+				} catch (IDORelationshipException e1) {
+					e1.printStackTrace();
 				}
 			}
-			// iterate through the ordered map and ordered lists and add to the final collection
-			Iterator statsDataIter = usersByGroups.keySet().iterator();
-			while (statsDataIter.hasNext()) {
-				List datas = (List) usersByGroups.get(statsDataIter.next());
-				// don't forget to add the row to the collection
-				reportCollection.addAll(datas);
-			}			 	
-
-    	ReportableField[] sortFields = null;
-    	List orderByFields = new ArrayList();
-    	if (dynamicLayout.equals("-1")) {
-    		orderByFields.add(groupPathField);
-    	}
-		if (orderBy != null) {
-			if (!dynamicLayout.equals("-1") && orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
-	    		orderByFields.add(groupPathField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_TYPE)) {
-	    		orderByFields.add(groupTypeField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
-	    		orderByFields.add(streetAddressField);
-	    	} else if (orderBy.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
-	    		orderByFields.add(postalAddressField);
-	    	}
+			Address address = null;
+			String streetAddressString = null;
+			String postalAddressString = null;
+			String postBoxString = null;
+			if (addresses != null && !addresses.isEmpty()) {
+				address = (Address) addresses.iterator().next();
+				streetAddressString = address.getStreetAddress();
+				postalAddressString = address.getPostalAddress();
+				postBoxString = address.getPOBox();
+			}
+			while (parIt.hasNext()) {
+				Group parentGroup = (Group) parIt.next();
+				String parentGroupPath = getParentGroupPath(parentGroup,
+						topNodes);
+				// create a new ReportData for each row
+				ReportableData data = new ReportableData();
+				// add the data to the correct fields/columns
+				if (isSuperAdmin) {
+					data
+							.addData(groupIDField, group.getPrimaryKey()
+									.toString());
+				}
+				data.addData(nameField, nameString);
+				data.addData(shortNameField, shortNameString);
+				data.addData(abbrevationField, abbrevation);
+				data.addData(displayNameField, displayNameString);
+				data.addData(groupTypeField, groupTypeString);
+				data.addData(groupPathField, parentGroupPath);
+				data.addData(emailField, emailString);
+				data.addData(streetAddressField, streetAddressString);
+				data.addData(postalAddressField, postalAddressString);
+				data.addData(pBoxField, postBoxString);
+				data.addData(phoneField, getPhoneNumber(group));
+				List statsForGroup = (List) usersByGroups.get(group
+						.getPrimaryKey());
+				if (statsForGroup == null) {
+					statsForGroup = new Vector();
+				}
+				statsForGroup.add(data);
+				usersByGroups.put(group.getPrimaryKey(), statsForGroup);
+			}
 		}
-   		orderByFields.add(nameField);
-		
+		// iterate through the ordered map and ordered lists and add to the
+		// final collection
+		Iterator statsDataIter = usersByGroups.keySet().iterator();
+		while (statsDataIter.hasNext()) {
+			List datas = (List) usersByGroups.get(statsDataIter.next());
+			// don't forget to add the row to the collection
+			reportCollection.addAll(datas);
+		}
+
+		ReportableField[] sortFields = null;
+		List orderByFields = new ArrayList();
+		if (dynamicLayout.equals("-1")) {
+			orderByFields.add(groupPathField);
+		}
+		if (orderBy != null) {
+			if (!dynamicLayout.equals("-1")
+					&& orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
+				orderByFields.add(groupPathField);
+			} else if (orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_TYPE)) {
+				orderByFields.add(groupTypeField);
+			} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
+				orderByFields.add(streetAddressField);
+			} else if (orderBy
+					.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
+				orderByFields.add(postalAddressField);
+			}
+		}
+		orderByFields.add(nameField);
+
 		sortFields = new ReportableField[orderByFields.size()];
-    	for (int i=0; i<orderByFields.size(); i++) {
-    		sortFields[i] = (ReportableField)orderByFields.get(i);
-    	}
+		for (int i = 0; i < orderByFields.size(); i++) {
+			sortFields[i] = (ReportableField) orderByFields.get(i);
+		}
 		Comparator comparator = new FieldsComparator(sortFields);
 		Collections.sort(reportCollection, comparator);
 		return reportCollection;
 	}
 
-    private String getPhoneNumber(Group group) {
+	private String getPhoneNumber(Group group) {
 		Collection phones = group.getPhones();
 		String phoneNumber = "";
 		if (!phones.isEmpty()) {
 			Phone phone = null;
-			int tempPhoneType = 0;			
+			int tempPhoneType = 0;
 			int selectedPhoneType = 0;
-			
-			Iterator phIt =	phones.iterator();
+
+			Iterator phIt = phones.iterator();
 			while (phIt.hasNext()) {
 				phone = (Phone) phIt.next();
 				if (phone != null) {
 					tempPhoneType = phone.getPhoneTypeId();
 					if (tempPhoneType != PhoneType.FAX_NUMBER_ID) {
-						if (tempPhoneType == PhoneType.MOBILE_PHONE_ID) {							
+						if (tempPhoneType == PhoneType.MOBILE_PHONE_ID) {
 							phoneNumber = phone.getNumber();
 							break;
-						}
-						else if (tempPhoneType == PhoneType.HOME_PHONE_ID && selectedPhoneType != PhoneType.HOME_PHONE_ID) {
+						} else if (tempPhoneType == PhoneType.HOME_PHONE_ID
+								&& selectedPhoneType != PhoneType.HOME_PHONE_ID) {
 							phoneNumber = phone.getNumber();
 							selectedPhoneType = phone.getPhoneTypeId();
-						}
-						else if (tempPhoneType == PhoneType.WORK_PHONE_ID && selectedPhoneType != PhoneType.WORK_PHONE_ID) {
+						} else if (tempPhoneType == PhoneType.WORK_PHONE_ID
+								&& selectedPhoneType != PhoneType.WORK_PHONE_ID) {
 							phoneNumber = phone.getNumber();
 							selectedPhoneType = phone.getPhoneTypeId();
 						}
@@ -714,98 +870,110 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			}
 		}
 		return phoneNumber;
-    }
-    
-    private String getParentGroupPath(Group parentGroup, Collection topNodes) { 
-        String parentGroupPath = parentGroup.getName();
-	    Collection parentGroupCollection = null;
-	    
-	    while (parentGroup != null && !topNodes.contains(parentGroup)) {
-	        String parentKey = parentGroup.getPrimaryKey().toString();
-	        if (this.cachedParents.containsKey((parentKey))) {
-		        Collection col = (Collection)this.cachedParents.get(parentKey);
-		        Iterator it = col.iterator();
-		        Integer parentID = null;
-		        if (it.hasNext()) {
-	                 parentID = (Integer)it.next();
-	                 String groupKey = parentID.toString();
-	                 if (this.cachedGroups.containsKey(groupKey)) {
-	                     parentGroup = (Group)this.cachedGroups.get(groupKey); 
-	                 }
-	                 else {
-	                     try {
-		                     parentGroup = this.groupBiz.getGroupByGroupID(parentID.intValue());
-			                 this.cachedGroups.put(groupKey, parentGroup);
-	                     } catch (Exception e) {
-	                         break;
-	                     }
-	                 }
-	            }
-		        else {
-		        	break;
-		        }
-			} else {
-			         parentGroupCollection = parentGroup.getParentGroups(this.cachedParents, this.cachedGroups);
-			         
-			     if (!parentGroupCollection.isEmpty()) {
-			         parentGroup = (Group)parentGroupCollection.iterator().next();
-			     }else {
-			         break;
-			     }
-		    }
-			parentGroupPath = parentGroup.getName()+"/"+parentGroupPath;
-	    }
-    return parentGroupPath;
-    }
-    
-    private GroupHome getGroupHome() {
-        try {
-            return (GroupHome) IDOLookup.getHome(Group.class);
-        } catch (IDOLookupException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+	}
 
-    private GroupBusiness getGroupBusiness() throws RemoteException {
+	private String getParentGroupPath(Group parentGroup, Collection topNodes) {
+		String parentGroupPath = parentGroup.getName();
+		Collection parentGroupCollection = null;
+
+		while (parentGroup != null && !topNodes.contains(parentGroup)) {
+			String parentKey = parentGroup.getPrimaryKey().toString();
+			if (this.cachedParents.containsKey((parentKey))) {
+				Collection col = (Collection) this.cachedParents.get(parentKey);
+				Iterator it = col.iterator();
+				Integer parentID = null;
+				if (it.hasNext()) {
+					parentID = (Integer) it.next();
+					String groupKey = parentID.toString();
+					if (this.cachedGroups.containsKey(groupKey)) {
+						parentGroup = (Group) this.cachedGroups.get(groupKey);
+					} else {
+						try {
+							parentGroup = this.groupBiz
+									.getGroupByGroupID(parentID.intValue());
+							this.cachedGroups.put(groupKey, parentGroup);
+						} catch (Exception e) {
+							break;
+						}
+					}
+				} else {
+					break;
+				}
+			} else {
+				parentGroupCollection = parentGroup.getParentGroups(
+						this.cachedParents, this.cachedGroups);
+
+				if (!parentGroupCollection.isEmpty()) {
+					parentGroup = (Group) parentGroupCollection.iterator()
+							.next();
+				} else {
+					break;
+				}
+			}
+			parentGroupPath = parentGroup.getName() + "/" + parentGroupPath;
+		}
+		return parentGroupPath;
+	}
+
+	private GroupHome getGroupHome() {
+		try {
+			return (GroupHome) IDOLookup.getHome(Group.class);
+		} catch (IDOLookupException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private GroupBusiness getGroupBusiness() throws RemoteException {
 		if (this.groupBiz == null) {
-			this.groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), GroupBusiness.class);
-		}	
+			this.groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(this
+					.getIWApplicationContext(), GroupBusiness.class);
+		}
 		return this.groupBiz;
 	}
 
 	private UserBusiness getUserBusiness() throws RemoteException {
 		if (this.userBiz == null) {
-			this.userBiz = (UserBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserBusiness.class);
-		}	
+			this.userBiz = (UserBusiness) IBOLookup.getServiceInstance(this
+					.getIWApplicationContext(), UserBusiness.class);
+		}
 		return this.userBiz;
 	}
 
-	private NationalRegisterBusiness getNationalRegisterBusiness() throws RemoteException {
+	private NationalRegisterBusiness getNationalRegisterBusiness()
+			throws RemoteException {
 		if (this.nationalRegisterBiz == null) {
-			this.nationalRegisterBiz = (NationalRegisterBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), NationalRegisterBusiness.class);
-		}	
+			this.nationalRegisterBiz = (NationalRegisterBusiness) IBOLookup
+					.getServiceInstance(this.getIWApplicationContext(),
+							NationalRegisterBusiness.class);
+		}
 		return this.nationalRegisterBiz;
 	}
 
-	private UserInfoColumnsBusiness getUserInfoColumnsBusiness() throws RemoteException {
+	private UserInfoColumnsBusiness getUserInfoColumnsBusiness()
+			throws RemoteException {
 		if (this.userInfoColumnsBiz == null) {
-			this.userInfoColumnsBiz = (UserInfoColumnsBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserInfoColumnsBusiness.class);
-		}	
+			this.userInfoColumnsBiz = (UserInfoColumnsBusiness) IBOLookup
+					.getServiceInstance(this.getIWApplicationContext(),
+							UserInfoColumnsBusiness.class);
+		}
 		return this.userInfoColumnsBiz;
 	}
 
 	private UserStatusBusiness getUserStatusBusiness() throws RemoteException {
 		if (this.userStatusBiz == null) {
-			this.userStatusBiz = (UserStatusBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserStatusBusiness.class);
-		}	
+			this.userStatusBiz = (UserStatusBusiness) IBOLookup
+					.getServiceInstance(this.getIWApplicationContext(),
+							UserStatusBusiness.class);
+		}
 		return this.userStatusBiz;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.idega.user.business.UserGroupPlugInBusiness#getMainToolbarElements()
+	 * @see
+	 * com.idega.user.business.UserGroupPlugInBusiness#getMainToolbarElements()
 	 */
 	public List getMainToolbarElements() throws RemoteException {
 		List list = new ArrayList(1);
@@ -814,23 +982,28 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		return list;
 	}
 
-	public void afterGroupCreateOrUpdate(Group group, Group parentGroup) throws CreateException, RemoteException {
+	public void afterGroupCreateOrUpdate(Group group, Group parentGroup)
+			throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
-	public void afterUserCreateOrUpdate(User user, Group parentGroup) throws CreateException, RemoteException {
+	public void afterUserCreateOrUpdate(User user, Group parentGroup)
+			throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
-	public void beforeGroupRemove(Group group, Group parentGroup) throws RemoveException, RemoteException {
+	public void beforeGroupRemove(Group group, Group parentGroup)
+			throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
-	public void beforeUserRemove(User user, Group parentGroup) throws RemoveException, RemoteException {
+	public void beforeUserRemove(User user, Group parentGroup)
+			throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
-	public String canCreateSubGroup(Group parentGroup, String groupTypeOfSubGroup) throws RemoteException {
+	public String canCreateSubGroup(Group parentGroup,
+			String groupTypeOfSubGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -850,22 +1023,26 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		return null;
 	}
 
-	public PresentationObject instanciateEditor(Group group) throws RemoteException {
+	public PresentationObject instanciateEditor(Group group)
+			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public PresentationObject instanciateViewer(Group group) throws RemoteException {
+	public PresentationObject instanciateViewer(Group group)
+			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String isUserAssignableFromGroupToGroup(User user, Group sourceGroup, Group targetGroup) throws RemoteException {
+	public String isUserAssignableFromGroupToGroup(User user,
+			Group sourceGroup, Group targetGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String isUserSuitedForGroup(User user, Group targetGroup) throws RemoteException {
+	public String isUserSuitedForGroup(User user, Group targetGroup)
+			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -873,12 +1050,13 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	public boolean isSuperAdmin() {
 		boolean isSuperAdmin = false;
 		try {
-	         if (this.getCurrentUser().equals(this.getAccessController().getAdministratorUser())) {
-	        	 isSuperAdmin = true;
-	         }
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-        return isSuperAdmin;
+			if (this.getCurrentUser().equals(
+					this.getAccessController().getAdministratorUser())) {
+				isSuperAdmin = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isSuperAdmin;
 	}
 }
