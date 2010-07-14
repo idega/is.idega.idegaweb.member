@@ -580,7 +580,6 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 			}
 			Comparator comparator = new FieldsComparator(sortFields);
 			Collections.sort(reportCollection, comparator);
-
 		}
 
 		return reportCollection;
@@ -588,7 +587,7 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 
 	public ReportableCollection getStatisticsForGroups(String groupIDFilter,
 			String groupsRecursiveFilter, Collection groupTypesFilter,
-			String dynamicLayout, String orderBy) throws RemoteException {
+			String dynamicLayout, String orderBy, String doOrderFilter) throws RemoteException {
 		initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
@@ -810,32 +809,36 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 			reportCollection.addAll(datas);
 		}
 
-		ReportableField[] sortFields = null;
-		List orderByFields = new ArrayList();
-		if (dynamicLayout.equals("-1")) {
-			orderByFields.add(groupPathField);
-		}
-		if (orderBy != null) {
-			if (!dynamicLayout.equals("-1")
-					&& orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
-				orderByFields.add(groupPathField);
-			} else if (orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_TYPE)) {
-				orderByFields.add(groupTypeField);
-			} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
-				orderByFields.add(streetAddressField);
-			} else if (orderBy
-					.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
-				orderByFields.add(postalAddressField);
-			}
-		}
-		orderByFields.add(nameField);
+		if (doOrderFilter != null
+				&& doOrderFilter.equals("checked")) {
 
-		sortFields = new ReportableField[orderByFields.size()];
-		for (int i = 0; i < orderByFields.size(); i++) {
-			sortFields[i] = (ReportableField) orderByFields.get(i);
+			ReportableField[] sortFields = null;
+			List orderByFields = new ArrayList();
+			if (dynamicLayout.equals("-1")) {
+				orderByFields.add(groupPathField);
+			}
+			if (orderBy != null) {
+				if (!dynamicLayout.equals("-1")
+						&& orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
+					orderByFields.add(groupPathField);
+				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_TYPE)) {
+					orderByFields.add(groupTypeField);
+				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
+					orderByFields.add(streetAddressField);
+				} else if (orderBy
+						.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
+					orderByFields.add(postalAddressField);
+				}
+			}
+			orderByFields.add(nameField);
+	
+			sortFields = new ReportableField[orderByFields.size()];
+			for (int i = 0; i < orderByFields.size(); i++) {
+				sortFields[i] = (ReportableField) orderByFields.get(i);
+			}
+			Comparator comparator = new FieldsComparator(sortFields);
+			Collections.sort(reportCollection, comparator);
 		}
-		Comparator comparator = new FieldsComparator(sortFields);
-		Collections.sort(reportCollection, comparator);
 		return reportCollection;
 	}
 
