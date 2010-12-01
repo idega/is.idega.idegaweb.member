@@ -6,8 +6,7 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.Table;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.ui.CheckBox;
-import com.idega.user.data.Group;
-import com.idega.user.data.GroupHome;
+import com.idega.presentation.ui.TextInput;
 import com.idega.user.presentation.UserTab;
 
 public class UserGroupImageTab extends UserTab {
@@ -29,6 +28,10 @@ public class UserGroupImageTab extends UserTab {
 
 	private int systemImageId = -1;
 
+	private String groupEmailFieldName;
+	private Text groupEmailFieldLabel;
+	private TextInput groupEmailField;
+	
 	public UserGroupImageTab() {
 		super();
 		IWContext iwc = IWContext.getInstance();
@@ -41,10 +44,15 @@ public class UserGroupImageTab extends UserTab {
 	public boolean collect(IWContext iwc) {
 		String imageID = iwc.getParameter(this.imageFieldName + "-"
 				+ getUserId() + "-" + getGroupID());
+		String groupEmail = iwc.getParameter(this.groupEmailFieldName + "-" + getUserId() + "-" + getGroupID());
 		if (imageID != null) {
 			this.fieldValues.put(this.imageFieldName, imageID);
 		}
 
+		if (groupEmail != null) {
+			this.fieldValues.put(this.groupEmailFieldName, groupEmail);
+		}
+		
 		this.fieldValues.put(this.removeImageFieldName, new Boolean(iwc
 				.isParameterSet(this.removeImageFieldName)));
 
@@ -57,6 +65,8 @@ public class UserGroupImageTab extends UserTab {
 			this.imageField.setImSessionImageName(this.imageFieldName + "-"
 					+ getUserId() + "-" + getGroupID());
 
+			this.groupEmailField.setName(this.groupEmailFieldName + "-" + getUserId() + "-" + getGroupID());
+			
 			try {
 				this.systemImageId = Integer.parseInt(getUser().getMetaData(
 						"group_image-" + getGroupID()));
@@ -71,6 +81,13 @@ public class UserGroupImageTab extends UserTab {
 
 			this.fieldValues.put(this.removeImageFieldName, new Boolean(false));
 
+			String email = getUser().getMetaData("group_email-" + getGroupID());
+			if (email == null) {
+				this.fieldValues.put(this.groupEmailFieldName, "");				
+			} else {
+				this.fieldValues.put(this.groupEmailFieldName, email);								
+			}
+			
 			updateFieldsDisplayStatus();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,12 +103,14 @@ public class UserGroupImageTab extends UserTab {
 	public void initializeFieldNames() {
 		this.imageFieldName = "usr_grp_imag_userSystemImageId";
 		this.removeImageFieldName = "usr_grp_imag_removeImageFieldName";
+		this.groupEmailFieldName = "usr_grp_email";
 	}
 
 	@Override
 	public void initializeFieldValues() {
 		this.systemImageId = -1;
 		this.fieldValues.put(this.removeImageFieldName, new Boolean(false));
+		this.fieldValues.put(this.groupEmailFieldName, "");
 	}
 
 	@Override
@@ -102,6 +121,8 @@ public class UserGroupImageTab extends UserTab {
 		this.removeImageField = new CheckBox(this.removeImageFieldName);
 		this.removeImageField.setWidth("10");
 		this.removeImageField.setHeight("10");
+		
+		this.groupEmailField = new TextInput(this.groupEmailFieldName + "-" + getUserId() + "-" + getGroupID());
 	}
 
 	@Override
@@ -116,13 +137,16 @@ public class UserGroupImageTab extends UserTab {
 		this.removeImageText = new Text(iwrb.getLocalizedString(
 				this.removeImageFieldName, "do not show an image"));
 		this.removeImageText.setBold();
+		
+		this.groupEmailFieldLabel = new Text(iwrb.getLocalizedString(
+				this.groupEmailFieldName, "Group email"));
 	}
 
 	@Override
 	public void lineUpFields() {
 		this.resize(1, 1);
 
-		Table imageTable = new Table(1, 2);
+		Table imageTable = new Table(1, 4);
 		imageTable.setWidth(Table.HUNDRED_PERCENT);
 		imageTable.setCellpadding(5);
 		imageTable.setCellspacing(0);
@@ -134,6 +158,10 @@ public class UserGroupImageTab extends UserTab {
 		imageTable.add(this.removeImageField, 1, 2);
 		imageTable.add(this.removeImageText, 1, 2);
 
+		imageTable.add(this.groupEmailFieldLabel, 1, 4);
+		imageTable.add(Text.getBreak(), 1, 4);
+		imageTable.add(this.groupEmailField, 1, 4);
+		
 		this.add(imageTable, 1, 1);
 	}
 
@@ -145,6 +173,8 @@ public class UserGroupImageTab extends UserTab {
 				String image = (String) this.fieldValues
 						.get(this.imageFieldName);
 
+				String email = (String) this.fieldValues.get(this.groupEmailFieldName);
+				
 				if ((image != null) && (!image.equals("-1"))
 						&& (!image.equals(""))) {
 					int tempId;
@@ -167,9 +197,17 @@ public class UserGroupImageTab extends UserTab {
 
 					iwc.removeSessionAttribute(this.imageFieldName + "-"
 							+ getUserId() + "-" + getGroupID());
-
 				}
 
+				if (email == null || "".equals(email)) {
+					getUser().setMetaData("group_email-" + getGroupID(), "");
+					getUser().store();
+					updateFieldsDisplayStatus();
+				} else {
+					getUser().setMetaData("group_email-" + getGroupID(), email);
+					getUser().store();
+					updateFieldsDisplayStatus();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,6 +221,7 @@ public class UserGroupImageTab extends UserTab {
 		this.imageField.setImageId(this.systemImageId);
 		this.removeImageField.setChecked(((Boolean) this.fieldValues
 				.get(this.removeImageFieldName)).booleanValue());
+		this.groupEmailField.setContent((String)this.fieldValues.get(this.groupEmailFieldName));
 	}
 
 	public String getBundleIdentifier() {
