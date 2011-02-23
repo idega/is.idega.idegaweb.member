@@ -101,8 +101,6 @@
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>${javax.mail-mail-version}</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 </project>
