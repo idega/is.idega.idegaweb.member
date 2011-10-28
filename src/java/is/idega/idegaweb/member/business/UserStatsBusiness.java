@@ -4,11 +4,11 @@
  */
 package is.idega.idegaweb.member.business;
 
-import com.idega.business.IBOSession;
+import com.idega.business.IBOService;
 
 /**
  * @author Sigtryggur
  */
-public interface UserStatsBusiness extends IBOSession {
+public interface UserStatsBusiness extends IBOService {
 
 }

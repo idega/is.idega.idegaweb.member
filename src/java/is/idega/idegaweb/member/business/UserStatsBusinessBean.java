@@ -8,6 +8,7 @@ import is.idega.block.nationalregister.data.NationalRegister;
 import is.idega.idegaweb.member.presentation.GroupStatsWindowPlugin;
 import is.idega.idegaweb.member.presentation.UserStatsWindowPlugin;
 import is.idega.idegaweb.member.util.IWMemberConstants;
+
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Date;
@@ -32,7 +33,7 @@ import com.idega.block.datareport.util.ReportableCollection;
 import com.idega.block.datareport.util.ReportableData;
 import com.idega.block.datareport.util.ReportableField;
 import com.idega.business.IBOLookup;
-import com.idega.business.IBOSessionBean;
+import com.idega.business.IBOServiceBean;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneType;
@@ -67,9 +68,11 @@ import com.idega.util.text.TextSoap;
  * @author Sigtryggur
  * 
  */
-public class UserStatsBusinessBean extends IBOSessionBean implements
+public class UserStatsBusinessBean extends IBOServiceBean implements
 		UserStatsBusiness, UserGroupPlugInBusiness {
 
+	private static final long serialVersionUID = -2878769684169022583L;
+	
 	private UserBusiness userBiz = null;
 	private GroupBusiness groupBiz = null;
 	private NationalRegisterBusiness nationalRegisterBiz = null;
@@ -138,16 +141,14 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 	private Map cachedGroups = new HashMap();
 	private Map cachedParents = new HashMap();
 
-	private void initializeBundlesIfNeeded() {
+	private void initializeBundlesIfNeeded(Locale locale) {
 		if (this._iwb == null) {
 			this._iwb = this.getIWApplicationContext().getIWMainApplication()
 					.getBundle(IW_BUNDLE_IDENTIFIER);
 		}
-		this._iwrb = this._iwb.getResourceBundle(this.getUserContext()
-				.getCurrentLocale());
+		this._iwrb = this._iwb.getResourceBundle(locale);
 		this._userIwrb = this.getIWApplicationContext().getIWMainApplication()
-				.getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(
-						this.getUserContext().getCurrentLocale());
+				.getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(locale);
 	}
 
 	public ReportableCollection getStatisticsForUsers(String groupIDFilter,
@@ -155,12 +156,10 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 			Collection userStatusesFilter, Integer yearOfBirthFromFilter,
 			Integer yearOfBirthToFilter, String genderFilter,
 			Collection postalCodeFilter, String dynamicLayout, String orderBy,
-			String doOrderFilter) throws RemoteException {
+			String doOrderFilter, String sendToEmail, String excel, String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
 
-		initializeBundlesIfNeeded();
+		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
-		Locale currentLocale = this.getUserContext().getCurrentLocale();
-		boolean isSuperAdmin = isSuperAdmin();
 		// PARAMETES
 		// Add extra...because the inputhandlers supply the basic header texts
 
@@ -323,8 +322,8 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 						userStatusesFilter, yearOfBirthFromFilter,
 						yearOfBirthToFilter, genderFilter);
 		Collection topNodes = getUserBusiness()
-				.getUsersTopGroupNodesByViewAndOwnerPermissions(
-						getUserContext().getCurrentUser(), getUserContext());
+				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
+						currentUser, sessionTopNodes, isSuperAdmin, currentUser);
 		Map usersByGroups = new TreeMap();
 		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
 				.getHome(AddressType.class);
@@ -587,11 +586,9 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 
 	public ReportableCollection getStatisticsForGroups(String groupIDFilter,
 			String groupsRecursiveFilter, Collection groupTypesFilter,
-			String dynamicLayout, String orderBy, String doOrderFilter) throws RemoteException {
-		initializeBundlesIfNeeded();
+			String dynamicLayout, String orderBy, String doOrderFilter, String sendToEmail, String excel, String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
+		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
-		Locale currentLocale = this.getUserContext().getCurrentLocale();
-		boolean isSuperAdmin = isSuperAdmin();
 		// PARAMETES
 		// Add extra...because the inputhandlers supply the basic header texts
 
@@ -704,8 +701,8 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 			e.printStackTrace();
 		}
 		Collection topNodes = getUserBusiness()
-				.getUsersTopGroupNodesByViewAndOwnerPermissions(
-						getUserContext().getCurrentUser(), getUserContext());
+				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
+						currentUser, sessionTopNodes, isSuperAdmin, currentUser);
 		Map usersByGroups = new TreeMap();
 		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
 				.getHome(AddressType.class);
@@ -1048,18 +1045,5 @@ public class UserStatsBusinessBean extends IBOSessionBean implements
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public boolean isSuperAdmin() {
-		boolean isSuperAdmin = false;
-		try {
-			if (this.getCurrentUser().equals(
-					this.getAccessController().getAdministratorUser())) {
-				isSuperAdmin = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return isSuperAdmin;
 	}
 }

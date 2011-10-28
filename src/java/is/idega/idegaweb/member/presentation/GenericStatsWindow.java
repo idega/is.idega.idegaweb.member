@@ -27,6 +27,13 @@ public class GenericStatsWindow extends StyledIWAdminWindow {
     protected String invocationFileName = null;
     protected String layoutFileName = null;
     protected String windowTitle = "GenericStatsWindow";
+    private boolean runAsThread = false;
+	private boolean generateExcelReport = true;
+	private boolean generateXMLReport = true;
+	private boolean generateHTMLReport = true;
+	private boolean generatePDFReport = true;
+	private boolean generateSimpleExcelReport = true;
+	private String email = null;
       
     public GenericStatsWindow() {
         super();
@@ -55,6 +62,13 @@ public class GenericStatsWindow extends StyledIWAdminWindow {
 
 		ReportGenerator repGen = new ReportGenerator();	
 	    repGen.setMethodInvocationBundleAndFileName(this.iwb, this.invocationFileName);
+	    repGen.setRunAsThread(isRunAsThread());
+	    repGen.setGenerateExcelReport(isGenerateExcelReport());
+	    repGen.setGenerateHTMLReport(isGenerateHTMLReport());
+	    repGen.setGeneratePDFReport(isGeneratePDFReport());
+	    repGen.setGenerateSimpleExcelReport(isGenerateSimpleExcelReport());
+	    repGen.setGenerateXMLReport(isGenerateXMLReport());
+	    repGen.setEmail(getEmail());
 		String layoutFileID = iwc.getParameter(STATS_DYNAMIC_LAYOUT_FILE_ID);
 		if (layoutFileID != null) {
 			if (this.layoutFileName != null && layoutFileID.equals("-1")) {
@@ -76,4 +90,60 @@ public class GenericStatsWindow extends StyledIWAdminWindow {
     public String getBundleIdentifier() {
         return IW_BUNDLE_IDENTIFIER;
     }
+
+	public boolean isRunAsThread() {
+		return runAsThread;
+	}
+
+	public void setRunAsThread(boolean runAsThread) {
+		this.runAsThread = runAsThread;
+	}
+
+	public boolean isGenerateExcelReport() {
+		return generateExcelReport;
+	}
+
+	public void setGenerateExcelReport(boolean generateExcelReport) {
+		this.generateExcelReport = generateExcelReport;
+	}
+
+	public boolean isGenerateXMLReport() {
+		return generateXMLReport;
+	}
+
+	public void setGenerateXMLReport(boolean generateXMLReport) {
+		this.generateXMLReport = generateXMLReport;
+	}
+
+	public boolean isGenerateHTMLReport() {
+		return generateHTMLReport;
+	}
+
+	public void setGenerateHTMLReport(boolean generateHTMLReport) {
+		this.generateHTMLReport = generateHTMLReport;
+	}
+
+	public boolean isGeneratePDFReport() {
+		return generatePDFReport;
+	}
+
+	public void setGeneratePDFReport(boolean generatePDFReport) {
+		this.generatePDFReport = generatePDFReport;
+	}
+
+	public boolean isGenerateSimpleExcelReport() {
+		return generateSimpleExcelReport;
+	}
+
+	public void setGenerateSimpleExcelReport(boolean generateSimpleExcelReport) {
+		this.generateSimpleExcelReport = generateSimpleExcelReport;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }
