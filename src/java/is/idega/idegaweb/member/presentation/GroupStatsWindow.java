@@ -29,13 +29,15 @@ public class GroupStatsWindow extends GenericStatsWindow {
 
 		this.setRunAsThread(true);
 
+		//String runAsThread = iwc.getParameter("dr_runAsThread");
+		
 		String email = iwc.getParameter("dr_sendToEmail");
 		String excel = iwc.getParameter("dr_excel");
 		String excelNoStylesheet = iwc.getParameter("dr_excelNoStylesheet");
 		String pdf = iwc.getParameter("dr_pdf");
 		String xml = iwc.getParameter("dr_xml");
 		String html = iwc.getParameter("dr_html");
-
+		
 		if (email != null && !"".equals(email.trim())) {
 			UserEmailDropDownMenu tmp = new UserEmailDropDownMenu();
 			email = tmp.getDisplayForResultingObject(email, iwc);
@@ -71,13 +73,6 @@ public class GroupStatsWindow extends GenericStatsWindow {
 		} else {
 			this.setGenerateHTMLReport(false);
 		}
-
-		System.out.println("email = " + email);
-		System.out.println("excel = " + excel);
-		System.out.println("excelNoStylesheet = " + excelNoStylesheet);
-		System.out.println("pdf = " + pdf);
-		System.out.println("xml = " + xml);
-		System.out.println("html = " + html);
 
 		super.main(iwc);
 	}

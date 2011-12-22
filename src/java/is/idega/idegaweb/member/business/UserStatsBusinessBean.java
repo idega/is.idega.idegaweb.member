@@ -156,7 +156,9 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			Collection userStatusesFilter, Integer yearOfBirthFromFilter,
 			Integer yearOfBirthToFilter, String genderFilter,
 			Collection postalCodeFilter, String dynamicLayout, String orderBy,
-			String doOrderFilter, String sendToEmail, String excel, String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
+			String doOrderFilter, String runAsThread, String sendToEmail, String excel, 
+			String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, 
+			Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
 
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
@@ -586,7 +588,10 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 
 	public ReportableCollection getStatisticsForGroups(String groupIDFilter,
 			String groupsRecursiveFilter, Collection groupTypesFilter,
-			String dynamicLayout, String orderBy, String doOrderFilter, String sendToEmail, String excel, String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
+			String dynamicLayout, String orderBy, String doOrderFilter, 
+			String runAsThread, String sendToEmail, String excel, String excelNoStylesheet, 
+			String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, 
+			User currentUser, Collection sessionTopNodes) throws RemoteException {
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
 		// PARAMETES

@@ -70,13 +70,6 @@ public class UserStatsWindow extends GenericStatsWindow {
 			this.setGenerateHTMLReport(false);			
 		}
 
-		System.out.println("email = " + email);
-		System.out.println("excel = " + excel);
-		System.out.println("excelNoStylesheet = " + excelNoStylesheet);
-		System.out.println("pdf = " + pdf);
-		System.out.println("xml = " + xml);
-		System.out.println("html = " + html);
-		
     	super.main(iwc);		
     }
 }

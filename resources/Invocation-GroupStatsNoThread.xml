@@ -2,7 +2,7 @@
 <!DOCTYPE invoke >
 <invoke>
 <method_description name="getStatisticsForGroups">
-<class_description class="is.idega.idegaweb.member.business.UserStatsBusinessBean" default_display_name="UserStatsBusiness" type="IBOServiceBean">
+<class_description class="is.idega.idegaweb.member.business.UserStatsNoThreadBusinessBean" default_display_name="UserStatsNoThreadBusiness" type="IBOSessionBean">
 </class_description>
 <input>
 <class_description class="java.lang.String" default_display_name="Group chooser" name="group">
@@ -27,34 +27,6 @@
 </class_description>
 <class_description class="java.lang.String" default_display_name="Do order" name="doOrder" >
 <localized_name name="Framkvæma röðun" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="Run as thread" name="runAsThread">
-<localized_name name="Keyra sem bakgrunnskeyrslu" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="Send to e-mail" name="sendToEmail">
-<localized_name name="Sendist á netfang" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.UserEmailDropDownMenu" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="Excel" name="excel" >
-<localized_name name="Excel" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="Excel (no stylesheet)" name="excelNoStylesheet" >
-<localized_name name="Excel (án sniðmáts)" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="checked" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="PDF" name="pdf" >
-<localized_name name="PDF" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="XML" name="xml" >
-<localized_name name="XML" locale="is_IS"/>
-<class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
-</class_description>
-<class_description class="java.lang.String" default_display_name="HTML" name="html" >
-<localized_name name="HTML " locale="is_IS"/>
 <class_handler class="com.idega.presentation.ui.CheckBoxInputHandler" value="" />
 </class_description>
 </input>

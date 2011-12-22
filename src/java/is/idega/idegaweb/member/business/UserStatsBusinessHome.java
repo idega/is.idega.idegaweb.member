@@ -1,15 +1,10 @@
-/*
- * Created on Jan 20, 2005
- */
 package is.idega.idegaweb.member.business;
 
+
+import javax.ejb.CreateException;
+import java.rmi.RemoteException;
 import com.idega.business.IBOHome;
 
-/**
- * @author Sigtryggur
- */
 public interface UserStatsBusinessHome extends IBOHome {
-    public UserStatsBusiness create() throws javax.ejb.CreateException,
-            java.rmi.RemoteException;
-
+	public UserStatsBusiness create() throws CreateException, RemoteException;
 }
