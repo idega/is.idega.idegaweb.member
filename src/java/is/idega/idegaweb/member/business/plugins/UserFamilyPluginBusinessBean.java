@@ -34,7 +34,7 @@ import com.idega.user.data.User;
 public class UserFamilyPluginBusinessBean extends IBOServiceBean implements UserFamilyPluginBusiness, UserGroupPlugInBusiness {
 
 	public static final String ROLE_KEY_CASHIER = "Gjaldkeri";
-	public static final String ROLE_KEY_LOCAL_ADMIN = "local_admin";
+	public static final String ROLE_KEY_LOCAL_ADMIN = "admin";
 
 	/* (non-Javadoc)
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#beforeUserRemove(com.idega.user.data.User)
