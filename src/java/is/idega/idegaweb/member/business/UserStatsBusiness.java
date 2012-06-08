@@ -26,7 +26,7 @@ public interface UserStatsBusiness extends IBOService, UserGroupPlugInBusiness {
 			String doOrderFilter, String runAsThread, String sendToEmail,
 			String excel, String excelNoStylesheet, String pdf, String xml,
 			String html, Locale currentLocale, Boolean isSuperAdmin,
-			User currentUser, Collection sessionTopNodes)
+			User currentUser, Collection sessionTopNodes, Collection groups, Group group)
 			throws RemoteException, RemoteException;
 
 	/**
@@ -38,7 +38,7 @@ public interface UserStatsBusiness extends IBOService, UserGroupPlugInBusiness {
 			String runAsThread, String sendToEmail, String excel,
 			String excelNoStylesheet, String pdf, String xml, String html,
 			Locale currentLocale, Boolean isSuperAdmin, User currentUser,
-			Collection sessionTopNodes) throws RemoteException, RemoteException;
+			Collection sessionTopNodes, Collection groups, Group topGroup) throws RemoteException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.UserStatsBusinessBean#getMainToolbarElements

@@ -34,6 +34,7 @@ import com.idega.block.datareport.util.ReportableData;
 import com.idega.block.datareport.util.ReportableField;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOServiceBean;
+import com.idega.core.accesscontrol.business.AccessControl;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneType;
@@ -158,7 +159,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			Collection postalCodeFilter, String dynamicLayout, String orderBy,
 			String doOrderFilter, String runAsThread, String sendToEmail, String excel, 
 			String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale, 
-			Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes) throws RemoteException {
+			Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes, Collection groups, Group group) throws RemoteException {
 
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
@@ -292,33 +293,8 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
 		reportCollection.addField(custodianPhoneField);
 
-		Group group = null;
-		Collection groups = null;
 		Collection users = null;
-		try {
-			if (groupIDFilter != null && !groupIDFilter.equals("")) {
-				groupIDFilter = groupIDFilter.substring(groupIDFilter
-						.lastIndexOf("_") + 1);
-				group = getGroupBusiness().getGroupByGroupID(
-						Integer.parseInt((groupIDFilter)));
-				if (group.isAlias()) {
-					group = group.getAlias();
-				}
-			}
-			if (group != null) {
-				if (groupsRecursiveFilter != null
-						&& groupsRecursiveFilter.equals("checked")) {
-					groups = getGroupBusiness()
-							.getChildGroupsRecursiveResultFiltered(group,
-									groupTypesFilter, true, true, true);
-				} else {
-					groups = new ArrayList();
-				}
-				groups.add(group);
-			}
-		} catch (FinderException e) {
-			e.printStackTrace();
-		}
+
 		users = getUserBusiness()
 				.getUsersBySpecificGroupsUserstatusDateOfBirthAndGender(groups,
 						userStatusesFilter, yearOfBirthFromFilter,
@@ -591,7 +567,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			String dynamicLayout, String orderBy, String doOrderFilter, 
 			String runAsThread, String sendToEmail, String excel, String excelNoStylesheet, 
 			String pdf, String xml, String html, Locale currentLocale, Boolean isSuperAdmin, 
-			User currentUser, Collection sessionTopNodes) throws RemoteException {
+			User currentUser, Collection sessionTopNodes, Collection groups, Group topGroup) throws RemoteException {
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
 		// PARAMETES
@@ -682,29 +658,6 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				LOCALIZED_EMAIL, "Email"), currentLocale);
 		reportCollection.addField(emailField);
 
-		Group topGroup = null;
-		Collection groups = null;
-		try {
-			if (groupIDFilter != null && !groupIDFilter.equals("")) {
-				groupIDFilter = groupIDFilter.substring(groupIDFilter
-						.lastIndexOf("_") + 1);
-				topGroup = getGroupBusiness().getGroupByGroupID(
-						Integer.parseInt((groupIDFilter)));
-			}
-			if (topGroup != null) {
-				if (groupsRecursiveFilter != null
-						&& groupsRecursiveFilter.equals("checked")) {
-					groups = getGroupBusiness()
-							.getChildGroupsRecursiveResultFiltered(topGroup,
-									groupTypesFilter, true, true, false);
-				} else {
-					groups = new ArrayList();
-					groups.add(topGroup);
-				}
-			}
-		} catch (FinderException e) {
-			e.printStackTrace();
-		}
 		Collection topNodes = getUserBusiness()
 				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
 						currentUser, sessionTopNodes, isSuperAdmin, currentUser);
