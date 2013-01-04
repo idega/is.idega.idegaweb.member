@@ -42,13 +42,17 @@ import com.idega.util.text.TextSoap;
  * <p>
  * Company: Idega Software
  * </p>
- * 
+ *
  * @author <a href="mailto:eiki@idega.is"> Eirikur Sveinn Hrafnsson</a>
  * @version 1.0
  */
 
 public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportFileHandler {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5267530370239473783L;
 	private UserBusiness biz;
 	private GroupBusiness groupBiz;
 	// private UserHome home;
@@ -62,8 +66,8 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 	private PhoneHome phoneHome;
 	private EmailHome eHome;
 
-	private ArrayList userValues;
-	private ArrayList failedRecords = new ArrayList();
+	private List<String> userValues;
+	private List<String> failedRecords = new ArrayList<String>();
 
 	private final int COLUMN_PERSONAL_ID = 0;
 	private final int COLUMN_NAME = 1;
@@ -80,6 +84,7 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 	public KRImportFileHandlerBean() {
 	}
 
+	@Override
 	public boolean handleRecords() throws RemoteException {
 		// transaction = this.getSessionContext().getUserTransaction();
 		// transaction2 = this.getSessionContext().getUserTransaction();
@@ -159,12 +164,13 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 		return success;
 	}
 
+	@Override
 	public void printFailedRecords() {
 		System.out.println("Import failed for these records, please fix and import again:");
 
-		Iterator iter = this.failedRecords.iterator();
+		Iterator<String> iter = this.failedRecords.iterator();
 		while (iter.hasNext()) {
-			System.out.println((String) iter.next());
+			System.out.println(iter.next());
 		}
 
 		System.out.println("Import failed for these records, please fix and import again:");
@@ -386,6 +392,7 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 		return true;
 	}
 
+	@Override
 	public void setImportFile(ImportFile file) {
 		this.file = file;
 	}
@@ -436,7 +443,7 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 		if (this.userValues != null) {
 
 			try {
-				value = (String) this.userValues.get(columnIndex);
+				value = this.userValues.get(columnIndex);
 			}
 			catch (RuntimeException e) {
 				return null;
@@ -456,19 +463,21 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 
 	/**
 	 * Returns the rootGroup.
-	 * 
+	 *
 	 * @return Group
 	 */
+	@Override
 	public Group getRootGroup() {
 		return this.rootGroup;
 	}
 
 	/**
 	 * Sets the rootGroup.
-	 * 
+	 *
 	 * @param rootGroup
 	 *          The rootGroup to set
 	 */
+	@Override
 	public void setRootGroup(Group rootGroup) {
 		this.rootGroup = rootGroup;
 	}
@@ -476,11 +485,13 @@ public class KRImportFileHandlerBean extends IBOServiceBean implements KRImportF
 	/**
 	 * @see com.idega.block.importer.business.ImportFileHandler#getFailedRecords()
 	 */
-	public List getFailedRecords() {
+	@Override
+	public List<String> getFailedRecords() {
 		return this.failedRecords;
 	}
-	
-	public List getSuccessRecords() throws RemoteException {
-		return new ArrayList();
+
+	@Override
+	public List<String> getSuccessRecords() throws RemoteException {
+		return new ArrayList<String>();
 	}
 }

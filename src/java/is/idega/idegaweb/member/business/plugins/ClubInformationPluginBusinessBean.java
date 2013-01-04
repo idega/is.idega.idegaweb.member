@@ -1,6 +1,6 @@
 /*
  * Created on Mar 11, 2003
- * 
+ *
  * To change this generated comment go to Window>Preferences>Java>Code
  * Generation>Code and Comments
  */
@@ -40,7 +40,7 @@ import com.idega.user.data.User;
 
 /**
  * @author palli
- * 
+ *
  * To change this generated comment go to Window>Preferences>Java>Code
  * Generation>Code and Comments
  */
@@ -51,33 +51,37 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#beforeUserRemove(com.idega.user.data.User)
 	 */
+	@Override
 	public void beforeUserRemove(User user, Group parentGroup) throws RemoveException, RemoteException {
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#afterUserCreate(com.idega.user.data.User)
 	 */
+	@Override
 	public void afterUserCreateOrUpdate(User user, Group parentGroup) throws CreateException, RemoteException {
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#beforeGroupRemove(com.idega.user.data.Group)
 	 */
+	@Override
 	public void beforeGroupRemove(Group group, Group parentGroup) throws RemoveException, RemoteException {
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#afterGroupCreate(com.idega.user.data.Group)
 	 */
+	@Override
 	public void afterGroupCreateOrUpdate(Group group, Group parentGroup) throws CreateException, RemoteException {
 		// grab changes to division committee and add roles
 		// grab connection to leagues
@@ -104,46 +108,52 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#instanciateEditor(com.idega.user.data.Group)
 	 */
+	@Override
 	public PresentationObject instanciateEditor(Group group) throws RemoteException {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#instanciateViewer(com.idega.user.data.Group)
 	 */
+	@Override
 	public PresentationObject instanciateViewer(Group group) throws RemoteException {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#getUserPropertiesTabs(com.idega.user.data.User)
 	 */
+	@Override
 	public List getUserPropertiesTabs(User user) throws RemoteException {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#getGroupPropertiesTabs(com.idega.user.data.Group)
 	 */
+	@Override
 	public List getGroupPropertiesTabs(Group group) throws RemoteException {
 		List list = new ArrayList();
 		list.add(new ClubInformationTab(group));
 		return list;
 	}
 
+	@Override
 	public String isUserAssignableFromGroupToGroup(User user, Group sourceGroup, Group targetGroup) {
 		return null;
 	}
 
+	@Override
 	public String isUserSuitedForGroup(User user, Group targetGroup) {
 		return null;
 	}
@@ -152,7 +162,7 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	 * A method to create a connection between a club and a league. Creates a
 	 * copy of the groups under the league template in under the club and
 	 * aliases to these groups under the league.
-	 * 
+	 *
 	 * @param connection
 	 *            The primary key id of the league that the club/division is
 	 *            being connected to.
@@ -163,10 +173,11 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	 *            The name of the club.
 	 * @param iwc
 	 *            The idegaWeb context object.
-	 * 
+	 *
 	 * @return Returns true if the groups were created normally, false
 	 *         otherwise.
 	 */
+	@Override
 	public boolean createSpecialConnection(String connection, int parentGroupId, String clubName, IWContext iwc) {
 		// Are we connecting to a league.
 		// TODO OTHER CONNECTION TO CLUB GROUP FOR LEAGUE
@@ -236,7 +247,7 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	 * A method that inserts copies of the leagues template groups under the
 	 * club/division. And also creates aliases back to the league from these
 	 * groups.
-	 * 
+	 *
 	 * @param parent The group to create the copies under. @param templateParent
 	 * The parent group of the template groups. These groups are copied. @param
 	 * special The group to store the aliases under. @param clubName The name of
@@ -335,14 +346,14 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	/*
 	 * A method that adds a new alias connection between a club/division and a
 	 * league, if some connection already exists in the league.
-	 * 
+	 *
 	 * @param special A Group object representing the league. @param playerGroup
 	 * A Group object representing the template group being copied. @param
 	 * newGroup The copy of the template group. @param clubName The name of the
 	 * club. @param iwc The idegaWeb context object. @param owners A Collection
 	 * representing the Users that are supposed to be the owners of the created
 	 * aliases.
-	 * 
+	 *
 	 * @return Returns true if the connection already exists and then the alias
 	 * is created. False otherwise.
 	 */
@@ -387,13 +398,14 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 	/**
 	 * A method to update the player groups created from the templates in a
 	 * league.
-	 * 
+	 *
 	 * @param special
 	 *            The group under the league tree that the update method was
 	 *            executed from.
-	 * 
+	 *
 	 * @return True if all the groups are updated, false otherwise.
 	 */
+	@Override
 	public boolean updateConnectedToSpecial(Group special, IWContext iwc) {
 		Thread updateThread = new SpecialConnectionUpdateThread(special, iwc.getApplicationContext());
 		updateThread.start();
@@ -430,27 +442,30 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#getMainToolbarElements()
 	 */
+	@Override
 	public List getMainToolbarElements() throws RemoteException {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#getGroupToolbarElements(com.idega.user.data.Group)
 	 */
+	@Override
 	public List getGroupToolbarElements(Group group) throws RemoteException {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#canCreateSubGroup(com.idega.user.data.Group,java.lang.String)
 	 */
+	@Override
 	public String canCreateSubGroup(Group group, String groupTypeOfSubGroup) throws RemoteException {
 		// A fix so we don't always autocreate main committess, only when
 		// creating new clubs,league,etc
@@ -701,7 +716,7 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 
 	/**
 	 * Creates a role with the name "The leagues abbreviation"+"_access";
-	 * 
+	 *
 	 * @param league
 	 * @return the created role
 	 * @throws NoAbbreviationException
@@ -712,10 +727,14 @@ public class ClubInformationPluginBusinessBean extends IBOServiceBean implements
 		if (abbreviation != null && !"".equals(abbreviation)) {
 			String role = abbreviation + "_access";
 			try {
-				return access.getRoleByRoleKey(role);
+				return access.getRoleByRoleKeyOld(role);
 			}
 			catch (FinderException e) {
-				return access.createRoleWithRoleKey(role);
+				try {
+					return access.getRoleByRoleKeyOld(access.createRoleWithRoleKey(role).getRoleKey());
+				} catch (FinderException e1) {
+					return null;
+				}
 			}
 		}
 		else {
