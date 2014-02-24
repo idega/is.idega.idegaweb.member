@@ -34,11 +34,11 @@ public class UserFamilyTab extends UserTab {
 	private static final String IW_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member";
 
 	private static final String TAB_NAME = "usr_fam_tab_name";
-	private static final String DEFAULT_TAB_NAME = "Family";	
-	
+	private static final String DEFAULT_TAB_NAME = "Family";
+
 	private static final String MEMBER_HELP_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member.isi";
 	private static final String HELP_TEXT_KEY = "user_family_tab";
-	
+
 	private Text spouseText;
 	private Text childrenText;
 	private Text custodiansText;
@@ -55,26 +55,33 @@ public class UserFamilyTab extends UserTab {
 		IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 
-		setName(iwrb.getLocalizedString(TAB_NAME, DEFAULT_TAB_NAME));	
+		setName(iwrb.getLocalizedString(TAB_NAME, DEFAULT_TAB_NAME));
 //		super.setName("Family");
 	}
 
+	@Override
 	public void updateFieldsDisplayStatus() {
 	}
+	@Override
 	public void initializeFields() {
 	}
+	@Override
 	public void initializeFieldNames() {
 	}
+	@Override
 	public void initializeFieldValues() {
 	}
+	@Override
 	public boolean collect(IWContext iwc) {
 		initFieldContents();
 		return true;
 	}
+	@Override
 	public boolean store(IWContext iwc) {
 		return true;
 	}
 
+	@Override
 	public void initFieldContents() {
 		resize(1, 1);
 		setCellpadding(5);
@@ -86,7 +93,7 @@ public class UserFamilyTab extends UserTab {
 		IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 		Link attachLink = new Link(iwrb.getLocalizedString("usr_fam_attach","Attach"));
-		attachLink.setStyleClass("styledLink"); 
+		attachLink.setStyleClass("styledLink");
 		attachLink.setWindowToOpen(FamilyConnector.class);
 		attachLink.addParameter(FamilyConnector._PARAM_USER_ID, getUserId());
 		attachLink.addParameter(FamilyConnector._PARAM_METHOD, FamilyConnector._METHOD_ATTACH);
@@ -131,29 +138,31 @@ public class UserFamilyTab extends UserTab {
 		}
 	}
 
+	@Override
 	public void main(IWContext iwc) {
 		if (getPanel() != null) {
-			getPanel().addHelpButton(getHelpButton());		
+			getPanel().addHelpButton(getHelpButton());
 		}
 	}
 
+	@Override
 	public void initializeTexts() {
 		IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
-		
+
 		this.spouseText = new Text(iwrb.getLocalizedString("usr_fam_spouse","Spouse") + ":");
 		this.spouseText.setBold();
-		
+
 		this.custodiansText = new Text(iwrb.getLocalizedString("usr_fam_custodians","Custodians") + ":");
 		this.custodiansText.setBold();
-		
+
 		this.childrenText = new Text(iwrb.getLocalizedString("usr_fam_children","Children") + ":");
 		this.childrenText.setBold();
-		
+
 		this.siblingsText = new Text(iwrb.getLocalizedString("usr_fam_siblings","Siblings") + ":");
 		this.siblingsText.setBold();
 	}
-	
+
 	public Help getHelpButton() {
 		IWContext iwc = IWContext.getInstance();
 		IWBundle iwb = getBundle(iwc);
@@ -163,9 +172,10 @@ public class UserFamilyTab extends UserTab {
 		help.setHelpTextKey(HELP_TEXT_KEY);
 		help.setImage(helpImage);
 		return help;
-		
+
 	}
 
+	@Override
 	public void lineUpFields() {
 	}
 
@@ -252,7 +262,6 @@ public class UserFamilyTab extends UserTab {
 
 	private Table getSiblingTable() throws RemoteException {
 		Table table = new Table();
-
 		Collection<User> siblings = getMemberFamilyLogic(getIWApplicationContext()).getSiblingsFor(this.user);
 
 		if (siblings != null && siblings.size() > 0) {
@@ -260,9 +269,8 @@ public class UserFamilyTab extends UserTab {
 			table.mergeCells(1, 1, 2, 1);
 			int row = 2;
 
-			Iterator iter = siblings.iterator();
-			while (iter.hasNext()) {
-				User user = (User) iter.next();
+			for (Iterator<User> iter = siblings.iterator(); iter.hasNext();) {
+				User user = iter.next();
 				table.add(getFamilyLink(user, getMemberFamilyLogic(getIWApplicationContext()).getSiblingRelationType()), 1, row);
 				table.add(getUserPropertyLink(user), 2, row++);
 //				table.add(new Text(user.getName() + ", " + user.getPersonalID()), 2, row++);
@@ -272,12 +280,12 @@ public class UserFamilyTab extends UserTab {
 
 		return null;
 	}
-	
+
 	private Link getUserPropertyLink(User user) {
 		Link l = new Link(user.getName() + ", " + user.getPersonalID());
 		l.setWindowToOpen(UserPropertyWindow.class);
 		l.addParameter(UserPropertyWindow.PARAMETERSTRING_USER_ID,user.getPrimaryKey().toString());
-		
+
 		return l;
 	}
 
@@ -287,7 +295,7 @@ public class UserFamilyTab extends UserTab {
 
 		Link link = new Link(iwrb.getLocalizedString("usr_fam_detach","Detach"));
 		link.setWindowToOpen(FamilyConnector.class);
-		link.setStyleClass("styledLink"); 
+		link.setStyleClass("styledLink");
 		link.addParameter(FamilyConnector._PARAM_USER_ID, getUserId());
 		link.addParameter(FamilyConnector._PARAM_RELATED_USER_ID, user.getPrimaryKey().toString());
 		link.addParameter(FamilyConnector._PARAM_METHOD, FamilyConnector._METHOD_DETACH);
@@ -300,7 +308,7 @@ public class UserFamilyTab extends UserTab {
 		FamilyLogic familyLogic = null;
 		if (familyLogic == null) {
 			try {
-				familyLogic = (FamilyLogic) com.idega.business.IBOLookup.getServiceInstance(iwc, FamilyLogic.class);
+				familyLogic = com.idega.business.IBOLookup.getServiceInstance(iwc, FamilyLogic.class);
 			}
 			catch (java.rmi.RemoteException rme) {
 				throw new RuntimeException(rme.getMessage());
@@ -312,7 +320,8 @@ public class UserFamilyTab extends UserTab {
 	/**
 	* @see com.idega.presentation.PresentationObject#getBundleIdentifier()
 	*/
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
-	}	
+	}
 }
