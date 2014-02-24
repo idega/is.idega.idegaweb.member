@@ -3,11 +3,12 @@ package is.idega.idegaweb.member.presentation;
 import is.idega.block.family.business.FamilyLogic;
 import is.idega.block.family.business.NoChildrenFound;
 import is.idega.block.family.business.NoCustodianFound;
-import is.idega.block.family.business.NoSiblingFound;
 import is.idega.block.family.business.NoSpouseFound;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
+
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
@@ -252,15 +253,7 @@ public class UserFamilyTab extends UserTab {
 	private Table getSiblingTable() throws RemoteException {
 		Table table = new Table();
 
-		Collection siblings = null;
-		try {
-			siblings = getMemberFamilyLogic(getIWApplicationContext()).getSiblingsFor(this.user);
-		}
-		catch (NoSiblingFound nsf) {
-			System.err.println(nsf.getMessage());
-//			nsf.printStackTrace(System.err);
-			siblings = null;
-		}
+		Collection<User> siblings = getMemberFamilyLogic(getIWApplicationContext()).getSiblingsFor(this.user);
 
 		if (siblings != null && siblings.size() > 0) {
 			table.add(this.siblingsText, 1, 1);
