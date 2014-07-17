@@ -40,7 +40,6 @@ public class UserGroupImageTab extends UserTab {
 		setName(iwrb.getLocalizedString(TAB_NAME, DEFAULT_TAB_NAME));
 	}
 
-	@Override
 	public boolean collect(IWContext iwc) {
 		String imageID = iwc.getParameter(this.imageFieldName + "-"
 				+ getUserId() + "-" + getGroupID());
@@ -59,7 +58,7 @@ public class UserGroupImageTab extends UserTab {
 		return true;
 	}
 
-	@Override
+	
 	public void initFieldContents() {
 		try {
 			this.imageField.setImSessionImageName(this.imageFieldName + "-"
@@ -99,21 +98,21 @@ public class UserGroupImageTab extends UserTab {
 
 	}
 
-	@Override
+	
 	public void initializeFieldNames() {
 		this.imageFieldName = "usr_grp_imag_userSystemImageId";
 		this.removeImageFieldName = "usr_grp_imag_removeImageFieldName";
 		this.groupEmailFieldName = "usr_grp_email";
 	}
 
-	@Override
+	
 	public void initializeFieldValues() {
 		this.systemImageId = -1;
 		this.fieldValues.put(this.removeImageFieldName, new Boolean(false));
 		this.fieldValues.put(this.groupEmailFieldName, "");
 	}
 
-	@Override
+	
 	public void initializeFields() {
 		this.imageField = new ImageInserter(this.imageFieldName + "-"
 				+ getUserId() + "-" + getGroupID());
@@ -125,7 +124,7 @@ public class UserGroupImageTab extends UserTab {
 		this.groupEmailField = new TextInput(this.groupEmailFieldName + "-" + getUserId() + "-" + getGroupID());
 	}
 
-	@Override
+	
 	public void initializeTexts() {
 		IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
@@ -142,7 +141,7 @@ public class UserGroupImageTab extends UserTab {
 				this.groupEmailFieldName, "Group email"));
 	}
 
-	@Override
+	
 	public void lineUpFields() {
 		this.resize(1, 1);
 
@@ -165,7 +164,7 @@ public class UserGroupImageTab extends UserTab {
 		this.add(imageTable, 1, 1);
 	}
 
-	@Override
+	
 	public boolean store(IWContext iwc) {
 		try {
 			if (getUser() != null && getGroupID() > -1) {
@@ -216,7 +215,7 @@ public class UserGroupImageTab extends UserTab {
 		return true;
 	}
 
-	@Override
+	
 	public void updateFieldsDisplayStatus() {
 		this.imageField.setImageId(this.systemImageId);
 		this.removeImageField.setChecked(((Boolean) this.fieldValues

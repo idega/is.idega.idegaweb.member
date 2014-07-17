@@ -166,7 +166,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 				groupsRecursiveFilter, groupTypesFilter, userStatusesFilter,
 				yearOfBirthFromFilter, yearOfBirthToFilter, genderFilter,
 				postalCodeFilter, dynamicLayout, orderBy, doOrderFilter, "",
-				"", "", "", "", "", "", currentLocale, isSuperAdmin,
+				"", "", "", "", "", "", currentLocale, Boolean.valueOf(isSuperAdmin),
 				this.getUserContext().getCurrentUser(), topNodes, groups, group);
 	}
 
@@ -222,7 +222,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 		return getUserStatsBusiness().getStatisticsForGroups(groupIDFilter,
 				groupsRecursiveFilter, groupTypesFilter, dynamicLayout,
 				orderBy, doOrderFilter, "", "", "", "", "", "", "",
-				currentLocale, isSuperAdmin,
+				currentLocale, Boolean.valueOf(isSuperAdmin),
 				this.getUserContext().getCurrentUser(), topNodes, groups, topGroup);
 	}
 

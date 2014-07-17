@@ -34,7 +34,6 @@ import com.idega.block.datareport.util.ReportableData;
 import com.idega.block.datareport.util.ReportableField;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOServiceBean;
-import com.idega.core.accesscontrol.business.AccessControl;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneType;
@@ -178,7 +177,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 		// The name you give the field/parameter must not contain spaces or
 		// special characters
 		ReportableField userIDField = null;
-		if (isSuperAdmin) {
+		if (isSuperAdmin.booleanValue()) {
 			userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
 			userIDField.setLocalizedName(this._iwrb.getLocalizedString(
 					LOCALIZED_USER_ID, "User ID"), currentLocale);
@@ -301,7 +300,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 						yearOfBirthToFilter, genderFilter);
 		Collection topNodes = getUserBusiness()
 				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
-						currentUser, sessionTopNodes, isSuperAdmin, currentUser);
+						currentUser, sessionTopNodes, isSuperAdmin.booleanValue(), currentUser);
 		Map usersByGroups = new TreeMap();
 		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
 				.getHome(AddressType.class);
@@ -486,7 +485,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				// create a new ReportData for each row
 				ReportableData data = new ReportableData();
 				// add the data to the correct fields/columns
-				if (isSuperAdmin) {
+				if (isSuperAdmin.booleanValue()) {
 					data.addData(userIDField, user.getPrimaryKey().toString());
 				}
 				data.addData(nameField, user.getName());
@@ -585,7 +584,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 		// The name you give the field/parameter must not contain spaces or
 		// special characters
 		ReportableField groupIDField = null;
-		if (isSuperAdmin) {
+		if (isSuperAdmin.booleanValue()) {
 			groupIDField = new ReportableField(FIELD_NAME_GROUP_ID,
 					String.class);
 			groupIDField.setLocalizedName(this._iwrb.getLocalizedString(
@@ -660,7 +659,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 
 		Collection topNodes = getUserBusiness()
 				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
-						currentUser, sessionTopNodes, isSuperAdmin, currentUser);
+						currentUser, sessionTopNodes, isSuperAdmin.booleanValue(), currentUser);
 		Map usersByGroups = new TreeMap();
 		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
 				.getHome(AddressType.class);
@@ -730,7 +729,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				// create a new ReportData for each row
 				ReportableData data = new ReportableData();
 				// add the data to the correct fields/columns
-				if (isSuperAdmin) {
+				if (isSuperAdmin.booleanValue()) {
 					data
 							.addData(groupIDField, group.getPrimaryKey()
 									.toString());
