@@ -2,6 +2,7 @@ package is.idega.idegaweb.member.business;
 
 
 import javax.ejb.CreateException;
+
 import com.idega.business.IBOHomeImpl;
 
 public class UserStatsNoThreadBusinessHomeImpl extends IBOHomeImpl implements

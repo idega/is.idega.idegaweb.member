@@ -58,6 +58,7 @@ public class UserGroupImageTab extends UserTab {
 		return true;
 	}
 
+
 	public void initFieldContents() {
 		try {
 			this.imageField.setImSessionImageName(this.imageFieldName + "-"
