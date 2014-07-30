@@ -6,8 +6,7 @@ import com.idega.business.IBOHomeImpl;
 
 public class UserStatsBusinessHomeImpl extends IBOHomeImpl implements
 		UserStatsBusinessHome {
-	@Override
-	public Class<UserStatsBusiness> getBeanInterfaceClass() {
+	public Class getBeanInterfaceClass() {
 		return UserStatsBusiness.class;
 	}
 
