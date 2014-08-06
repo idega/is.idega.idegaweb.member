@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+	xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+	version="1.0">
+
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubCommitteeMainGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubMemberGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubPlayerGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubPlayerTemplateGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubPracticePlayerGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubTrainerGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionTemplateGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionTrainerGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberFederationCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberFederationGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberFederationStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueClubCollectionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueClubDivisionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueCollectionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberLeagueStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberRegionalUnionCollectionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberRegionalUnionCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberRegionalUnionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberRegionalUnionStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberTempGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberUnionCommitteeGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberUnionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberUnionStaffGroup" />
+    
+</entity-mappings>
