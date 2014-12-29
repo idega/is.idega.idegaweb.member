@@ -4,10 +4,10 @@
 package is.idega.idegaweb.member.business;
 
 import is.idega.block.nationalregister.business.NationalRegisterBusiness;
-import is.idega.block.nationalregister.data.NationalRegister;
 import is.idega.idegaweb.member.presentation.GroupStatsWindowPlugin;
 import is.idega.idegaweb.member.presentation.UserStatsWindowPlugin;
 import is.idega.idegaweb.member.util.IWMemberConstants;
+
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Date;
@@ -68,7 +68,7 @@ import com.idega.util.text.TextSoap;
  *
  */
 public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsBusiness, UserGroupPlugInBusiness {
-    
+
     private UserBusiness userBiz = null;
     private GroupBusiness groupBiz = null;
     private NationalRegisterBusiness nationalRegisterBiz = null;
@@ -133,10 +133,10 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	private static final String FIELD_NAME_USER_INFO_1 = "user_info_1";
 	private static final String FIELD_NAME_USER_INFO_2 = "user_info_2";
 	private static final String FIELD_NAME_USER_INFO_3 = "user_info_3";
-	
+
 	private Map cachedGroups = new HashMap();
 	private Map cachedParents = new HashMap();
-	
+
 	private void initializeBundlesIfNeeded() {
 		if (this._iwb == null) {
 			this._iwb = this.getIWApplicationContext().getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
@@ -145,8 +145,8 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		this._userIwrb = this.getIWApplicationContext().getIWMainApplication().getBundle(USER_IW_BUNDLE_IDENTIFIER).getResourceBundle(this.getUserContext().getCurrentLocale());
 	}
 
-    
-    public ReportableCollection getStatisticsForUsers(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, Collection userStatusesFilter, Integer yearOfBirthFromFilter, Integer yearOfBirthToFilter, String genderFilter, Collection postalCodeFilter, String dynamicLayout, String orderBy) throws RemoteException {        
+
+    public ReportableCollection getStatisticsForUsers(String groupIDFilter, String groupsRecursiveFilter, Collection groupTypesFilter, Collection userStatusesFilter, Integer yearOfBirthFromFilter, Integer yearOfBirthToFilter, String genderFilter, Collection postalCodeFilter, String dynamicLayout, String orderBy) throws RemoteException {
 
         initializeBundlesIfNeeded();
 		ReportableCollection reportCollection = new ReportableCollection();
@@ -154,14 +154,14 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		boolean isSuperAdmin = isSuperAdmin();
 		//PARAMETES
 		//Add extra...because the inputhandlers supply the basic header texts
-		
+
 		reportCollection.addExtraHeaderParameter(
 				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
 				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
- 	
+
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
-		 //The name you give the field/parameter must not contain spaces or special characters		 
+		 //The name you give the field/parameter must not contain spaces or special characters
 		ReportableField userIDField = null;
 		if (isSuperAdmin) {
 			userIDField = new ReportableField(FIELD_NAME_USER_ID, String.class);
@@ -191,27 +191,27 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
 		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
 		 reportCollection.addField(groupPathField);
-		 
+
 		 ReportableField userStatusField = new ReportableField(FIELD_NAME_USER_STATUS, String.class);
 		 userStatusField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_USER_STATUS, "User Status"), currentLocale);
 		 reportCollection.addField(userStatusField);
-		 
+
 		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
 		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
 		 reportCollection.addField(streetAddressField);
-		 
+
 		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
 		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
-		 reportCollection.addField(postalAddressField); 
+		 reportCollection.addField(postalAddressField);
 
 		 ReportableField countryField = new ReportableField(FIELD_NAME_COUNTRY, String.class);
 		 countryField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_COUNTRY, "Country"), currentLocale);
 		 reportCollection.addField(countryField);
-		 
+
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
 		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
 		 reportCollection.addField(phoneField);
-		 
+
 		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
 		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
 		 reportCollection.addField(emailField);
@@ -239,7 +239,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField custodianPhoneField = new ReportableField(FIELD_NAME_CUSTODIAN_PHONE, String.class);
 		 custodianPhoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
 		 reportCollection.addField(custodianPhoneField);
-		
+
 		Group group = null;
 		Collection groups = null;
 		Collection users = null;
@@ -283,14 +283,14 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			     }
 			     parentGroupCollection.retainAll(groups);
 			     Iterator parIt = parentGroupCollection.iterator();
-			   
+
 			   	String personalID = user.getPersonalID();
 			   	String dateOfBirthString = null;
 			   	String ageString = null;
 			   	String custodianString = null;
 				String custodianPersonalID = null;
 				String custodianPhoneString = null;
-//			 	Collection custodians = null; 
+//			 	Collection custodians = null;
 				try {
 					Date date_of_birth = user.getDateOfBirth();
 					if (date_of_birth != null) {
@@ -299,14 +299,14 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 						BigDecimal age = new BigDecimal(ageInMillisecs/MILLISECONDS_IN_YEAR);
 						ageString = String.valueOf(age.intValue());
 						if (age.doubleValue() < 18) {
-							NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
+							is.idega.block.nationalregister.data.bean.NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
 							if (userRegister != null) {
 								custodianPersonalID = userRegister.getFamilyId();
 								User custodian = getUserBusiness().getUser(custodianPersonalID);
 								custodianString = custodian.getName();
 								custodianPhoneString = getPhoneNumber(custodian);
 							}
-							
+
 						} else {
 							custodianPersonalID = personalID;
 						}
@@ -330,7 +330,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			   	}
 			   	Collection addresses = null;
 			   	if (at1 != null) {
-			   	    
+
 					   	try {
                             addresses = user.getAddresses(at1);
                         } catch (IDOLookupException e1) {
@@ -391,13 +391,13 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			         else {
 			             UserStatus userStatus =(UserStatus)userStatuses.iterator().next();
 			             String userStatusKey = userStatus.getStatus().getStatusKey();
-			             if (!userStatusesFilter.isEmpty() && !userStatusesFilter.contains(userStatusKey)) {			                 
+			             if (!userStatusesFilter.isEmpty() && !userStatusesFilter.contains(userStatusKey)) {
 			                 continue;
 			             }
 			             else {
 			                 userStatusString = this._iwrb.getLocalizedString(USR_STAT_PREFIX+userStatusKey, userStatusKey);
 			             }
-			             
+
 			         }
 			         String userInfo1String = "";
 			         String userInfo2String = "";
@@ -409,7 +409,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			        	  userInfo3String = userInfoColumns.getUserInfo3();
 			          }
 			         String parentGroupPath = getParentGroupPath(parentGroup, topNodes);
-				     // create a new ReportData for each row	    
+				     // create a new ReportData for each row
 			         ReportableData data = new ReportableData();
 				     //	add the data to the correct fields/columns
 			         if (isSuperAdmin) {
@@ -444,11 +444,11 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			// iterate through the ordered map and ordered lists and add to the final collection
 			Iterator statsDataIter = usersByGroups.keySet().iterator();
 			while (statsDataIter.hasNext()) {
-				
+
 				List datas = (List) usersByGroups.get(statsDataIter.next());
 				// don't forget to add the row to the collection
 				reportCollection.addAll(datas);
-			}			 	
+			}
 
     	ReportableField[] sortFields = null;
     	List orderByFields = new ArrayList();
@@ -467,7 +467,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	    	}
 		}
     	orderByFields.add(nameField);
-		
+
 		sortFields = new ReportableField[orderByFields.size()];
     	for (int i=0; i<orderByFields.size(); i++) {
     		sortFields[i] = (ReportableField)orderByFields.get(i);
@@ -484,14 +484,14 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		boolean isSuperAdmin = isSuperAdmin();
 		//PARAMETES
 		//Add extra...because the inputhandlers supply the basic header texts
-		
+
 		reportCollection.addExtraHeaderParameter(
 				"label_current_date", this._iwrb.getLocalizedString(LOCALIZED_CURRENT_DATE, "Current date"),
 				"current_date", TextSoap.findAndCut((new IWTimestamp()).getLocaleDateAndTime(currentLocale, IWTimestamp.LONG,IWTimestamp.SHORT),"GMT"));
- 	
+
 		//PARAMETERS that are also FIELDS
 		 //data from entity columns, can also be defined with an entity definition, see getClubMemberStatisticsForRegionalUnions method
-		 //The name you give the field/parameter must not contain spaces or special characters		
+		 //The name you give the field/parameter must not contain spaces or special characters
 		ReportableField groupIDField = null;
 		if (isSuperAdmin) {
 			groupIDField = new ReportableField(FIELD_NAME_GROUP_ID, String.class);
@@ -521,14 +521,14 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField groupPathField = new ReportableField(FIELD_NAME_GROUP_PATH, String.class);
 		 groupPathField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_GROUP_PATH, "Group Path"), currentLocale);
 		 reportCollection.addField(groupPathField);
-		 
+
 		 ReportableField streetAddressField = new ReportableField(FIELD_NAME_STREET_ADDRESS, String.class);
 		 streetAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_STREET_ADDRESS, "Street Address"), currentLocale);
 		 reportCollection.addField(streetAddressField);
-		 
+
 		 ReportableField postalAddressField = new ReportableField(FIELD_NAME_POSTAL_ADDRESS, String.class);
 		 postalAddressField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POSTAL_ADDRESS, "Postal Address"), currentLocale);
-		 reportCollection.addField(postalAddressField); 
+		 reportCollection.addField(postalAddressField);
 
 		 ReportableField pBoxField = new ReportableField(FIELD_NAME_POST_BOX, String.class);
 		 pBoxField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_POST_BOX, "Postbox"), currentLocale);
@@ -537,11 +537,11 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		 ReportableField phoneField = new ReportableField(FIELD_NAME_PHONE, String.class);
 		 phoneField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_PHONE, "Phone"), currentLocale);
 		 reportCollection.addField(phoneField);
-		 
+
 		 ReportableField emailField = new ReportableField(FIELD_NAME_EMAIL, String.class);
 		 emailField.setLocalizedName(this._iwrb.getLocalizedString(LOCALIZED_EMAIL, "Email"), currentLocale);
 		 reportCollection.addField(emailField);
-		
+
 		Group topGroup = null;
 		Collection groups = null;
 		try {
@@ -584,7 +584,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			    String shortNameString = group.getShortName();
 			    String abbrevation = group.getAbbrevation();
 			    String displayNameString = null;
-			    
+
 			    if (abbrevation!=null && !abbrevation.equals("")) {
 			    	displayNameString = abbrevation;
 			    } else {
@@ -599,7 +599,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			   	    emailString = email.getEmailAddress();
 			   	}
 			   	Collection addresses = null;
-			   	if (at1 != null) {			   	    
+			   	if (at1 != null) {
 				   	try {
                         addresses = group.getAddresses(at1);
                     } catch (IDOLookupException e1) {
@@ -620,10 +620,10 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 			   	    postalAddressString = address.getPostalAddress();
 			   	    postBoxString = address.getPOBox();
 			   	}
-			   	while (parIt.hasNext()) {				     
+			   	while (parIt.hasNext()) {
 			        Group parentGroup = (Group)parIt.next();
 			        String parentGroupPath = getParentGroupPath(parentGroup, topNodes);
-				    // create a new ReportData for each row	    
+				    // create a new ReportData for each row
 			        ReportableData data = new ReportableData();
 			        //	add the data to the correct fields/columns
 			        if (isSuperAdmin) {
@@ -654,7 +654,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 				List datas = (List) usersByGroups.get(statsDataIter.next());
 				// don't forget to add the row to the collection
 				reportCollection.addAll(datas);
-			}			 	
+			}
 
     	ReportableField[] sortFields = null;
     	List orderByFields = new ArrayList();
@@ -673,7 +673,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	    	}
 		}
    		orderByFields.add(nameField);
-		
+
 		sortFields = new ReportableField[orderByFields.size()];
     	for (int i=0; i<orderByFields.size(); i++) {
     		sortFields[i] = (ReportableField)orderByFields.get(i);
@@ -688,16 +688,16 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		String phoneNumber = "";
 		if (!phones.isEmpty()) {
 			Phone phone = null;
-			int tempPhoneType = 0;			
+			int tempPhoneType = 0;
 			int selectedPhoneType = 0;
-			
+
 			Iterator phIt =	phones.iterator();
 			while (phIt.hasNext()) {
 				phone = (Phone) phIt.next();
 				if (phone != null) {
 					tempPhoneType = phone.getPhoneTypeId();
 					if (tempPhoneType != PhoneType.FAX_NUMBER_ID) {
-						if (tempPhoneType == PhoneType.MOBILE_PHONE_ID) {							
+						if (tempPhoneType == PhoneType.MOBILE_PHONE_ID) {
 							phoneNumber = phone.getNumber();
 							break;
 						}
@@ -715,11 +715,11 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		}
 		return phoneNumber;
     }
-    
-    private String getParentGroupPath(Group parentGroup, Collection topNodes) { 
+
+    private String getParentGroupPath(Group parentGroup, Collection topNodes) {
         String parentGroupPath = parentGroup.getName();
 	    Collection parentGroupCollection = null;
-	    
+
 	    while (parentGroup != null && !topNodes.contains(parentGroup)) {
 	        String parentKey = parentGroup.getPrimaryKey().toString();
 	        if (this.cachedParents.containsKey((parentKey))) {
@@ -730,7 +730,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	                 parentID = (Integer)it.next();
 	                 String groupKey = parentID.toString();
 	                 if (this.cachedGroups.containsKey(groupKey)) {
-	                     parentGroup = (Group)this.cachedGroups.get(groupKey); 
+	                     parentGroup = (Group)this.cachedGroups.get(groupKey);
 	                 }
 	                 else {
 	                     try {
@@ -746,7 +746,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		        }
 			} else {
 			         parentGroupCollection = parentGroup.getParentGroups(this.cachedParents, this.cachedGroups);
-			         
+
 			     if (!parentGroupCollection.isEmpty()) {
 			         parentGroup = (Group)parentGroupCollection.iterator().next();
 			     }else {
@@ -757,7 +757,7 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 	    }
     return parentGroupPath;
     }
-    
+
     private GroupHome getGroupHome() {
         try {
             return (GroupHome) IDOLookup.getHome(Group.class);
@@ -769,44 +769,45 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 
     private GroupBusiness getGroupBusiness() throws RemoteException {
 		if (this.groupBiz == null) {
-			this.groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), GroupBusiness.class);
-		}	
+			this.groupBiz = IBOLookup.getServiceInstance(this.getIWApplicationContext(), GroupBusiness.class);
+		}
 		return this.groupBiz;
 	}
 
 	private UserBusiness getUserBusiness() throws RemoteException {
 		if (this.userBiz == null) {
-			this.userBiz = (UserBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserBusiness.class);
-		}	
+			this.userBiz = IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserBusiness.class);
+		}
 		return this.userBiz;
 	}
 
 	private NationalRegisterBusiness getNationalRegisterBusiness() throws RemoteException {
 		if (this.nationalRegisterBiz == null) {
-			this.nationalRegisterBiz = (NationalRegisterBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), NationalRegisterBusiness.class);
-		}	
+			this.nationalRegisterBiz = IBOLookup.getServiceInstance(this.getIWApplicationContext(), NationalRegisterBusiness.class);
+		}
 		return this.nationalRegisterBiz;
 	}
 
 	private UserInfoColumnsBusiness getUserInfoColumnsBusiness() throws RemoteException {
 		if (this.userInfoColumnsBiz == null) {
-			this.userInfoColumnsBiz = (UserInfoColumnsBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserInfoColumnsBusiness.class);
-		}	
+			this.userInfoColumnsBiz = IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserInfoColumnsBusiness.class);
+		}
 		return this.userInfoColumnsBiz;
 	}
 
 	private UserStatusBusiness getUserStatusBusiness() throws RemoteException {
 		if (this.userStatusBiz == null) {
-			this.userStatusBiz = (UserStatusBusiness) IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserStatusBusiness.class);
-		}	
+			this.userStatusBiz = IBOLookup.getServiceInstance(this.getIWApplicationContext(), UserStatusBusiness.class);
+		}
 		return this.userStatusBiz;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.idega.user.business.UserGroupPlugInBusiness#getMainToolbarElements()
 	 */
+	@Override
 	public List getMainToolbarElements() throws RemoteException {
 		List list = new ArrayList(1);
 		list.add(new UserStatsWindowPlugin());
@@ -814,57 +815,69 @@ public class UserStatsBusinessBean extends IBOSessionBean  implements UserStatsB
 		return list;
 	}
 
+	@Override
 	public void afterGroupCreateOrUpdate(Group group, Group parentGroup) throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void afterUserCreateOrUpdate(User user, Group parentGroup) throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void beforeGroupRemove(Group group, Group parentGroup) throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void beforeUserRemove(User user, Group parentGroup) throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public String canCreateSubGroup(Group parentGroup, String groupTypeOfSubGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getGroupPropertiesTabs(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getGroupToolbarElements(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getUserPropertiesTabs(User user) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public PresentationObject instanciateEditor(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public PresentationObject instanciateViewer(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String isUserAssignableFromGroupToGroup(User user, Group sourceGroup, Group targetGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String isUserSuitedForGroup(User user, Group targetGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
