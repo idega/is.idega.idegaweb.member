@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -936,10 +937,10 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 	 */
 	@Override
 	public List getMainToolbarElements() throws RemoteException {
-		List list = new ArrayList(1);
-		list.add(new UserStatsWindowPlugin());
-		list.add(new GroupStatsWindowPlugin());
-		return list;
+		return Arrays.asList(
+				new UserStatsWindowPlugin(),
+				new GroupStatsWindowPlugin()
+		);
 	}
 
 	@Override
