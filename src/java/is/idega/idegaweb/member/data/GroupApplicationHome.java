@@ -1,5 +1,6 @@
 package is.idega.idegaweb.member.data;
 
+import com.idega.user.data.Group;
 
 public interface GroupApplicationHome extends com.idega.data.IDOHome
 {
@@ -14,5 +15,7 @@ public interface GroupApplicationHome extends com.idega.data.IDOHome
  public java.lang.String getPendingStatusString()throws java.rmi.RemoteException, java.rmi.RemoteException;
  public java.lang.String getApprovedStatusString()throws java.rmi.RemoteException, java.rmi.RemoteException;
  public java.lang.String getDeniedStatusString()throws java.rmi.RemoteException, java.rmi.RemoteException;
+ public java.util.Collection findFindAllApplicationsByStatusAndUserAndApplicationGroupOrderedByCreationDate(java.lang.String p0, com.idega.user.data.User p1, Group p2) throws javax.ejb.FinderException,java.rmi.RemoteException;
+ public java.util.Collection findFindAllApplicationsByUserAndApplicationGroupOrderedByCreationDate(com.idega.user.data.User p1, Group p2) throws javax.ejb.FinderException,java.rmi.RemoteException;
 
 }
