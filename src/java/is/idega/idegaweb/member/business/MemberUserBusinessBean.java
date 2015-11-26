@@ -1,8 +1,7 @@
 package is.idega.idegaweb.member.business;
-import is.idega.idegaweb.member.util.IWMemberConstants;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -18,11 +17,16 @@ import com.idega.idegaweb.IWUserContext;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.business.UserBusinessBean;
+import com.idega.user.dao.GroupDAO;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupRelation;
+import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.expression.ELUtil;
+
+import is.idega.idegaweb.member.util.IWMemberConstants;
 
 /**
  * Description:	Use this business class to handle member information
@@ -573,6 +577,35 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		throw new NoClubFoundException(group.getName());
 	}
 
+	@Override
+	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId) throws NoClubFoundException {
+//		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
+//
+//		if(parents!=null && !parents.isEmpty()){
+//			Iterator<Group> iter = parents.iterator();
+//			while (iter.hasNext()) {
+//				Group parentGroup = iter.next();
+//				if(IWMemberConstants.GROUP_TYPE_CLUB.equals(parentGroup.getGroupType())){
+//					return parentGroup;//there should only be one
+//				}
+//			}
+//		}
+//
+//		//if no club is found we throw the exception
+//		throw new NoClubFoundException(group.getName());
+
+		if (groupId == null) {
+			return null;
+		}
+
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(GroupTypeConstants.GROUP_TYPE_CLUB));
+		if (ListUtil.isEmpty(ids)) {
+			throw new NoClubFoundException("Group ID: " + groupId);
+		}
+
+		return groupDAO.findGroup(ids.get(0));
+	}
 
 	/**
 	 * @param targetGroup
@@ -605,6 +638,35 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		//if no division is found we throw the exception
 		throw new NoDivisionFoundException(group.getName());
+	}
+
+	@Override
+	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId) throws NoDivisionFoundException {
+//		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
+//
+//		if(parents!=null && !parents.isEmpty()){
+//			Iterator<Group> iter = parents.iterator();
+//			while (iter.hasNext()) {
+//				Group parentGroup = iter.next();
+//				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(parentGroup.getGroupType())){
+//					return parentGroup;//there should only be one
+//				}
+//			}
+//		}
+//
+//		//if no division is found we throw the exception
+//		throw new NoDivisionFoundException(group.getName());
+		if (groupId == null) {
+			return null;
+		}
+
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
+		if (ListUtil.isEmpty(ids)) {
+			throw new NoDivisionFoundException("Group ID: " + groupId);
+		}
+
+		return groupDAO.findGroup(ids.get(0));
 	}
 
 	/**

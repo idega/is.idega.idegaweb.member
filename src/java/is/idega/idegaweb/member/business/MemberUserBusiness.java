@@ -12,7 +12,9 @@ package is.idega.idegaweb.member.business;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+
 import javax.mail.MessagingException;
+
 import com.idega.business.IBOService;
 import com.idega.idegaweb.IWUserContext;
 import com.idega.user.business.UserBusiness;
@@ -22,14 +24,14 @@ import com.idega.util.IWTimestamp;
 
 
 /**
- * 
+ *
  *  Last modified: $Date: 2007/04/24 13:35:01 $ by $Author: eiki $
- * 
+ *
  * @author <a href="mailto:palli@idega.com">palli</a>
  * @version $Revision: 1.15 $
  */
 public interface MemberUserBusiness extends IBOService, UserBusiness {
-	
+
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#moveUserBetweenDivisions
 	 */
@@ -128,16 +130,17 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubListForUser
 	 */
 	public List getClubListForUser(User user) throws NoClubFoundException, RemoteException;
-	
+
 /**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionListForUser
 	 */
 	public List getDivisionListForUser(User user) throws NoDivisionFoundException,RemoteException;
-		
+
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubForGroup
 	 */
 	public Group getClubForGroup(Group group) throws NoClubFoundException, RemoteException;
+	public com.idega.user.data.bean.Group getClubForGroup(Integer id) throws NoClubFoundException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionForClub
@@ -148,7 +151,8 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionForGroup
 	 */
 	public Group getDivisionForGroup(Group group) throws NoDivisionFoundException, RemoteException;
-	
+	public com.idega.user.data.bean.Group getDivisionForGroup(Integer id) throws NoDivisionFoundException;
+
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubMemberNumberForUser
 	 */
@@ -163,18 +167,18 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#setClubMemberNumberForUser
 	 */
 	public boolean setClubMemberNumberForUser(String number, User user, Group club) throws RemoteException;
-	
+
 	/**
-	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubCollectionGroupForLeague 
+	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubCollectionGroupForLeague
 	 * @param league
 	 * @return
 	 * @throws RemoteException
 	 * @throws NoLeagueClubCollectionGroup
 	 */
 	public Group getClubCollectionGroupForLeague(Group league) throws RemoteException, NoLeagueClubCollectionGroup;
-	
+
 	/**
-	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubNumberForGroup 
+	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubNumberForGroup
 	 * @param group
 	 * @return
 	 * @throws NoClubFoundException
