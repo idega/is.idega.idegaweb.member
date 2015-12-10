@@ -251,7 +251,7 @@ public void addGroups(List groups) throws IDOAddRelationshipException {
 	StringBuffer sql = new StringBuffer();
    	sql.append("select * from ").append(getEntityName()).append(" where ")
    	.append(COLUMN_USER_ID).append("=").append( ((Integer)user.getPrimaryKey()).intValue() )
-   	.append("' and ").append(COLUMN_APPLICATION_GROUP_ID).append("=").append( ((Integer)applicationGroup.getPrimaryKey()).intValue() )
+   	.append(" and ").append(COLUMN_APPLICATION_GROUP_ID).append("=").append( ((Integer)applicationGroup.getPrimaryKey()).intValue() )
    	.append(" order by ").append(COLUMN_CREATED);
 
   	return this.idoFindPKsBySQL(sql.toString());
