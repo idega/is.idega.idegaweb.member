@@ -12,7 +12,7 @@ import com.idega.presentation.ui.UserEmailDropDownMenu;
  *
  */
 public class UserStatsWindow extends GenericStatsWindow {
-    
+
     public UserStatsWindow() {
         super();
 		setHeight(700);
@@ -20,56 +20,62 @@ public class UserStatsWindow extends GenericStatsWindow {
 		setScrollbar(true);
     }
 
-    public void main(IWContext iwc) throws Exception {
+    @Override
+	public void main(IWContext iwc) throws Exception {
     	this.iwrb = getResourceBundle(iwc);
     	this.windowTitle = this.iwrb.getLocalizedString("userstatswindow.userstats", "User Report");
 		this.invocationFileName = "Invocation-UserStats.xml";
 		this.layoutFileName = "Layout-UserStats.xml";
-		this.setRunAsThread(true);
-		
+
+		boolean runAsThread = true;
+		if (iwc.isParameterSet("dr_runAsThread")) {
+			runAsThread = Boolean.valueOf(iwc.getParameter("dr_runAsThread"));
+		}
+		this.setRunAsThread(runAsThread);
+
 		String email = iwc.getParameter("dr_sendToEmail");
 		String excel = iwc.getParameter("dr_excel");
 		String excelNoStylesheet = iwc.getParameter("dr_excelNoStylesheet");
 		String pdf = iwc.getParameter("dr_pdf");
 		String xml = iwc.getParameter("dr_xml");
 		String html = iwc.getParameter("dr_html");
-		
+
 		if (email != null && !"".equals(email.trim())) {
 			UserEmailDropDownMenu tmp = new UserEmailDropDownMenu();
 			email = tmp.getDisplayForResultingObject(email, iwc);
-			this.setEmail(email);			
+			this.setEmail(email);
 		}
-		
+
 		if (excel != null) {
 			this.setGenerateExcelReport(true);
 		} else {
 			this.setGenerateExcelReport(false);
 		}
-		
+
 		if (excelNoStylesheet != null) {
 			this.setGenerateSimpleExcelReport(true);
 		} else {
-			this.setGenerateSimpleExcelReport(false);			
+			this.setGenerateSimpleExcelReport(false);
 		}
 
 		if (pdf != null) {
 			this.setGeneratePDFReport(true);
 		} else {
-			this.setGeneratePDFReport(false);			
+			this.setGeneratePDFReport(false);
 		}
 
 		if (xml != null) {
 			this.setGenerateXMLReport(true);
 		} else {
-			this.setGenerateXMLReport(false);			
+			this.setGenerateXMLReport(false);
 		}
 
 		if (html != null) {
 			this.setGenerateHTMLReport(true);
 		} else {
-			this.setGenerateHTMLReport(false);			
+			this.setGenerateHTMLReport(false);
 		}
 
-    	super.main(iwc);		
+    	super.main(iwc);
     }
 }

@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -344,8 +343,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 							/ MILLISECONDS_IN_YEAR);
 					ageString = String.valueOf(age.intValue());
 					if (age.doubleValue() < 18) {
-						NationalRegister userRegister = getNationalRegisterBusiness()
-								.getEntryBySSN(user.getPersonalID());
+						NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
 						if (userRegister != null) {
 							custodianPersonalID = userRegister.getFamilyId();
 							User custodian = getUserBusiness().getUser(
@@ -937,10 +935,10 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 	 */
 	@Override
 	public List getMainToolbarElements() throws RemoteException {
-		return Arrays.asList(
-				new UserStatsWindowPlugin(),
-				new GroupStatsWindowPlugin()
-		);
+		List list = new ArrayList(1);
+		list.add(new UserStatsWindowPlugin());
+		list.add(new GroupStatsWindowPlugin());
+		return list;
 	}
 
 	@Override

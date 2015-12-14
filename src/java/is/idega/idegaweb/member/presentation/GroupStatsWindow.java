@@ -1,6 +1,6 @@
 /*
  * Created on Jun 24, 2006
- * 
+ *
  */
 package is.idega.idegaweb.member.presentation;
 
@@ -9,7 +9,7 @@ import com.idega.presentation.ui.UserEmailDropDownMenu;
 
 /**
  * @author Sigtryggur
- * 
+ *
  */
 public class GroupStatsWindow extends GenericStatsWindow {
 
@@ -20,6 +20,7 @@ public class GroupStatsWindow extends GenericStatsWindow {
 		setScrollbar(true);
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		this.iwrb = getResourceBundle(iwc);
 		this.windowTitle = this.iwrb.getLocalizedString(
@@ -27,17 +28,19 @@ public class GroupStatsWindow extends GenericStatsWindow {
 		this.invocationFileName = "Invocation-GroupStats.xml";
 		this.layoutFileName = "Layout-GroupStats.xml";
 
-		this.setRunAsThread(true);
+		boolean runAsThread = true;
+		if (iwc.isParameterSet("dr_runAsThread")) {
+			runAsThread = Boolean.valueOf(iwc.getParameter("dr_runAsThread"));
+		}
+		this.setRunAsThread(runAsThread);
 
-		//String runAsThread = iwc.getParameter("dr_runAsThread");
-		
 		String email = iwc.getParameter("dr_sendToEmail");
 		String excel = iwc.getParameter("dr_excel");
 		String excelNoStylesheet = iwc.getParameter("dr_excelNoStylesheet");
 		String pdf = iwc.getParameter("dr_pdf");
 		String xml = iwc.getParameter("dr_xml");
 		String html = iwc.getParameter("dr_html");
-		
+
 		if (email != null && !"".equals(email.trim())) {
 			UserEmailDropDownMenu tmp = new UserEmailDropDownMenu();
 			email = tmp.getDisplayForResultingObject(email, iwc);
