@@ -185,4 +185,6 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	 * @throws RemoteException
 	 */
 	public String getClubNumberForGroup(Group group) throws NoClubFoundException, RemoteException;
+
+	public com.idega.user.data.bean.Group getUnionForGroup(Integer groupId) throws NoUnionFoundException;
 }
