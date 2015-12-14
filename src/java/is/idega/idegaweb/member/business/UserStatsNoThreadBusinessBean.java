@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -27,10 +28,12 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.business.UserGroupPlugInBusiness;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
+import com.idega.util.ListUtil;
+import com.idega.util.StringHandler;
 
 /**
  * @author Sigtryggur
- * 
+ *
  */
 public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 		UserStatsNoThreadBusiness, UserGroupPlugInBusiness {
@@ -41,7 +44,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 	private GroupBusiness groupBiz = null;
 	private UserStatsBusiness userStatsBiz = null;
 
-	private boolean hasViewPermission(User user, Group group) {
+	private boolean hasViewPermission(User user, Group group, Collection<Group> topNodes) {
 		AccessController accessController = this.getAccessController();
 
 		boolean isCurrentUserSuperAdmin = this.isSuperAdmin();
@@ -106,56 +109,107 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 			e.printStackTrace();
 		}
 
-		return hasViewPermissionForRealGroup || hasPermitPermissionForRealGroup;
+		boolean result = hasViewPermissionForRealGroup || hasPermitPermissionForRealGroup;
+		if (!result && !ListUtil.isEmpty(topNodes)) {
+			result = hasGroupUnderTopNodes(group, topNodes);
+		}
+
+		return result;
 	}
 
-	public ReportableCollection getStatisticsForUsers(String groupIDFilter,
-			String groupsRecursiveFilter, Collection groupTypesFilter,
-			Collection userStatusesFilter, Integer yearOfBirthFromFilter,
-			Integer yearOfBirthToFilter, String genderFilter,
-			Collection postalCodeFilter, String dynamicLayout, String orderBy,
-			String doOrderFilter) throws RemoteException {
+	private boolean hasGroupUnderTopNodes(Group group, Collection<Group> groups) {
+		if (group == null || ListUtil.isEmpty(groups)) {
+			return false;
+		}
+
+		if (groups.contains(group)) {
+			return true;
+		}
+
+		for (Group topNode: groups) {
+			try {
+				Collection<Group> childGroups = getGroupBusiness().getChildGroupsRecursive(topNode, null, false);
+				if (!ListUtil.isEmpty(childGroups) && childGroups.contains(group)) {
+					return true;
+				} else {
+					getLogger().log(Level.WARNING, group + " is not among child groups (" + childGroups + ") for " + topNode);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public ReportableCollection getStatisticsForUsers(
+			String groupIDFilter,
+			String groupsRecursiveFilter,
+			Collection groupTypesFilter,
+			Collection userStatusesFilter,
+			Integer yearOfBirthFromFilter,
+			Integer yearOfBirthToFilter,
+			String genderFilter,
+			Collection postalCodeFilter,
+			String dynamicLayout,
+			String orderBy,
+			String doOrderFilter
+	) throws RemoteException {
+		try {
+			throw new RuntimeException("Testing stacktrace");
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
+		getLogger().info("groupIDFilter: " + groupIDFilter + ", groupsRecursiveFilter: " + groupsRecursiveFilter + ", groupTypesFilter: " +
+				groupTypesFilter + ", userStatusesFilter: " + userStatusesFilter + ", yearOfBirthFromFilter: " + yearOfBirthFromFilter +
+				", yearOfBirthToFilter: " + yearOfBirthToFilter + ", genderFilter: " + genderFilter + ", postalCodeFilter: " + postalCodeFilter +
+				", dynamicLayout: " + dynamicLayout + ", orderBy: " + orderBy + ", doOrderFilter: " + doOrderFilter);
 
 		Locale currentLocale = this.getUserContext().getCurrentLocale();
 		boolean isSuperAdmin = isSuperAdmin();
 
-		Collection topNodes = getUserBusiness()
-				.getUsersTopGroupNodesByViewAndOwnerPermissions(
-						getUserContext().getCurrentUser(), getUserContext());
+		User user = getUserContext().getCurrentUser();
+		Collection<Group> topNodes = getUserBusiness().getUsersTopGroupNodesByViewAndOwnerPermissions(user, getUserContext());
+		getLogger().info("Top nodes: " + topNodes);
 
 		Group group = null;
-		Collection groups = null;
+		Collection<Group> groups = null;
 
 		try {
 			if (groupIDFilter != null && !groupIDFilter.equals("")) {
-				groupIDFilter = groupIDFilter.substring(groupIDFilter
-						.lastIndexOf("_") + 1);
-				group = getGroupBusiness().getGroupByGroupID(
-						Integer.parseInt((groupIDFilter)));
+				if (!StringHandler.isNumeric(groupIDFilter)) {
+					groupIDFilter = groupIDFilter.indexOf("_") == -1 ? groupIDFilter : groupIDFilter.substring(groupIDFilter.lastIndexOf("_") + 1);
+				}
+				group = getGroupBusiness().getGroupByGroupID(Integer.parseInt((groupIDFilter)));
 				if (group.isAlias()) {
 					group = group.getAlias();
 				}
 			}
+			getLogger().info("GROUP: " + group);
 			if (group != null) {
-				if (groupsRecursiveFilter != null
-						&& groupsRecursiveFilter.equals("checked")) {
-					groups = getGroupBusiness()
-							.getChildGroupsRecursiveResultFiltered(group,
-									groupTypesFilter, true, true, true);
+				if (groupsRecursiveFilter != null && groupsRecursiveFilter.equals("checked")) {
+					getLogger().info("Get groups by filter: " + groupTypesFilter);
+					groups = getGroupBusiness().getChildGroupsRecursiveResultFiltered(group, groupTypesFilter, true, true, true);
+					getLogger().info("Got groups by filter: " + groupTypesFilter + ": " + groups);
 				} else {
-					groups = new ArrayList();
+					getLogger().info("No filter");
+					groups = new ArrayList<Group>();
 				}
 				groups.add(group);
 
-				Iterator it = groups.iterator();
-				Collection viewGroups = new ArrayList();
+				Iterator<Group> it = groups.iterator();
+				Collection<Group> viewGroups = new ArrayList<Group>();
 				while (it.hasNext()) {
-					Group g = (Group) it.next();
-					if (hasViewPermission(this.getUserContext()
-							.getCurrentUser(), g))
+					Group g = it.next();
+					if (hasViewPermission(user, g, topNodes)) {
 						viewGroups.add(g);
+					} else {
+						getLogger().warning("No permission for " + user + " on " + g);
+					}
 				}
 
+				getLogger().info("View groups: " + viewGroups);
 				groups = viewGroups;
 			}
 		} catch (FinderException e) {
@@ -167,9 +221,10 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 				yearOfBirthFromFilter, yearOfBirthToFilter, genderFilter,
 				postalCodeFilter, dynamicLayout, orderBy, doOrderFilter, "",
 				"", "", "", "", "", "", currentLocale, Boolean.valueOf(isSuperAdmin),
-				this.getUserContext().getCurrentUser(), topNodes, groups, group);
+				user, topNodes, groups, group);
 	}
 
+	@Override
 	public ReportableCollection getStatisticsForGroups(String groupIDFilter,
 			String groupsRecursiveFilter, Collection groupTypesFilter,
 			String dynamicLayout, String orderBy, String doOrderFilter)
@@ -197,13 +252,14 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 					groups = new ArrayList();
 					groups.add(topGroup);
 				}
-				
+
+				Collection<Group> topNodes = getUserBusiness().getUsersTopGroupNodesByViewAndOwnerPermissions(this.getUserContext().getCurrentUser(), getUserContext());
+
 				Iterator it = groups.iterator();
 				Collection viewGroups = new ArrayList();
 				while (it.hasNext()) {
 					Group g = (Group) it.next();
-					if (hasViewPermission(this.getUserContext()
-							.getCurrentUser(), g))
+					if (hasViewPermission(this.getUserContext().getCurrentUser(), g, topNodes))
 						viewGroups.add(g);
 				}
 
@@ -214,7 +270,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 			e.printStackTrace();
 		}
 
-		
+
 		Collection topNodes = getUserBusiness()
 				.getUsersTopGroupNodesByViewAndOwnerPermissions(
 						getUserContext().getCurrentUser(), getUserContext());
@@ -228,7 +284,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 
 	private UserStatsBusiness getUserStatsBusiness() throws RemoteException {
 		if (this.userStatsBiz == null) {
-			this.userStatsBiz = (UserStatsBusiness) IBOLookup
+			this.userStatsBiz = IBOLookup
 					.getServiceInstance(this.getIWApplicationContext(),
 							UserStatsBusiness.class);
 		}
@@ -237,7 +293,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 
 	private UserBusiness getUserBusiness() throws RemoteException {
 		if (this.userBiz == null) {
-			this.userBiz = (UserBusiness) IBOLookup.getServiceInstance(
+			this.userBiz = IBOLookup.getServiceInstance(
 					this.getIWApplicationContext(), UserBusiness.class);
 		}
 		return this.userBiz;
@@ -245,7 +301,7 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 
 	private GroupBusiness getGroupBusiness() throws RemoteException {
 		if (this.groupBiz == null) {
-			this.groupBiz = (GroupBusiness) IBOLookup.getServiceInstance(
+			this.groupBiz = IBOLookup.getServiceInstance(
 					this.getIWApplicationContext(), GroupBusiness.class);
 		}
 		return this.groupBiz;
@@ -253,10 +309,11 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.idega.user.business.UserGroupPlugInBusiness#getMainToolbarElements()
 	 */
+	@Override
 	public List getMainToolbarElements() throws RemoteException {
 		List list = new ArrayList(1);
 		list.add(new UserStatsNoThreadWindowPlugin());
@@ -264,71 +321,84 @@ public class UserStatsNoThreadBusinessBean extends IBOSessionBean implements
 		return list;
 	}
 
+	@Override
 	public void afterGroupCreateOrUpdate(Group group, Group parentGroup)
 			throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void afterUserCreateOrUpdate(User user, Group parentGroup)
 			throws CreateException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void beforeGroupRemove(Group group, Group parentGroup)
 			throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void beforeUserRemove(User user, Group parentGroup)
 			throws RemoveException, RemoteException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public String canCreateSubGroup(Group parentGroup,
 			String groupTypeOfSubGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getGroupPropertiesTabs(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getGroupToolbarElements(Group group) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public List getUserPropertiesTabs(User user) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public PresentationObject instanciateEditor(Group group)
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public PresentationObject instanciateViewer(Group group)
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String isUserAssignableFromGroupToGroup(User user,
 			Group sourceGroup, Group targetGroup) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public String isUserSuitedForGroup(User user, Group targetGroup)
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public boolean isSuperAdmin() {
 		boolean isSuperAdmin = false;
 		try {
