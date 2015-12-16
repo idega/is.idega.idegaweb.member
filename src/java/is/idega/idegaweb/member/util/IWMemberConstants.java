@@ -14,6 +14,8 @@ import com.idega.util.CoreConstants;
 // uses the constants in GroupTypeConstants and ICUserConstants to declare the constants in this class
 public class IWMemberConstants {
 
+	public static final String IW_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member";
+
 	public static final String REQUEST_PARAMETER_SELECTED_GROUP_ID = "r_sel_gr_id";
 
 	public static final String APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL = CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS;

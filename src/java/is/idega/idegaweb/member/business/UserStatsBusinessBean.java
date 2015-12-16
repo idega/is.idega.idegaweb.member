@@ -3,12 +3,6 @@
  */
 package is.idega.idegaweb.member.business;
 
-import is.idega.block.nationalregister.business.NationalRegisterBusiness;
-import is.idega.block.nationalregister.data.bean.NationalRegister;
-import is.idega.idegaweb.member.presentation.GroupStatsWindowPlugin;
-import is.idega.idegaweb.member.presentation.UserStatsWindowPlugin;
-import is.idega.idegaweb.member.util.IWMemberConstants;
-
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Date;
@@ -49,6 +43,7 @@ import com.idega.data.IDORelationshipException;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.PresentationObject;
+import com.idega.presentation.ui.CheckBoxInputHandler;
 import com.idega.user.business.GroupBusiness;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.business.UserGroupPlugInBusiness;
@@ -63,6 +58,12 @@ import com.idega.user.data.UserStatus;
 import com.idega.user.data.UserStatusHome;
 import com.idega.util.IWTimestamp;
 import com.idega.util.text.TextSoap;
+
+import is.idega.block.nationalregister.business.NationalRegisterBusiness;
+import is.idega.block.nationalregister.data.bean.NationalRegister;
+import is.idega.idegaweb.member.presentation.GroupStatsWindowPlugin;
+import is.idega.idegaweb.member.presentation.UserStatsWindowPlugin;
+import is.idega.idegaweb.member.util.IWMemberConstants;
 
 /**
  * @author Sigtryggur
@@ -152,14 +153,32 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 	}
 
 	@Override
-	public ReportableCollection getStatisticsForUsers(String groupIDFilter,
-			String groupsRecursiveFilter, Collection groupTypesFilter,
-			Collection userStatusesFilter, Integer yearOfBirthFromFilter,
-			Integer yearOfBirthToFilter, String genderFilter,
-			Collection postalCodeFilter, String dynamicLayout, String orderBy,
-			String doOrderFilter, String runAsThread, String sendToEmail, String excel,
-			String excelNoStylesheet, String pdf, String xml, String html, Locale currentLocale,
-			Boolean isSuperAdmin, User currentUser, Collection sessionTopNodes, Collection groups, Group group) throws RemoteException {
+	public ReportableCollection getStatisticsForUsers(
+			String groupIDFilter,			//	0
+			String groupsRecursiveFilter,	//	1
+			Collection groupTypesFilter,	//	2
+			Collection userStatusesFilter,	//	3
+			Integer yearOfBirthFromFilter,	//	4
+			Integer yearOfBirthToFilter,	//	5
+			String genderFilter,			//	6
+			Collection postalCodeFilter,
+			String dynamicLayout,
+			String orderBy,
+			String doOrderFilter,
+			String runAsThread,
+			String sendToEmail,
+			String excel,
+			String excelNoStylesheet,
+			String pdf,
+			String xml,
+			String html,
+			Locale currentLocale,
+			Boolean isSuperAdmin,
+			User currentUser,
+			Collection sessionTopNodes,
+			Collection groups,
+			Group group
+	) throws RemoteException {
 
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
@@ -525,26 +544,22 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			reportCollection.addAll(datas);
 		}
 
-		if (doOrderFilter != null
-				&& doOrderFilter.equals("checked")) {
+		if (doOrderFilter != null && doOrderFilter.equals(CheckBoxInputHandler.CHECKED)) {
 
 			ReportableField[] sortFields = null;
 			List orderByFields = new ArrayList();
+			dynamicLayout = dynamicLayout == null ? "-1" : dynamicLayout;
 			if (dynamicLayout.equals("-1")) {
 				orderByFields.add(groupPathField);
 			}
 			if (orderBy != null) {
-				if (!dynamicLayout.equals("-1")
-						&& orderBy
-								.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
+				if (!dynamicLayout.equals("-1") && orderBy.equals(IWMemberConstants.ORDER_BY_GROUP_PATH)) {
 					orderByFields.add(groupPathField);
-				} else if (orderBy
-						.equals(IWMemberConstants.ORDER_BY_USER_STATUS)) {
+				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_USER_STATUS)) {
 					orderByFields.add(userStatusField);
 				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_ADDRESS)) {
 					orderByFields.add(streetAddressField);
-				} else if (orderBy
-						.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
+				} else if (orderBy.equals(IWMemberConstants.ORDER_BY_POSTAL_ADDRESS)) {
 					orderByFields.add(postalAddressField);
 				}
 			}
