@@ -20,7 +20,6 @@ import com.idega.user.business.UserBusinessBean;
 import com.idega.user.dao.GroupDAO;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupRelation;
-import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
@@ -579,62 +578,71 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getUnionForGroup(Integer groupId) throws NoUnionFoundException {
-		if (groupId == null) {
-			return null;
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION));
+		if (group == null) {
+			throw new NoUnionFoundException(String.valueOf(groupId));
 		}
 
-		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION));
-		if (ListUtil.isEmpty(ids)) {
-			throw new NoUnionFoundException("Group ID: " + groupId);
-		}
-
-		return groupDAO.findGroup(ids.get(0));
+		return group;
 	}
 
 	@Override
 	public com.idega.user.data.bean.Group getUnionOrRegionalUnionForGroup(Integer groupId) throws NoUnionFoundException {
-		if (groupId == null) {
-			return null;
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION, IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
+		if (group == null) {
+			throw new NoUnionFoundException(String.valueOf(groupId));
 		}
 
-		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION, IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
-		if (ListUtil.isEmpty(ids)) {
-			throw new NoUnionFoundException("Group ID: " + groupId);
-		}
-
-		return groupDAO.findGroup(ids.get(0));
+		return group;
 	}
 
 	@Override
 	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId) throws NoClubFoundException {
-//		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
-//
-//		if(parents!=null && !parents.isEmpty()){
-//			Iterator<Group> iter = parents.iterator();
-//			while (iter.hasNext()) {
-//				Group parentGroup = iter.next();
-//				if(IWMemberConstants.GROUP_TYPE_CLUB.equals(parentGroup.getGroupType())){
-//					return parentGroup;//there should only be one
-//				}
-//			}
-//		}
-//
-//		//if no club is found we throw the exception
-//		throw new NoClubFoundException(group.getName());
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB));
+		if (group == null) {
+			throw new NoClubFoundException(String.valueOf(groupId));
+		}
 
-		if (groupId == null) {
+		return group;
+	}
+
+	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types) {
+		if (groupId == null || ListUtil.isEmpty(types)) {
 			return null;
 		}
 
-		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(GroupTypeConstants.GROUP_TYPE_CLUB));
-		if (ListUtil.isEmpty(ids)) {
-			throw new NoClubFoundException("Group ID: " + groupId);
+		try {
+			Group group = getGroupBusiness().getGroupByGroupID(groupId);
+			Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
+
+			if(parents!=null && !parents.isEmpty()){
+				Iterator<Group> iter = parents.iterator();
+				while (iter.hasNext()) {
+					Group parentGroup = iter.next();
+					if (types.contains(parentGroup.getGroupType())) {
+						GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+						return groupDAO.findGroup(Integer.valueOf(parentGroup.getId()));//there should only be one
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		return groupDAO.findGroup(ids.get(0));
+		return null;
+
+		//	TODO: fix, do not work!
+//		if (groupId == null) {
+//			return null;
+//		}
+//
+//		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+//		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(GroupTypeConstants.GROUP_TYPE_CLUB));
+//		if (ListUtil.isEmpty(ids)) {
+//			throw new NoClubFoundException("Group ID: " + groupId);
+//		}
+//
+//		return groupDAO.findGroup(ids.get(0));
 	}
 
 	/**
