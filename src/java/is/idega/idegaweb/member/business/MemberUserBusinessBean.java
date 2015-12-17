@@ -593,6 +593,21 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	}
 
 	@Override
+	public com.idega.user.data.bean.Group getUnionOrRegionalUnionForGroup(Integer groupId) throws NoUnionFoundException {
+		if (groupId == null) {
+			return null;
+		}
+
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION, IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
+		if (ListUtil.isEmpty(ids)) {
+			throw new NoUnionFoundException("Group ID: " + groupId);
+		}
+
+		return groupDAO.findGroup(ids.get(0));
+	}
+
+	@Override
 	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId) throws NoClubFoundException {
 //		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
 //
