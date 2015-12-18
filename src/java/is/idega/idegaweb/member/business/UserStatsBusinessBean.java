@@ -784,6 +784,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 
 			ReportableField[] sortFields = null;
 			List orderByFields = new ArrayList();
+			dynamicLayout = dynamicLayout == null ? "-1" : dynamicLayout;
 			if (dynamicLayout.equals("-1")) {
 				orderByFields.add(groupPathField);
 			}
