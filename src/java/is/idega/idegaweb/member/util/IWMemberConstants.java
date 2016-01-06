@@ -90,7 +90,7 @@ public class IWMemberConstants {
 	public static final String GROUP_TYPE_TEMPORARY = "iwme_temporary";
 	public static final String GROUP_TYPE_CLUB_PRACTICE_PLAYER = "iwme_club_practice_player";
 
-
+	//	Board roles
 	public static final String MEMBER_BOARD_CHAIR_MAN = "STAT_B_CHAIR"; //"chairman";
 	public static final String MEMBER_BOARD_VICE_CHAIRMAN = "STAT_B_VICECHAIR"; //"vice_chairman";
 	public static final String MEMBER_CASHIER =  "STAT_B_CASH"; //"cashier";
@@ -103,6 +103,7 @@ public class IWMemberConstants {
 	public static final String MEMBER_PRESIDENT = "STAT_B_PRES"; //"president";
 	public static final String MEMBER_VICE_PRESIDENT = "STAT_B_VICEPRES"; //"vice_president";
 
+	//	Trainer roles
 	public static final String STATUS_COACH = "STAT_COACH";
 	public static final String STATUS_ASSISTANT_COACH = "STAT_ASSCOACH";
 
