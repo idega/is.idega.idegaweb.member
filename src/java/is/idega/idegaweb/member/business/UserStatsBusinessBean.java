@@ -338,7 +338,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				parentGroupCollection = getGroupHome().findParentGroups(
 						Integer.parseInt(user.getGroup().getPrimaryKey()
 								.toString()));
-			} catch (FinderException e) {
+			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 			parentGroupCollection.retainAll(groups);
@@ -692,7 +692,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			try {
 				parentGroupCollection = getGroupHome().findParentGroups(
 						Integer.parseInt(group.getPrimaryKey().toString()));
-			} catch (FinderException e) {
+			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 			Iterator parIt = parentGroupCollection.iterator();
