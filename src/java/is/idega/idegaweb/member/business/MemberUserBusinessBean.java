@@ -21,6 +21,7 @@ import com.idega.user.dao.GroupDAO;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupRelation;
 import com.idega.user.data.User;
+import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
 import com.idega.util.expression.ELUtil;
@@ -680,6 +681,13 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId) throws NoDivisionFoundException {
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
+		if (group == null) {
+			throw new NoDivisionFoundException(groupId == null ? CoreConstants.EMPTY : String.valueOf(groupId));
+		}
+
+		return group;
+
 //		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
 //
 //		if(parents!=null && !parents.isEmpty()){
@@ -694,17 +702,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 //
 //		//if no division is found we throw the exception
 //		throw new NoDivisionFoundException(group.getName());
-		if (groupId == null) {
-			return null;
-		}
-
-		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
-		if (ListUtil.isEmpty(ids)) {
-			throw new NoDivisionFoundException("Group ID: " + groupId);
-		}
-
-		return groupDAO.findGroup(ids.get(0));
 	}
 
 	/**
