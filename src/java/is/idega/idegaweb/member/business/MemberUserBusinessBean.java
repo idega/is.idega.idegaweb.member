@@ -657,6 +657,15 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return club.getMetaData(IWMemberConstants.META_DATA_CLUB_NUMBER);
 	}
 
+	@Override
+	public String getClubNumberForGroup(com.idega.user.data.bean.Group group) throws NoClubFoundException, RemoteException {
+		if (group == null) {
+			return null;
+		}
+
+		com.idega.user.data.bean.Group club = getClubForGroup(group.getID());
+		return club == null ? null : club.getMetaData(IWMemberConstants.META_DATA_CLUB_NUMBER);
+	}
 
 	/*
 		* Returns the division that is a parent for this group.
