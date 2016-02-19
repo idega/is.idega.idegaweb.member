@@ -131,6 +131,12 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	 */
 	public List getClubListForUser(User user) throws NoClubFoundException, RemoteException;
 
+	/**
+	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getGroupTemporaryListForUser
+	 */
+	public List getGroupTemporaryListForUser(User user) throws NoClubFoundException, RemoteException;
+
+
 /**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionListForUser
 	 */

@@ -554,6 +554,26 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 	}
 
+	/*
+	 * Returns a list of all the divisions the user is a member of.
+	 */
+	@Override
+	public List<Group> getGroupTemporaryListForUser(User user) throws RemoteException{
+		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
+		List<Group> list = new ArrayList<Group>();
+		if (parents!=null && !parents.isEmpty()) {
+			Iterator<Group> iter = parents.iterator();
+			while (iter.hasNext()) {
+				Group group = iter.next();
+				if(IWMemberConstants.GROUP_TYPE_TEMPORARY.equals(group.getGroupType())){
+					list.add(group);
+				}
+			}
+		}
+
+		return list;
+	}
+
 
 
 	/*
