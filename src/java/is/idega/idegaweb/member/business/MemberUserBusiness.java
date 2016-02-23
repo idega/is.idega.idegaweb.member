@@ -196,4 +196,8 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	public com.idega.user.data.bean.Group getUnionForGroup(Integer groupId) throws NoUnionFoundException;
 
 	public com.idega.user.data.bean.Group getUnionOrRegionalUnionForGroup(Integer groupId) throws NoUnionFoundException;
+
+	public List<Group> getGroupClubPlayerListForUser(User user) throws RemoteException;
+
+
 }

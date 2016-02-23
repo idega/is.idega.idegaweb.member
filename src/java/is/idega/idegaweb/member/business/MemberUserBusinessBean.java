@@ -555,7 +555,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	}
 
 	/*
-	 * Returns a list of all the divisions the user is a member of.
+	 * Returns a list of all the groups of type "iwme_temporary" the user is a member of.
 	 */
 	@Override
 	public List<Group> getGroupTemporaryListForUser(User user) throws RemoteException{
@@ -574,6 +574,26 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return list;
 	}
 
+
+	/*
+	 * Returns a list of all the groups of type "iwme_club_player" the user is a member of.
+	 */
+	@Override
+	public List<Group> getGroupClubPlayerListForUser(User user) throws RemoteException{
+		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
+		List<Group> list = new ArrayList<Group>();
+		if (parents!=null && !parents.isEmpty()) {
+			Iterator<Group> iter = parents.iterator();
+			while (iter.hasNext()) {
+				Group group = iter.next();
+				if(IWMemberConstants.GROUP_TYPE_CLUB_PLAYER.equals(group.getGroupType())){
+					list.add(group);
+				}
+			}
+		}
+
+		return list;
+	}
 
 
 	/*
