@@ -22,7 +22,6 @@ import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.IWTimestamp;
 
-
 /**
  *
  *  Last modified: $Date: 2007/04/24 13:35:01 $ by $Author: eiki $
@@ -52,7 +51,7 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getLeagueGroupListForClubGroup
 	 */
-	public List getLeagueGroupListForClubGroup(Group club) throws NoLeagueFoundException, RemoteException;
+	public List<Group> getLeagueGroupListForClubGroup(Group club) throws NoLeagueFoundException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#sendEmailFromIWMemberSystemAdministrator
@@ -63,84 +62,84 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getAllClubDivisionsForLeague
 	 */
-	public Collection getAllClubDivisionsForLeague(Group league) throws RemoteException;
+	public Collection<Group> getAllClubDivisionsForLeague(Group league) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getLeaguesListForUserFromTopNodes
 	 */
-	public List getLeaguesListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getLeaguesListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getFederationListForUserFromTopNodes
 	 */
-	public List getFederationListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getFederationListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getUnionListForUserFromTopNodes
 	 */
-	public List getUnionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getUnionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubListForUserFromTopNodes
 	 */
-	public List getClubListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getClubListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubListForUserFromTopNodes
 	 */
-	public List getDivisionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getDivisionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getRegionalUnionListForUserFromTopNodes
 	 */
-	public List getRegionalUnionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
+	public List<Group> getRegionalUnionListForUserFromTopNodes(User user, IWUserContext iwuc) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getGroupListForUserFromTopNodesAndGroupType
 	 */
-	public List getGroupListForUserFromTopNodesAndGroupType(User user, String groupType, IWUserContext iwuc)
+	public List<Group> getGroupListForUserFromTopNodesAndGroupType(User user, String groupType, IWUserContext iwuc)
 			throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getAllRegionalUnionGroups
 	 */
-	public Collection getAllGroupsByGroupType(String groupType) throws RemoteException;
+	public Collection<Group> getAllGroupsByGroupType(String groupType) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getAllRegionalUnionGroups
 	 */
-	public Collection getAllRegionalUnionGroups() throws RemoteException;
+	public Collection<Group> getAllRegionalUnionGroups() throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getAllLeagueGroups
 	 */
-	public Collection getAllLeagueGroups() throws RemoteException;
+	public Collection<Group> getAllLeagueGroups() throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getAllClubGroups
 	 */
-	public Collection getAllClubGroups() throws RemoteException;
+	public Collection<Group> getAllClubGroups() throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubGroupsForRegionUnionGroup
 	 */
-	public Collection getClubGroupsForRegionUnionGroup(Group regionalUnion) throws RemoteException;
+	public Collection<Group> getClubGroupsForRegionUnionGroup(Group regionalUnion) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubListForUser
 	 */
-	public List getClubListForUser(User user) throws NoClubFoundException, RemoteException;
+	public List<Group> getClubListForUser(User user) throws NoClubFoundException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getGroupTemporaryListForUser
 	 */
-	public List getGroupTemporaryListForUser(User user) throws NoClubFoundException, RemoteException;
+	public List<Group> getGroupTemporaryListForUser(User user) throws NoClubFoundException, RemoteException;
 
 
 /**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionListForUser
 	 */
-	public List getDivisionListForUser(User user) throws NoDivisionFoundException,RemoteException;
+	public List<Group> getDivisionListForUser(User user) throws NoDivisionFoundException,RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getClubForGroup
@@ -198,6 +197,5 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	public com.idega.user.data.bean.Group getUnionOrRegionalUnionForGroup(Integer groupId) throws NoUnionFoundException;
 
 	public List<Group> getGroupClubPlayerListForUser(User user) throws RemoteException;
-
 
 }
