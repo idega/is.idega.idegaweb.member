@@ -16,6 +16,7 @@
 	<entity class="is.idega.idegaweb.member.data.group.MemberClubTrainerGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionCommitteeGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionInnerGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionStaffGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionTemplateGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberDivisionTrainerGroup" />

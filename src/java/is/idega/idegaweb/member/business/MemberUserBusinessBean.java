@@ -539,7 +539,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
 				Group group = iter.next();
-				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(group.getGroupType())){
+				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(group.getGroupType()) || IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER.equals(group.getGroupType())){
 					list.add(group);
 				}
 			}
@@ -718,7 +718,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
 				Group parentGroup = iter.next();
-				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(parentGroup.getGroupType())){
+				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(parentGroup.getGroupType()) || IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER.equals(parentGroup.getGroupType())){
 					return parentGroup;//there should only be one
 				}
 			}
@@ -731,6 +731,9 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId) throws NoDivisionFoundException {
 		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
+		if (group == null) {
+			group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER));
+		}
 		if (group == null) {
 			throw new NoDivisionFoundException(groupId == null ? CoreConstants.EMPTY : String.valueOf(groupId));
 		}
