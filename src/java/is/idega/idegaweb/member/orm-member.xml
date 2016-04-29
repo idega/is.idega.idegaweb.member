@@ -37,5 +37,6 @@
 	<entity class="is.idega.idegaweb.member.data.group.MemberUnionCommitteeGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberUnionGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberUnionStaffGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberGroupInnerGroup" />
     
 </entity-mappings>
