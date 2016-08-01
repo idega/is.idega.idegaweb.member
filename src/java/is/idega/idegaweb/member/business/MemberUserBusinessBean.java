@@ -489,8 +489,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 	}
 
-
-
 	/**
 	 * @return All groups with the type iwme_club that are children of the supplied regional union group
 	 */
@@ -500,7 +498,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return regionalUnion.getChildGroups(clubType,true);
 	}
 
-
 	/*
 	 * Returns a list of all the clubs the user is a member of.
 	 */
@@ -508,17 +505,17 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	public List<Group> getClubListForUser(User user) throws NoClubFoundException,RemoteException{
 		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
 		List<Group> list = new ArrayList<Group>();
-		if(parents!=null && !parents.isEmpty()){
+		if (!ListUtil.isEmpty(parents)) {
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
 				Group group = iter.next();
-				if(IWMemberConstants.GROUP_TYPE_CLUB.equals(group.getGroupType())){
+				if (IWMemberConstants.GROUP_TYPE_CLUB.equals(group.getGroupType())) {
 					list.add(group);
 				}
 			}
 		}
 
-		if(list.isEmpty()){
+		if (list.isEmpty()) {
 			//if no club is found we throw the exception
 			throw new NoClubFoundException(user.getName());
 		}
