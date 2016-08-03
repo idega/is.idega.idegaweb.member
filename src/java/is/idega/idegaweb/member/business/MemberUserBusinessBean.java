@@ -20,10 +20,13 @@ import com.idega.user.business.UserBusinessBean;
 import com.idega.user.dao.GroupDAO;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupRelation;
+import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
+import com.idega.user.data.bean.GroupType;
 import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 
 import is.idega.idegaweb.member.util.IWMemberConstants;
@@ -331,9 +334,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	}
 
-
-
-
 	@Override
 	public boolean sendEmailFromIWMemberSystemAdministrator(String toEmailAddress, String CC, String BCC,String subject, String theMessageBody) throws MessagingException{
     	IWMainApplicationSettings settings = getIWMainApplication().getSettings();
@@ -343,7 +343,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return true;
 	}
 
-
 	//temp refactor this class to MemberBusiness or move this method to that class
 	/**
 	 * @return A collection of groups (of the type iwme_club_division)
@@ -351,7 +350,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public Collection<Group> getAllClubDivisionsForLeague(Group league) throws RemoteException{
 		Collection<Group> groups = null;
-
 		try {
 			groups  = getGroupHome().findGroupsByMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION,league.getPrimaryKey().toString());
 		}
@@ -428,10 +426,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		}
 		return list;
-
 	}
-
-
 
 	/**
 	 * @return All groups with a certain type
@@ -524,7 +519,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 	}
 
-
 	/*
 	 * Returns a list of all the divisions the user is a member of.
 	 */
@@ -571,7 +565,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return list;
 	}
 
-
 	/*
 	 * Returns a list of all the groups of type "iwme_club_player" the user is a member of.
 	 */
@@ -591,7 +584,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		return list;
 	}
-
 
 	/*
 		* Returns the club that is a parent for this group.
@@ -616,7 +608,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getUnionForGroup(Integer groupId) throws NoUnionFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION));
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_UNION);
 		if (group == null) {
 			throw new NoUnionFoundException(String.valueOf(groupId));
 		}
@@ -636,7 +628,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId) throws NoClubFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB));
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB);
 		if (group == null) {
 			throw new NoClubFoundException(String.valueOf(groupId));
 		}
@@ -644,43 +636,81 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return group;
 	}
 
+	@Override
+	public List<com.idega.user.data.bean.Group> getClubsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB));
+	}
+
+	@Override
+	public List<com.idega.user.data.bean.Group> getLeaguesForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE));
+	}
+
+	@Override
+	public List<com.idega.user.data.bean.Group> getRegionalUnionsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
+	}
+
+	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, String type) {
+		if (StringUtil.isEmpty(type)) {
+			return null;
+		}
+
+		return getGroupWithTypeForGroup(groupId, Arrays.asList(type));
+	}
 	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types) {
 		if (groupId == null || ListUtil.isEmpty(types)) {
 			return null;
 		}
 
-		try {
-			Group group = getGroupBusiness().getGroupByGroupID(groupId);
-			Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
-
-			if(parents!=null && !parents.isEmpty()){
-				Iterator<Group> iter = parents.iterator();
-				while (iter.hasNext()) {
-					Group parentGroup = iter.next();
-					if (types.contains(parentGroup.getGroupType())) {
-						GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-						return groupDAO.findGroup(Integer.valueOf(parentGroup.getId()));//there should only be one
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		com.idega.user.data.bean.Group group = groupDAO.findGroup(groupId);
+		if (group == null) {
+			return null;
+		}
+		GroupType groupType = group.getGroupType();
+		if (groupType == null) {
+			return null;
+		}
+		String type = groupType.getGroupType();
+		if (StringUtil.isEmpty(type)) {
+			return null;
 		}
 
-		return null;
+		if (types.contains(type)) {
+			return group;
+		}
 
-		//	TODO: fix, do not work!
-//		if (groupId == null) {
-//			return null;
-//		}
-//
-//		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-//		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(Arrays.asList(groupId), Arrays.asList(GroupTypeConstants.GROUP_TYPE_CLUB));
-//		if (ListUtil.isEmpty(ids)) {
-//			throw new NoClubFoundException("Group ID: " + groupId);
-//		}
-//
-//		return groupDAO.findGroup(ids.get(0));
+		//	Checking if need to get groups by type from children groups
+		switch (type) {
+		case GroupTypeConstants.GROUP_TYPE_CLUB:
+			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER)) {
+				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
+				return ListUtil.isEmpty(groups) ? null : groups.get(0);
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		//	Getting parent groups and checking types
+		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types);
+		return ListUtil.isEmpty(groups) ? null : groups.get(0);
+	}
+
+	private List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
+		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
+			return null;
+		}
+
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
+		if (ListUtil.isEmpty(ids)) {
+			return null;
+		}
+
+		return groupDAO.findGroups(ids, null, null);
 	}
 
 	/**
@@ -727,9 +757,9 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId) throws NoDivisionFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION);
 		if (group == null) {
-			group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER));
+			group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER);
 		}
 		if (group == null) {
 			throw new NoDivisionFoundException(groupId == null ? CoreConstants.EMPTY : String.valueOf(groupId));
