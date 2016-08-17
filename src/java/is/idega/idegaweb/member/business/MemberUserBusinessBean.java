@@ -707,6 +707,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
 		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
 		if (ListUtil.isEmpty(ids)) {
+			getLogger().info("Did not find any parent groups by types " + types + " and IDs: " + groupsIds);
 			return null;
 		}
 
