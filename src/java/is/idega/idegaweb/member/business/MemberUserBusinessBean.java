@@ -24,6 +24,7 @@ import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
 import com.idega.user.data.bean.GroupType;
 import com.idega.util.CoreConstants;
+import com.idega.util.DBUtil;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
@@ -658,6 +659,16 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		return getGroupWithTypeForGroup(groupId, Arrays.asList(type));
 	}
+
+	private com.idega.user.data.bean.Group getInitializedGroup(com.idega.user.data.bean.Group group) {
+		if (group == null) {
+			return null;
+		}
+
+		group = DBUtil.getInstance().lazyLoad(group);
+		return group;
+	}
+
 	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types) {
 		if (groupId == null || ListUtil.isEmpty(types)) {
 			return null;
@@ -678,7 +689,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		if (types.contains(type)) {
-			return group;
+			return getInitializedGroup(group);
 		}
 
 		//	Checking if need to get groups by type from children groups
@@ -686,8 +697,16 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		case GroupTypeConstants.GROUP_TYPE_CLUB:
 			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER)) {
 				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
-				return ListUtil.isEmpty(groups) ? null : groups.get(0);
+				return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
 			}
+			break;
+
+		case IWMemberConstants.GROUP_TYPE_LEAGUE:
+			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER)) {
+				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
+				return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
+			}
+
 			break;
 
 		default:
@@ -696,7 +715,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		//	Getting parent groups and checking types
 		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types);
-		return ListUtil.isEmpty(groups) ? null : groups.get(0);
+		return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
 	}
 
 	private List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
@@ -706,12 +725,25 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
 		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
+		List<com.idega.user.data.bean.Group> groups = null;
 		if (ListUtil.isEmpty(ids)) {
-			getLogger().info("Did not find any parent groups by types " + types + " and IDs: " + groupsIds);
+			groups = new ArrayList<>();
+			for (Integer id: groupsIds) {
+				List<com.idega.user.data.bean.Group> groupsTmp = groupDAO.getChildGroups(Arrays.asList(id), types);
+				if (!ListUtil.isEmpty(groupsTmp)) {
+					groups.addAll(groupsTmp);
+				}
+			}
+		} else {
+			groups = groupDAO.findGroups(ids);
+		}
+
+		if (ListUtil.isEmpty(groups)) {
+			getLogger().info("Did not find any parent groups with types " + types + " for groups with IDs " + groupsIds);
 			return null;
 		}
 
-		return groupDAO.findGroups(ids, null, null);
+		return groups;
 	}
 
 	/**
