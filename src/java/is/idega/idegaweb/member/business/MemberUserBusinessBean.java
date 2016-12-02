@@ -718,7 +718,8 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
 	}
 
-	private List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
+	@Override
+	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
 		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
 			return null;
 		}

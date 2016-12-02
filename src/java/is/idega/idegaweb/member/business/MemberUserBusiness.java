@@ -202,4 +202,5 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 
 	public List<Group> getGroupClubPlayerListForUser(User user) throws RemoteException;
 
+	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types);
 }
