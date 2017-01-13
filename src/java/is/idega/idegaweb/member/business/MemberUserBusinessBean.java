@@ -609,7 +609,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getUnionForGroup(Integer groupId) throws NoUnionFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_UNION);
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_UNION, true);
 		if (group == null) {
 			throw new NoUnionFoundException(String.valueOf(groupId));
 		}
@@ -619,7 +619,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getUnionOrRegionalUnionForGroup(Integer groupId) throws NoUnionFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION, IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, Arrays.asList(IWMemberConstants.GROUP_TYPE_UNION, IWMemberConstants.GROUP_TYPE_REGIONAL_UNION), true);
 		if (group == null) {
 			throw new NoUnionFoundException(String.valueOf(groupId));
 		}
@@ -629,7 +629,12 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId) throws NoClubFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB);
+		return getClubForGroup(groupId, true);
+	}
+
+	@Override
+	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId, Boolean full) throws NoClubFoundException {
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB, full);
 		if (group == null) {
 			throw new NoClubFoundException(String.valueOf(groupId));
 		}
@@ -652,12 +657,12 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
 	}
 
-	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, String type) {
+	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, String type, Boolean full) {
 		if (StringUtil.isEmpty(type)) {
 			return null;
 		}
 
-		return getGroupWithTypeForGroup(groupId, Arrays.asList(type));
+		return getGroupWithTypeForGroup(groupId, Arrays.asList(type), full);
 	}
 
 	private com.idega.user.data.bean.Group getInitializedGroup(com.idega.user.data.bean.Group group) {
@@ -669,7 +674,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return group;
 	}
 
-	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types) {
+	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types, Boolean full) {
 		if (groupId == null || ListUtil.isEmpty(types)) {
 			return null;
 		}
@@ -714,12 +719,17 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		//	Getting parent groups and checking types
-		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types);
+		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types, full);
 		return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
 	}
 
 	@Override
 	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
+		return getGroupsWithTypesForGroup(groupsIds, types, true);
+	}
+
+	@Override
+	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full) {
 		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
 			return null;
 		}
@@ -729,10 +739,12 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		List<com.idega.user.data.bean.Group> groups = null;
 		if (ListUtil.isEmpty(ids)) {
 			groups = new ArrayList<>();
-			for (Integer id: groupsIds) {
-				List<com.idega.user.data.bean.Group> groupsTmp = groupDAO.getChildGroups(Arrays.asList(id), types);
-				if (!ListUtil.isEmpty(groupsTmp)) {
-					groups.addAll(groupsTmp);
+			if (full.booleanValue()) {
+				for (Integer id: groupsIds) {
+					List<com.idega.user.data.bean.Group> groupsTmp = groupDAO.getChildGroups(Arrays.asList(id), types);
+					if (!ListUtil.isEmpty(groupsTmp)) {
+						groups.addAll(groupsTmp);
+					}
 				}
 			}
 		} else {
@@ -791,9 +803,14 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId) throws NoDivisionFoundException {
-		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION);
+		return getDivisionForGroup(groupId, true);
+	}
+
+	@Override
+	public com.idega.user.data.bean.Group getDivisionForGroup(Integer groupId, Boolean full) throws NoDivisionFoundException {
+		com.idega.user.data.bean.Group group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION, full);
 		if (group == null) {
-			group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER);
+			group = getGroupWithTypeForGroup(groupId, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER, full);
 		}
 		if (group == null) {
 			throw new NoDivisionFoundException(groupId == null ? CoreConstants.EMPTY : String.valueOf(groupId));
