@@ -1,4 +1,5 @@
 package is.idega.idegaweb.member.business;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -646,15 +647,27 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	public List<com.idega.user.data.bean.Group> getClubsForGroups(List<Integer> groupsIds) {
 		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB));
 	}
+	@Override
+	public List<Integer> getClubsIdsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB), true, Integer.class);
+	}
 
 	@Override
 	public List<com.idega.user.data.bean.Group> getLeaguesForGroups(List<Integer> groupsIds) {
 		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE));
 	}
+	@Override
+	public List<Integer> getLeaguesIdsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE), true, Integer.class);
+	}
 
 	@Override
 	public List<com.idega.user.data.bean.Group> getRegionalUnionsForGroups(List<Integer> groupsIds) {
 		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_REGIONAL_UNION));
+	}
+	@Override
+	public List<Integer> getRegionalUnionsIdsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_REGIONAL_UNION), true, Integer.class);
 	}
 
 	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, String type, Boolean full) {
@@ -719,44 +732,54 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		//	Getting parent groups and checking types
-		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types, full);
+		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types, full, com.idega.user.data.bean.Group.class);
 		return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
 	}
 
 	@Override
 	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types) {
-		return getGroupsWithTypesForGroup(groupsIds, types, true);
+		return getGroupsWithTypesForGroup(groupsIds, types, true, com.idega.user.data.bean.Group.class);
 	}
 
-	@Override
-	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full) {
+	@SuppressWarnings("unchecked")
+	private <T extends Serializable> List<T> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full, Class<T> resultType) {
 		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
 			return null;
 		}
 
+		List<T> results = new ArrayList<>();
+		boolean entities = resultType.getName().equals(com.idega.user.data.bean.Group.class.getName());
+
 		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
 		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
-		List<com.idega.user.data.bean.Group> groups = null;
+
 		if (ListUtil.isEmpty(ids)) {
-			groups = new ArrayList<>();
-			if (full.booleanValue()) {
+			if (full != null && full.booleanValue()) {
 				for (Integer id: groupsIds) {
-					List<com.idega.user.data.bean.Group> groupsTmp = groupDAO.getChildGroups(Arrays.asList(id), types);
-					if (!ListUtil.isEmpty(groupsTmp)) {
-						groups.addAll(groupsTmp);
+					List<T> tmp = null;
+					if (entities) {
+						tmp = (List<T>) groupDAO.getChildGroups(Arrays.asList(id), types);
+					} else {
+						tmp = (List<T>) groupDAO.getChildGroupIds(Arrays.asList(id), types);
+					}
+
+					if (!ListUtil.isEmpty(tmp)) {
+						results.addAll(tmp);
 					}
 				}
 			}
 		} else {
-			groups = groupDAO.findGroups(ids);
+			if (entities) {
+				results = (List<T>) groupDAO.findGroups(ids);
+			}
 		}
 
-		if (ListUtil.isEmpty(groups)) {
+		if (ListUtil.isEmpty(results)) {
 			getLogger().info("Did not find any parent groups with types " + types + " for groups with IDs " + groupsIds);
 			return null;
 		}
 
-		return groups;
+		return results;
 	}
 
 	/**

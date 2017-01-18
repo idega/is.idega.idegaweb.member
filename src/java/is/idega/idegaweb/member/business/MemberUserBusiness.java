@@ -149,8 +149,13 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	public com.idega.user.data.bean.Group getClubForGroup(Integer groupId, Boolean full) throws NoClubFoundException;
 
 	public List<com.idega.user.data.bean.Group> getClubsForGroups(List<Integer> groupsIds);
+	public List<Integer> getClubsIdsForGroups(List<Integer> groupsIds);
+
 	public List<com.idega.user.data.bean.Group> getLeaguesForGroups(List<Integer> groupsIds);
+	public List<Integer> getLeaguesIdsForGroups(List<Integer> groupsIds);
+
 	public List<com.idega.user.data.bean.Group> getRegionalUnionsForGroups(List<Integer> groupsIds);
+	public List<Integer> getRegionalUnionsIdsForGroups(List<Integer> groupsIds);
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionForClub
@@ -206,5 +211,4 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 
 	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types);
 
-	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full);
 }
