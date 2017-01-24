@@ -211,4 +211,7 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 
 	public List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types);
 
+	public Group getLeagueForDivision(Group division);
+	public com.idega.user.data.bean.Group getLeagueForDivision(Integer divisionId);
+
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -28,6 +29,7 @@ import com.idega.util.CoreConstants;
 import com.idega.util.DBUtil;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.StringHandler;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 
@@ -306,22 +308,9 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 			while (it.hasNext()) {
 				Group div = it.next();
-				String leagueId = div.getMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION);
-				if(leagueId!=null){
-					int id;
-					try {
-						id = Integer.parseInt(leagueId);
-						Group league;
-						league = this.getGroupBusiness().getGroupByGroupID(id);
-						list.add(league);
-					}
-					catch (NumberFormatException e) {
-						e.printStackTrace();
-					}
-					catch (FinderException e1) {
-						e1.printStackTrace();
-					}
-
+				Group league = getLeagueForDivision(div);
+				if (league != null) {
+					list.add(league);
 				}
 			}
 		}
@@ -334,6 +323,45 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 			return list;
 		}
 
+	}
+
+	public com.idega.user.data.bean.Group getLeagueForDivision(Integer divisionId) {
+		if (divisionId == null) {
+			return null;
+		}
+
+		Group division = null;
+		try {
+			division = getGroupBusiness().getGroupByGroupID(divisionId);
+		} catch (Exception e) {}
+
+		Group league = getLeagueForDivision(division);
+		if (league == null) {
+			return null;
+		}
+
+		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+		return groupDAO.findGroup(Integer.valueOf(league.getId()));
+	}
+
+	public Group getLeagueForDivision(Group division) {
+		if (division == null) {
+			return null;
+		}
+
+		String leagueId = division.getMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION);
+		if (StringHandler.isNumeric(leagueId)) {
+			int id;
+			try {
+				id = Integer.parseInt(leagueId);
+				return this.getGroupBusiness().getGroupByGroupID(id);
+			} catch (NumberFormatException e) {
+			} catch (Exception e) {
+				getLogger().log(Level.WARNING, "Error getting league for division " + division, e);
+			}
+		}
+
+		return null;
 	}
 
 	@Override
