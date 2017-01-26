@@ -325,6 +325,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	}
 
+	@Override
 	public com.idega.user.data.bean.Group getLeagueForDivision(Integer divisionId) {
 		if (divisionId == null) {
 			return null;
@@ -344,6 +345,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return groupDAO.findGroup(Integer.valueOf(league.getId()));
 	}
 
+	@Override
 	public Group getLeagueForDivision(Group division) {
 		if (division == null) {
 			return null;
@@ -769,7 +771,6 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return getGroupsWithTypesForGroup(groupsIds, types, true, com.idega.user.data.bean.Group.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T extends Serializable> List<T> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full, Class<T> resultType) {
 		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
 			return null;
@@ -784,12 +785,10 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		if (ListUtil.isEmpty(ids)) {
 			if (full != null && full.booleanValue()) {
 				for (Integer id: groupsIds) {
-					List<T> tmp = null;
-					if (entities) {
-						tmp = (List<T>) groupDAO.getChildGroups(Arrays.asList(id), types);
-					} else {
-						tmp = (List<T>) groupDAO.getChildGroupIds(Arrays.asList(id), types);
-					}
+					@SuppressWarnings("unchecked")
+					List<T> tmp = entities ?
+							(List<T>) groupDAO.getChildGroups(Arrays.asList(id), types):
+							(List<T>) groupDAO.getChildGroupIds(Arrays.asList(id), types);
 
 					if (!ListUtil.isEmpty(tmp)) {
 						results.addAll(tmp);
@@ -797,9 +796,11 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 				}
 			}
 		} else {
-			if (entities) {
-				results = (List<T>) groupDAO.findGroups(ids);
-			}
+			@SuppressWarnings("unchecked")
+			List<T> tmp = entities ?
+					(List<T>) groupDAO.findGroups(ids) :
+					(List<T>) ids;
+			results = tmp;
 		}
 
 		if (ListUtil.isEmpty(results)) {
