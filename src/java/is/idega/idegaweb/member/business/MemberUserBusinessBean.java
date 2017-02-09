@@ -26,6 +26,7 @@ import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
 import com.idega.user.data.bean.GroupType;
 import com.idega.util.CoreConstants;
+import com.idega.util.CoreUtil;
 import com.idega.util.DBUtil;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
@@ -716,8 +717,23 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		group = DBUtil.getInstance().lazyLoad(group);
 		return group;
 	}
+	private void doInitializeGroups(List<com.idega.user.data.bean.Group> groups) {
+		if (ListUtil.isEmpty(groups)) {
+			return;
+		}
+
+		DBUtil util = DBUtil.getInstance();
+		for (com.idega.user.data.bean.Group group: groups) {
+			util.lazyLoad(group);
+		}
+	}
 
 	private com.idega.user.data.bean.Group getGroupWithTypeForGroup(Integer groupId, List<String> types, Boolean full) {
+		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(groupId, types, full);
+		return ListUtil.isEmpty(groups) ? null : groups.iterator().next();
+	}
+
+	private List<com.idega.user.data.bean.Group> getGroupsWithTypesForGroup(Integer groupId, List<String> types, Boolean full) {
 		if (groupId == null || ListUtil.isEmpty(types)) {
 			return null;
 		}
@@ -737,7 +753,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		if (types.contains(type)) {
-			return getInitializedGroup(group);
+			return Arrays.asList(getInitializedGroup(group));
 		}
 
 		//	Checking if need to get groups by type from children groups
@@ -745,17 +761,26 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		case GroupTypeConstants.GROUP_TYPE_CLUB:
 			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER)) {
 				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
-				return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
+				doInitializeGroups(groups);
+				return groups;
 			}
 			break;
 
 		case IWMemberConstants.GROUP_TYPE_LEAGUE:
 			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION) || types.contains(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER)) {
 				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
-				return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
+				doInitializeGroups(groups);
+				return groups;
 			}
 
 			break;
+
+		case IWMemberConstants.GROUP_TYPE_CLUB_DIVISION:
+			if (types.contains(IWMemberConstants.GROUP_TYPE_CLUB_PLAYER)) {
+				List<com.idega.user.data.bean.Group> groups = groupDAO.getChildGroups(Arrays.asList(groupId), types);
+				doInitializeGroups(groups);
+				return groups;
+			}
 
 		default:
 			break;
@@ -763,7 +788,8 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		//	Getting parent groups and checking types
 		List<com.idega.user.data.bean.Group> groups = getGroupsWithTypesForGroup(Arrays.asList(groupId), types, full, com.idega.user.data.bean.Group.class);
-		return ListUtil.isEmpty(groups) ? null : getInitializedGroup(groups.get(0));
+		doInitializeGroups(groups);
+		return groups;
 	}
 
 	@Override
@@ -771,44 +797,80 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		return getGroupsWithTypesForGroup(groupsIds, types, true, com.idega.user.data.bean.Group.class);
 	}
 
-	private <T extends Serializable> List<T> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full, Class<T> resultType) {
-		if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
+	@Override
+	public List<Group> getActiveMembersGroupsForClubDivision(Group clubDivision) {
+		if (clubDivision == null) {
 			return null;
 		}
 
-		List<T> results = new ArrayList<>();
-		boolean entities = resultType.getName().equals(com.idega.user.data.bean.Group.class.getName());
+		try {
+			List<com.idega.user.data.bean.Group> playersGroups = getGroupsWithTypesForGroup(
+					Integer.valueOf(clubDivision.getId()),
+					Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_PLAYER),
+					false
+			);
+			if (ListUtil.isEmpty(playersGroups)) {
+				return null;
+			}
 
-		GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
-		List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
+			List<Group> results = new ArrayList<>();
+			for (com.idega.user.data.bean.Group playersGroup: playersGroups) {
+				results.add(getGroupBusiness().getGroupByGroupID(playersGroup.getID()));
+			}
 
-		if (ListUtil.isEmpty(ids)) {
-			if (full != null && full.booleanValue()) {
-				for (Integer id: groupsIds) {
-					@SuppressWarnings("unchecked")
-					List<T> tmp = entities ?
-							(List<T>) groupDAO.getChildGroups(Arrays.asList(id), types):
-							(List<T>) groupDAO.getChildGroupIds(Arrays.asList(id), types);
+			return results;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting groups with type " + IWMemberConstants.GROUP_TYPE_CLUB_PLAYER + " for " + clubDivision, e);
+		}
 
-					if (!ListUtil.isEmpty(tmp)) {
-						results.addAll(tmp);
+		return null;
+	}
+
+	private <T extends Serializable> List<T> getGroupsWithTypesForGroup(List<Integer> groupsIds, List<String> types, Boolean full, Class<T> resultType) {
+		long start = System.currentTimeMillis();
+
+		try {
+			if (ListUtil.isEmpty(groupsIds) || ListUtil.isEmpty(types)) {
+				return null;
+			}
+
+			List<T> results = new ArrayList<>();
+			boolean entities = resultType.getName().equals(com.idega.user.data.bean.Group.class.getName());
+
+			GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+			List<Integer> ids = groupDAO.getParentGroupsIdsRecursive(groupsIds, types);
+
+			if (ListUtil.isEmpty(ids)) {
+				if (full != null && full.booleanValue()) {
+					for (Integer id: groupsIds) {
+						@SuppressWarnings("unchecked")
+						List<T> tmp = entities ?
+								(List<T>) groupDAO.getChildGroups(Arrays.asList(id), types):
+								(List<T>) groupDAO.getChildGroupIds(Arrays.asList(id), types);
+
+						if (!ListUtil.isEmpty(tmp)) {
+							results.addAll(tmp);
+						}
 					}
 				}
+			} else {
+				@SuppressWarnings("unchecked")
+				List<T> tmp = entities ?
+						(List<T>) groupDAO.findGroups(ids) :
+						(List<T>) ids;
+				results = tmp;
 			}
-		} else {
-			@SuppressWarnings("unchecked")
-			List<T> tmp = entities ?
-					(List<T>) groupDAO.findGroups(ids) :
-					(List<T>) ids;
-			results = tmp;
-		}
 
-		if (ListUtil.isEmpty(results)) {
-			getLogger().info("Did not find any parent groups with types " + types + " for groups with IDs " + groupsIds);
-			return null;
-		}
+			if (ListUtil.isEmpty(results)) {
+				getLogger().info("Did not find any parent groups with types " + types + " for groups with IDs " + groupsIds);
+				return null;
+			}
 
-		return results;
+			return results;
+		} finally {
+			CoreUtil.doDebug(start, System.currentTimeMillis(), getClass().getSimpleName() + ".getGroupsWithTypesForGroup: groups IDs: " +
+					groupsIds + ", types: " + types + ", full: " + full + ", result type: " + resultType.getName());
+		}
 	}
 
 	/**
@@ -869,21 +931,28 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		return group;
+	}
 
-//		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive(group);
-//
-//		if(parents!=null && !parents.isEmpty()){
-//			Iterator<Group> iter = parents.iterator();
-//			while (iter.hasNext()) {
-//				Group parentGroup = iter.next();
-//				if(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION.equals(parentGroup.getGroupType())){
-//					return parentGroup;//there should only be one
-//				}
-//			}
-//		}
-//
-//		//if no division is found we throw the exception
-//		throw new NoDivisionFoundException(group.getName());
+	@Override
+	public List<Group> getDivisionsForClub(Group club) throws NoDivisionFoundException, RemoteException {
+		Collection<Group> children = club.getChildren();
+
+		if (children != null && !children.isEmpty()) {
+			List<Group> divisions = new ArrayList<>();
+
+			Iterator<Group> it = children.iterator();
+			while (it.hasNext()) {
+				Group child = it.next();
+				if (child.getGroupType().equals(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION)) {
+					divisions.add(child);
+				}
+			}
+
+			return divisions;
+		}
+
+		//if no club is found we throw the exception
+		throw new NoDivisionFoundException(club.getName());
 	}
 
 	/**
@@ -893,16 +962,9 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	 */
 	@Override
 	public Group getDivisionForClub(Group club) throws NoDivisionFoundException, RemoteException {
-		Collection<Group> children = club.getChildren();
-
-		if (children != null && !children.isEmpty()) {
-			Iterator<Group> it = children.iterator();
-			while (it.hasNext()) {
-				Group child = it.next();
-				if (child.getGroupType().equals(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION)) {
-					return child;
-				}
-			}
+		List<Group> divisions = getDivisionsForClub(club);
+		if (!ListUtil.isEmpty(divisions)) {
+			return divisions.iterator().next();
 		}
 
 		//if no club is found we throw the exception

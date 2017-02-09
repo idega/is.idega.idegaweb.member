@@ -157,10 +157,14 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 	public List<com.idega.user.data.bean.Group> getRegionalUnionsForGroups(List<Integer> groupsIds);
 	public List<Integer> getRegionalUnionsIdsForGroups(List<Integer> groupsIds);
 
+	public List<Group> getActiveMembersGroupsForClubDivision(Group clubDivision);
+
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionForClub
 	 */
 	public Group getDivisionForClub(Group club) throws NoDivisionFoundException, RemoteException;
+
+	public List<Group> getDivisionsForClub(Group club) throws NoDivisionFoundException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.member.business.MemberUserBusinessBean#getDivisionForGroup
