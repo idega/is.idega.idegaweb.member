@@ -13,6 +13,7 @@ import javax.ejb.FinderException;
 import javax.mail.MessagingException;
 
 import com.idega.core.contact.data.Email;
+import com.idega.data.MetaDataCapable;
 import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.idegaweb.IWUserContext;
@@ -93,11 +94,11 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 							//change all relation within that division to pending. To much maybe?
 							existsInFromDivision = true;
-							Collection col = groupBiz.getGroupRelationHome().findGroupsRelationshipsContainingBiDirectional( ((Integer)fromDivisionGroup.getPrimaryKey()).intValue(), ((Integer)parent.getPrimaryKey()).intValue() , "ST_ACTIVE" ); //Status liklega otharfi
+							Collection<GroupRelation> col = groupBiz.getGroupRelationHome().findGroupsRelationshipsContainingBiDirectional( ((Integer)fromDivisionGroup.getPrimaryKey()).intValue(), ((Integer)parent.getPrimaryKey()).intValue() , "ST_ACTIVE" ); //Status liklega otharfi
 							if(col!=null && !col.isEmpty()){
-								Iterator iterator = col.iterator();
+								Iterator<GroupRelation> iterator = col.iterator();
 								while (iterator.hasNext()) {
-									GroupRelation rel = (GroupRelation) iterator.next();
+									GroupRelation rel = iterator.next();
 									rel.setPassivePending();
 									rel.setTerminationDate(term.getTimestamp());
 									rel.store();
@@ -348,16 +349,37 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public Group getLeagueForDivision(Group division) {
+		return getLeagueForDivision(division, Group.class);
+	}
+
+	private <T extends Serializable, D extends MetaDataCapable> T getLeagueForDivision(D division, Class<T> resultType) {
 		if (division == null) {
 			return null;
 		}
 
 		String leagueId = division.getMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION);
 		if (StringHandler.isNumeric(leagueId)) {
-			int id;
+			Integer id;
 			try {
 				id = Integer.parseInt(leagueId);
-				return this.getGroupBusiness().getGroupByGroupID(id);
+
+				String resultName = resultType.getName();
+				if (resultName.equals(Group.class.getName())) {
+					@SuppressWarnings("unchecked")
+					T result = (T) this.getGroupBusiness().getGroupByGroupID(id);
+					return result;
+				} else if (resultName.equals(Integer.class.getName())) {
+					@SuppressWarnings("unchecked")
+					T result = (T) id;
+					return result;
+				} else if (resultName.equals(com.idega.user.data.bean.Group.class.getName())) {
+					GroupDAO groupDAO = ELUtil.getInstance().getBean(GroupDAO.class);
+					@SuppressWarnings("unchecked")
+					T result = (T) groupDAO.findGroup(id);
+					return result;
+				} else {
+					getLogger().warning("Unknown result type: " + resultName);
+				}
 			} catch (NumberFormatException e) {
 			} catch (Exception e) {
 				getLogger().log(Level.WARNING, "Error getting league for division " + division, e);
@@ -685,11 +707,33 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public List<com.idega.user.data.bean.Group> getLeaguesForGroups(List<Integer> groupsIds) {
-		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE));
+		return getLeagues(groupsIds, com.idega.user.data.bean.Group.class);
 	}
 	@Override
 	public List<Integer> getLeaguesIdsForGroups(List<Integer> groupsIds) {
-		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE), true, Integer.class);
+		return getLeagues(groupsIds, Integer.class);
+	}
+	private <T extends Serializable> List<T> getLeagues(List<Integer> groupsIds, Class<T> resultType) {
+		List<String> types = Arrays.asList(IWMemberConstants.GROUP_TYPE_LEAGUE);
+
+		List<T> results = getGroupsWithTypesForGroup(groupsIds, types, true, resultType);
+		if (!ListUtil.isEmpty(results)) {
+			return results;
+		}
+
+		List<com.idega.user.data.bean.Group> clubDivisions = getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION));
+		if (ListUtil.isEmpty(clubDivisions)) {
+			return null;
+		}
+
+		results = new ArrayList<>();
+		for (com.idega.user.data.bean.Group division: clubDivisions) {
+			T league = getLeagueForDivision(division, resultType);
+			if (league != null) {
+				results.add(league);
+			}
+		}
+		return results;
 	}
 
 	@Override
