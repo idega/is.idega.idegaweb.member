@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -175,10 +176,11 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			Locale currentLocale,
 			Boolean isSuperAdmin,
 			User currentUser,
-			Collection sessionTopNodes,
+			Collection<Group> sessionTopNodes,
 			Collection groups,
 			Group group
 	) throws RemoteException {
+		userStatusesFilter = userStatusesFilter == null ? Collections.emptyList() : userStatusesFilter;
 
 		initializeBundlesIfNeeded(currentLocale);
 		ReportableCollection reportCollection = new ReportableCollection();
@@ -312,37 +314,38 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				LOCALIZED_CUSTODIAN_PHONE, "Custodian phone"), currentLocale);
 		reportCollection.addField(custodianPhoneField);
 
-		Collection users = null;
-
-		users = getUserBusiness()
-				.getUsersBySpecificGroupsUserstatusDateOfBirthAndGender(groups,
-						userStatusesFilter, yearOfBirthFromFilter,
-						yearOfBirthToFilter, genderFilter);
-		Collection topNodes = getUserBusiness()
-				.getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
-						currentUser, sessionTopNodes, isSuperAdmin.booleanValue(), currentUser);
-		Map usersByGroups = new TreeMap();
-		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup
-				.getHome(AddressType.class);
+		Collection<User> users = getUserBusiness().getUsersBySpecificGroupsUserstatusDateOfBirthAndGender(
+				groups,
+				userStatusesFilter,
+				yearOfBirthFromFilter,
+				yearOfBirthToFilter,
+				genderFilter
+		);
+		Collection<Group> topNodes = getUserBusiness().getUsersTopGroupNodesByViewAndOwnerPermissionsInThread(
+						currentUser,
+						sessionTopNodes,
+						isSuperAdmin == null ? false : isSuperAdmin,
+						currentUser
+		);
+		Map<Object, List<ReportableData>> usersByGroups = new TreeMap<>();
+		AddressTypeHome addressHome = (AddressTypeHome) IDOLookup.getHome(AddressType.class);
 		AddressType at1 = null;
 		try {
 			at1 = addressHome.findAddressType2();
 		} catch (FinderException e) {
 			e.printStackTrace();
 		}
-		Iterator iter = users.iterator();
+		Iterator<User> iter = users.iterator();
 		while (iter.hasNext()) {
-			User user = (User) iter.next();
-			Collection parentGroupCollection = null;
+			User user = iter.next();
+			Collection<Group> parentGroupCollection = null;
 			try {
-				parentGroupCollection = getGroupHome().findParentGroups(
-						Integer.parseInt(user.getGroup().getPrimaryKey()
-								.toString()));
+				parentGroupCollection = getGroupHome().findParentGroups(Integer.parseInt(user.getGroup().getPrimaryKey().toString()));
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				getLogger().log(Level.WARNING, e.getMessage(), e);
 			}
 			parentGroupCollection.retainAll(groups);
-			Iterator parIt = parentGroupCollection.iterator();
+			Iterator<Group> parIt = parentGroupCollection.iterator();
 
 			String personalID = user.getPersonalID();
 			String dateOfBirthString = null;
@@ -350,54 +353,42 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			String custodianString = null;
 			String custodianPersonalID = null;
 			String custodianPhoneString = null;
-			// Collection custodians = null;
 			try {
 				Date date_of_birth = user.getDateOfBirth();
 				if (date_of_birth != null) {
-					dateOfBirthString = new IWTimestamp(date_of_birth)
-							.getDateString("dd.MM.yyyy");
-					long ageInMillisecs = IWTimestamp.getMilliSecondsBetween(
-							new IWTimestamp(date_of_birth), new IWTimestamp());
-					BigDecimal age = new BigDecimal(ageInMillisecs
-							/ MILLISECONDS_IN_YEAR);
+					dateOfBirthString = new IWTimestamp(date_of_birth).getDateString("dd.MM.yyyy");
+					long ageInMillisecs = IWTimestamp.getMilliSecondsBetween(new IWTimestamp(date_of_birth), new IWTimestamp());
+					BigDecimal age = new BigDecimal(ageInMillisecs / MILLISECONDS_IN_YEAR);
 					ageString = String.valueOf(age.intValue());
 					if (age.doubleValue() < 18) {
 						NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
 						if (userRegister != null) {
 							custodianPersonalID = userRegister.getFamilyId();
-							User custodian = getUserBusiness().getUser(
-									custodianPersonalID);
+							User custodian = getUserBusiness().getUser(custodianPersonalID);
 							custodianString = custodian.getName();
 							custodianPhoneString = getPhoneNumber(custodian);
 						}
-
 					} else {
 						custodianPersonalID = personalID;
 					}
-					if (custodianPersonalID != null
-							&& custodianPersonalID.length() == 10) {
-						custodianPersonalID = custodianPersonalID.substring(0,
-								6)
-								+ "-" + custodianPersonalID.substring(6, 10);
+					if (custodianPersonalID != null && custodianPersonalID.length() == 10) {
+						custodianPersonalID = custodianPersonalID.substring(0, 6) + "-" + custodianPersonalID.substring(6, 10);
 					}
 				}
-				// custodians =
-				// getMemberFamilyLogic(getIWApplicationContext()).getCustodiansFor(user);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			if (personalID != null && personalID.length() == 10) {
-				personalID = personalID.substring(0, 6) + "-"
-						+ personalID.substring(6, 10);
+				personalID = personalID.substring(0, 6) + "-" + personalID.substring(6, 10);
 			}
-			Collection emails = user.getEmails();
+			Collection<Email> emails = user.getEmails();
 			Email email = null;
 			String emailString = null;
 			if (!emails.isEmpty()) {
-				email = (Email) emails.iterator().next();
+				email = emails.iterator().next();
 				emailString = email.getEmailAddress();
 			}
-			Collection addresses = null;
+			Collection<Address> addresses = null;
 			if (at1 != null) {
 
 				try {
@@ -415,12 +406,11 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			String postalAddressString = null;
 			String countryString = null;
 			if (addresses != null && !addresses.isEmpty()) {
-				address = (Address) addresses.iterator().next();
+				address = addresses.iterator().next();
 				PostalCode postalCode = address.getPostalCode();
 				if (postalCode != null) {
 					String postalCodeString = postalCode.getPostalCode();
-					if (!postalCodeFilter.isEmpty()
-							&& !postalCodeFilter.contains(postalCodeString)) {
+					if (!postalCodeFilter.isEmpty() && !postalCodeFilter.contains(postalCodeString)) {
 						continue;
 					}
 				}
@@ -429,12 +419,9 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				Country country = address.getCountry();
 				if (country != null) {
 					countryString = country.getName();
-					Locale locale = new Locale(currentLocale.getLanguage(),
-							country.getIsoAbbreviation());
-					String localizedCountryName = locale
-							.getDisplayCountry(currentLocale);
-					if (localizedCountryName != null
-							&& !localizedCountryName.equals("")) {
+					Locale locale = new Locale(currentLocale.getLanguage(), country.getIsoAbbreviation());
+					String localizedCountryName = locale.getDisplayCountry(currentLocale);
+					if (localizedCountryName != null && !localizedCountryName.equals("")) {
 						countryString = localizedCountryName;
 					}
 				}
@@ -442,23 +429,16 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				continue;
 			}
 			while (parIt.hasNext()) {
-				Group parentGroup = (Group) parIt.next();
-				List userStatuses = null;
+				Group parentGroup = parIt.next();
+				List<UserStatus> userStatuses = null;
 				String userStatusString = null;
 				try {
-					userStatuses = (List) ((UserStatusHome) IDOLookup
-							.getHome(UserStatus.class))
-							.findAllActiveByUserIdAndGroupId(Integer
-									.parseInt(user.getPrimaryKey().toString()),
-									Integer.parseInt(parentGroup
-											.getPrimaryKey().toString()));
-					if (userStatuses != null
-							&& userStatuses.isEmpty()
-							&& userStatusesFilter
-									.contains(UserStatusBusinessBean.STATUS_DECEASED)) {
-						UserStatus userStatus = getUserStatusBusiness()
-								.getDeceasedUserStatus(
-										(Integer) user.getPrimaryKey());
+					userStatuses = ((UserStatusHome) IDOLookup.getHome(UserStatus.class)).findAllActiveByUserIdAndGroupId(
+							Integer.parseInt(user.getPrimaryKey().toString()),
+							Integer.parseInt(parentGroup.getPrimaryKey().toString())
+					);
+					if (userStatuses != null && userStatuses.isEmpty() && userStatusesFilter.contains(UserStatusBusinessBean.STATUS_DECEASED)) {
+						UserStatus userStatus = getUserStatusBusiness().getDeceasedUserStatus((Integer) user.getPrimaryKey());
 						if (userStatus != null) {
 							userStatuses.add(userStatus);
 						}
@@ -467,33 +447,25 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 					System.out.println(e.getMessage());
 				}
 				if (userStatuses.isEmpty()) {
-					if (userStatusesFilter != null
-							&& !userStatusesFilter.isEmpty()) {
+					if (userStatusesFilter != null && !userStatusesFilter.isEmpty()) {
 						continue;
 					}
 				} else {
-					UserStatus userStatus = (UserStatus) userStatuses
-							.iterator().next();
-					String userStatusKey = userStatus.getStatus()
-							.getStatusKey();
-					if (!userStatusesFilter.isEmpty()
-							&& !userStatusesFilter.contains(userStatusKey)) {
+					UserStatus userStatus = userStatuses.iterator().next();
+					String userStatusKey = userStatus.getStatus().getStatusKey();
+					if (!userStatusesFilter.isEmpty() && !userStatusesFilter.contains(userStatusKey)) {
 						continue;
 					} else {
-						userStatusString = this._iwrb.getLocalizedString(
-								USR_STAT_PREFIX + userStatusKey, userStatusKey);
+						userStatusString = this._iwrb.getLocalizedString(USR_STAT_PREFIX + userStatusKey, userStatusKey);
 					}
-
 				}
 				String userInfo1String = "";
 				String userInfo2String = "";
 				String userInfo3String = "";
-				UserInfoColumns userInfoColumns = getUserInfoColumnsBusiness()
-						.getUserInfo(
-								Integer.parseInt(user.getPrimaryKey()
-										.toString()),
-								Integer.parseInt(group.getPrimaryKey()
-										.toString()));
+				UserInfoColumns userInfoColumns = getUserInfoColumnsBusiness().getUserInfo(
+								Integer.parseInt(user.getPrimaryKey().toString()),
+								Integer.parseInt(group.getPrimaryKey().toString())
+				);
 				if (userInfoColumns != null) {
 					userInfo1String = userInfoColumns.getUserInfo1();
 					userInfo2String = userInfoColumns.getUserInfo2();
@@ -525,10 +497,9 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 				data.addData(custodianNameField, custodianString);
 				data.addData(custodianPersonalIDField, custodianPersonalID);
 				data.addData(custodianPhoneField, custodianPhoneString);
-				List statsForGroup = (List) usersByGroups.get(parentGroup
-						.getPrimaryKey());
+				List<ReportableData> statsForGroup = usersByGroups.get(parentGroup.getPrimaryKey());
 				if (statsForGroup == null) {
-					statsForGroup = new Vector();
+					statsForGroup = new ArrayList<>();
 				}
 				statsForGroup.add(data);
 				usersByGroups.put(parentGroup.getPrimaryKey(), statsForGroup);
@@ -536,10 +507,10 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 		}
 		// iterate through the ordered map and ordered lists and add to the
 		// final collection
-		Iterator statsDataIter = usersByGroups.keySet().iterator();
+		Iterator<Object> statsDataIter = usersByGroups.keySet().iterator();
 		while (statsDataIter.hasNext()) {
 
-			List datas = (List) usersByGroups.get(statsDataIter.next());
+			List<ReportableData> datas = usersByGroups.get(statsDataIter.next());
 			// don't forget to add the row to the collection
 			reportCollection.addAll(datas);
 		}
