@@ -430,7 +430,7 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 			}
 			while (parIt.hasNext()) {
 				Group parentGroup = parIt.next();
-				List<UserStatus> userStatuses = null;
+				Collection<UserStatus> userStatuses = null;
 				String userStatusString = null;
 				try {
 					userStatuses = ((UserStatusHome) IDOLookup.getHome(UserStatus.class)).findAllActiveByUserIdAndGroupId(
