@@ -706,6 +706,11 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	}
 
 	@Override
+	public List<Integer> getClubDivisionsIdsForGroups(List<Integer> groupsIds) {
+		return getGroupsWithTypesForGroup(groupsIds, Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_DIVISION, IWMemberConstants.GROUP_TYPE_CLUB_DIVISION_INNER), true, Integer.class);
+	}
+
+	@Override
 	public List<com.idega.user.data.bean.Group> getLeaguesForGroups(List<Integer> groupsIds) {
 		return getLeagues(groupsIds, com.idega.user.data.bean.Group.class);
 	}
