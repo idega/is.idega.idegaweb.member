@@ -349,21 +349,27 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 	@Override
 	public Group getLeagueForDivision(Group division) {
-		return getLeagueForDivision(division, Group.class);
+		return getLeagueForDivision(getLeagueId(division), Group.class.getName());
 	}
 
-	private <T extends Serializable, D extends MetaDataCapable> T getLeagueForDivision(D division, Class<T> resultType) {
+	private String getLeagueId(MetaDataCapable division) {
 		if (division == null) {
 			return null;
 		}
 
-		String leagueId = division.getMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION);
+		return division.getMetaData(IWMemberConstants.META_DATA_DIVISION_LEAGUE_CONNECTION);
+	}
+
+	private <T extends Serializable> T getLeagueForDivision(String leagueId, String resultName) {
+		if (StringUtil.isEmpty(leagueId) || StringUtil.isEmpty(resultName)) {
+			return null;
+		}
+
 		if (StringHandler.isNumeric(leagueId)) {
 			Integer id;
 			try {
 				id = Integer.parseInt(leagueId);
 
-				String resultName = resultType.getName();
 				if (resultName.equals(Group.class.getName())) {
 					@SuppressWarnings("unchecked")
 					T result = (T) this.getGroupBusiness().getGroupByGroupID(id);
@@ -382,7 +388,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 				}
 			} catch (NumberFormatException e) {
 			} catch (Exception e) {
-				getLogger().log(Level.WARNING, "Error getting league for division " + division, e);
+				getLogger().log(Level.WARNING, "Error getting league for division. League ID: " + leagueId, e);
 			}
 		}
 
@@ -733,7 +739,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		results = new ArrayList<>();
 		for (com.idega.user.data.bean.Group division: clubDivisions) {
-			T league = getLeagueForDivision(division, resultType);
+			T league = getLeagueForDivision(getLeagueId(division), resultType.getName());
 			if (league != null) {
 				results.add(league);
 			}
