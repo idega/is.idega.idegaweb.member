@@ -739,6 +739,9 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 
 		results = new ArrayList<>();
 		for (com.idega.user.data.bean.Group division: clubDivisions) {
+			if (division != null) {
+				division = DBUtil.getInstance().lazyLoad(division);
+			}
 			T league = getLeagueForDivision(getLeagueId(division), resultType.getName());
 			if (league != null) {
 				results.add(league);
