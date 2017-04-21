@@ -230,15 +230,16 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 					club = null;
 				}
 				if (club == null) {
-					getLogger().warning("Club with UID '" + member.getClubUniqueId() + "' was not found by synchronizer " + synchronizer.getClass().getName() + ". Leagues: " + leagues);
+					getLogger().warning("Club with UID '" + member.getClubUniqueId() + "' was not found by synchronizer " + synchronizer.getClass().getName() + ". Leagues " +
+							(ListUtil.isEmpty(leagues) ? "names: " + member.getLeaguesNames() : leagues));
 					continue;
 				}
 
 				String success = null;
 				if (isActive(member.getStatus())) {
-					success = synchronizer.registerMemberToClub(member.getPersonalId(), club, member.getMembershipType());
+					success = synchronizer.registerMemberToClub(member.getPersonalId(), club, member.getMembershipType(), member.getGroupUniqueId());
 				} else {
-					success = synchronizer.disableMemberInClub(member.getPersonalId(), club);
+					success = synchronizer.disableMemberInClub(member.getPersonalId(), club, member.getGroupUniqueId());
 				}
 
 				if (success == null || !UnionMemberSynchronizer.WS_MSG_SUCCESS.equals(success)) {

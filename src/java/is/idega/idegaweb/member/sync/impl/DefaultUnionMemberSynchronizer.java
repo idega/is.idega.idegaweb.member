@@ -39,7 +39,7 @@ public abstract class DefaultUnionMemberSynchronizer extends DefaultSpringBean i
 	}
 
 	@Override
-	public abstract String registerMemberToClub(String ssn, Group club, String clubMembershipType) throws RemoteException;
+	public abstract String registerMemberToClub(String ssn, Group club, String clubMembershipType, String groupUniqueId) throws RemoteException;
 
 	@Override
 	public Group getClubByAbbreviation(String abbreviation) {
@@ -76,7 +76,7 @@ public abstract class DefaultUnionMemberSynchronizer extends DefaultSpringBean i
 	}
 
 	@Override
-	public abstract String disableMemberInClub(String ssn, Group club) throws RemoteException;
+	public abstract String disableMemberInClub(String ssn, Group club, String groupUniqueId) throws RemoteException;
 
 	private boolean isClubInSportUnion(Group club) {
 		if (club == null) {
