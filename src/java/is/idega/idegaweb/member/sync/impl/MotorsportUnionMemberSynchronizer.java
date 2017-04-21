@@ -144,6 +144,7 @@ public class MotorsportUnionMemberSynchronizer extends DefaultUnionMemberSynchro
 				for (com.idega.user.data.bean.Group group: groups) {
 					Group legacyGroup = groupBusiness.getGroupByGroupID(group.getID());
 					userBusiness.removeUserFromGroup(user, legacyGroup, currentUser);
+					legacyGroup.removeUser(user, user);
 					getLogger().info("Removed " + user + " from group " + legacyGroup + " (name: " + legacyGroup.getName() + ", unique ID: " + legacyGroup.getUniqueId() + ")");
 				}
 			}
