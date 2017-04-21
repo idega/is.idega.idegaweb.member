@@ -917,6 +917,27 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 			}
 
 			if (ListUtil.isEmpty(results)) {
+				List<com.idega.user.data.bean.Group> groups = groupDAO.findGroups(groupsIds);
+				if (!ListUtil.isEmpty(groups)) {
+					for (com.idega.user.data.bean.Group group: groups) {
+						try {
+							if (group == null) {
+								continue;
+							}
+
+							if (types.contains(group.getType())) {
+								@SuppressWarnings("unchecked")
+								T result = entities ? (T) group : (T) group.getID();
+								results.add(result);
+							}
+						} catch (Exception e) {
+							getLogger().log(Level.WARNING, "Error resovling if group (" + group + ") has one of a type from " + types, e);
+						}
+					}
+				}
+			}
+
+			if (ListUtil.isEmpty(results)) {
 				getLogger().info("Did not find any parent groups with types " + types + " for groups with IDs " + groupsIds);
 				return null;
 			}
