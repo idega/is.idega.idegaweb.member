@@ -322,6 +322,7 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 			}
 
 			userBusiness.updateUsersMainAddressOrCreateIfDoesNotExist(user, streetNameAndNumber, postalCode, country, address.getTown(), null, null, null);
+			userBusiness.updateUsersCoAddressOrCreateIfDoesNotExist(user, streetNameAndNumber, postalCode, country, address.getTown(), null, null, null);
 		} catch (Exception e) {}
 	}
 
