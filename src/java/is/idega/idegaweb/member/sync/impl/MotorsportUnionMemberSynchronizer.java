@@ -106,12 +106,13 @@ public class MotorsportUnionMemberSynchronizer extends DefaultUnionMemberSynchro
 
 	@Override
 	public String disableMemberInClub(String ssn, Group club, String groupUniqueId) throws RemoteException {
-		if (StringUtil.isEmpty(ssn) || club == null) {
+		if (StringUtil.isEmpty(ssn)) {
+			getLogger().warning("Personal ID is not provided");
 			return null;
 		}
 
 		try {
-			Integer id = Integer.valueOf(club.getId());
+			Integer id = club == null ? null : Integer.valueOf(club.getId());
 			UserBusiness userBusiness = getServiceInstance(UserBusiness.class);
 			User user = userBusiness.getUser(ssn);
 			User currentUser = getLegacyUser(getCurrentUser());
@@ -126,12 +127,15 @@ public class MotorsportUnionMemberSynchronizer extends DefaultUnionMemberSynchro
 					playersGroups.put(playersGroup.getID(), Arrays.asList(playersGroup));
 				}
 			}
-			if (MapUtil.isEmpty(playersGroups)) {
+			if (MapUtil.isEmpty(playersGroups) && id != null) {
+				getLogger().info("Did not find player's group by unique ID: " + groupUniqueId);
 				playersGroups = groupDAO.getChildGroups(Arrays.asList(id), Arrays.asList(IWMemberConstants.GROUP_TYPE_CLUB_PLAYER), null);
 			}
 			if (MapUtil.isEmpty(playersGroups)) {
+				getLogger().warning("No players groups found in club " + club + " nor by group's unique ID: " + groupUniqueId + ", unable to remove member with personal ID " + ssn);
 				return null;
 			}
+
 			for (List<com.idega.user.data.bean.Group> groups: playersGroups.values()) {
 				if (ListUtil.isEmpty(groups)) {
 					continue;
@@ -140,10 +144,11 @@ public class MotorsportUnionMemberSynchronizer extends DefaultUnionMemberSynchro
 				for (com.idega.user.data.bean.Group group: groups) {
 					Group legacyGroup = groupBusiness.getGroupByGroupID(group.getID());
 					userBusiness.removeUserFromGroup(user, legacyGroup, currentUser);
+					getLogger().info("Removed " + user + " from group " + legacyGroup + " (name: " + legacyGroup.getName() + ", unique ID: " + legacyGroup.getUniqueId() + ")");
 				}
 			}
 
-			if (getApplication().getSettings().getBoolean("on_membership_closed_to_general", false)) {
+			if (id != null && getApplication().getSettings().getBoolean("on_membership_closed_to_general", false)) {
 				//	Adding to general members group
 				Map<Integer, List<com.idega.user.data.bean.Group>> generalGroups = groupDAO.getChildGroups(Arrays.asList(id), Arrays.asList(IWMemberConstants.GROUP_TYPE_GENERAL), null);
 				if (MapUtil.isEmpty(generalGroups)) {
@@ -162,7 +167,7 @@ public class MotorsportUnionMemberSynchronizer extends DefaultUnionMemberSynchro
 				return UnionMemberSynchronizer.WS_MSG_SUCCESS;
 			}
 		} catch (Exception e) {
-			getLogger().log(Level.WARNING, "Error disabling membership for member (personal ID: " + ssn + ") in club " + club, e);
+			getLogger().log(Level.WARNING, "Error disabling membership for member (personal ID: " + ssn + ") in club " + club + ", group's unique ID: " + groupUniqueId, e);
 		}
 
 		return null;
