@@ -283,13 +283,17 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 
 			PostalCode postalCode = null;
 			if (!StringUtil.isEmpty(address.getPostalCode())) {
-				PostalCodeHome postalCodeHome = (PostalCodeHome) IDOLookup.getHome(PostalCode.class);
-				postalCode = postalCodeHome.findByPostalCode(address.getPostalCode());
+				try {
+					PostalCodeHome postalCodeHome = (PostalCodeHome) IDOLookup.getHome(PostalCode.class);
+					postalCode = postalCodeHome.findByPostalCode(address.getPostalCode());
+				} catch (Exception e) {}
 			}
 			Country country = null;
 			if (!StringUtil.isEmpty(address.getCountry())) {
-				CountryHome countryHome = (CountryHome) IDOLookup.getHome(Country.class);
-				country = countryHome.findByCountryName(address.getCountry());
+				try {
+					CountryHome countryHome = (CountryHome) IDOLookup.getHome(Country.class);
+					country = countryHome.findByCountryName(address.getCountry());
+				} catch (Exception e) {}
 			}
 
 			userBusiness.updateUsersMainAddressOrCreateIfDoesNotExist(user, streetNameAndNumber, postalCode, country, address.getTown(), null, null, null);

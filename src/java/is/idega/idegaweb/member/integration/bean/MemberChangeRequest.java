@@ -112,13 +112,13 @@ public class MemberChangeRequest implements Serializable {
 				addressBean.setTown(address.getCity());
 
 				try {
-				PostalCode postalCode = address.getPostalCode();
-				addressBean.setPostalCode(postalCode.getPostalCode());
+					PostalCode postalCode = address.getPostalCode();
+					addressBean.setPostalCode(postalCode.getPostalCode());
 				} catch (Exception e) {}
 
 				try {
-				Country country = address.getCountry();
-				addressBean.setCountry(country.getName());
+					Country country = address.getCountry();
+					addressBean.setCountry(country.getName());
 				} catch (Exception e) {}
 
 				this.address = addressBean;
