@@ -25,6 +25,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.google.gson.Gson;
 import com.idega.builder.bean.AdvancedProperty;
 import com.idega.core.accesscontrol.business.AccessController;
+import com.idega.core.accesscontrol.business.LoginDBHandler;
+import com.idega.core.accesscontrol.data.LoginTable;
 import com.idega.core.location.data.Country;
 import com.idega.core.location.data.CountryHome;
 import com.idega.core.location.data.PostalCode;
@@ -156,11 +158,34 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 			updatePhones(userBusiness, user, member.getPhones());
 			updateAddress(userBusiness, user, member.getAddress());
 
+			createLoginIfDoesNotExist(user);
+
 			return user;
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error creating/updating user: " + member.getPersonalId(), e);
 		}
 		return null;
+	}
+
+	private void createLoginIfDoesNotExist(User user) {
+		if (user == null) {
+			return;
+		}
+
+		try {
+			LoginTable loginTable = LoginDBHandler.getUserLogin((Integer) user.getPrimaryKey());
+			if (loginTable != null) {
+				return;
+			}
+
+			String personalId = user.getPersonalID();
+			if (StringUtil.isEmpty(personalId)) {
+				return;
+			}
+
+			String password = personalId.length() > 6 ? personalId.substring(6) : personalId;
+			LoginDBHandler.createLogin(user, personalId, password);
+		} catch (Exception e) {}
 	}
 
 	private List<Group> getLeaguesToSync(List<String> leaguesUniqueIds) {

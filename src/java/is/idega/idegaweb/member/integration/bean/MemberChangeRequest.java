@@ -107,6 +107,8 @@ public class MemberChangeRequest implements Serializable {
 			} catch (Exception e) {}
 			if (address != null) {
 				Address addressBean = new Address();
+				this.address = addressBean;
+
 				addressBean.setStreetName(address.getStreetName());
 				addressBean.setStreetNumber(address.getStreetNumber());
 				addressBean.setTown(address.getCity());
@@ -120,8 +122,6 @@ public class MemberChangeRequest implements Serializable {
 					Country country = address.getCountry();
 					addressBean.setCountry(country.getName());
 				} catch (Exception e) {}
-
-				this.address = addressBean;
 			}
 		}
 	}
