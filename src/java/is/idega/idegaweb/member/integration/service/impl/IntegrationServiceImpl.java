@@ -53,6 +53,7 @@ import com.idega.util.datastructures.map.MapUtil;
 
 import is.idega.idegaweb.member.integration.bean.Address;
 import is.idega.idegaweb.member.integration.bean.MemberChangeRequest;
+import is.idega.idegaweb.member.integration.bean.MemberChangeRequestList;
 import is.idega.idegaweb.member.integration.bean.MemberChangeResponse;
 import is.idega.idegaweb.member.integration.service.IntegrationService;
 
@@ -98,6 +99,34 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 			getLogger().log(Level.WARNING, "Error syncing member changes: " + member, e);
 		}
 		return getInternalServerErrorResponse(new MemberChangeResponse(Boolean.FALSE, member == null ? "Member's data not provided" : member.toString()));
+	}
+
+	@Override
+	@POST
+	@Path(IntegrationService.MEMBERS_SYNC)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response doSyncMembers(
+			@HeaderParam(RequestUtil.HEADER_AUTHORIZATION) String apiKey,
+			@Context HttpServletRequest request,
+			MemberChangeRequestList members
+	) {
+		if (members == null || ListUtil.isEmpty(members.getMembers())) {
+			getLogger().warning("Data not provided");
+			return getBadRequestResponse(new MemberChangeResponse(Boolean.FALSE, "Members' data not provided"));
+		}
+
+		List<MemberChangeRequest> membersData = members.getMembers();
+		for (MemberChangeRequest member: membersData) {
+			Response response = doSyncMember(apiKey, request, member);
+			if (response == null || response.getStatus() != 200) {
+				return response == null ?
+						getBadRequestResponse(new MemberChangeResponse(Boolean.FALSE, "Failed to sync " + member)) :
+						response;
+			}
+		}
+
+		return getOKResponse(new MemberChangeResponse(Boolean.TRUE, "Successfully synced"));
 	}
 
 	private AdvancedProperty doSyncMember(HttpServletRequest request, MemberChangeRequest member) throws Exception {
