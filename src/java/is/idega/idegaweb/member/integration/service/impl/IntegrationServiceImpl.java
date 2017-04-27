@@ -119,7 +119,7 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 		List<MemberChangeRequest> membersData = members.getMembers();
 		for (MemberChangeRequest member: membersData) {
 			Response response = doSyncMember(apiKey, request, member);
-			if (response == null || response.getStatus() != 200) {
+			if (response == null || response.getStatus() != Response.Status.OK.getStatusCode()) {
 				return response == null ?
 						getBadRequestResponse(new MemberChangeResponse(Boolean.FALSE, "Failed to sync " + member)) :
 						response;
