@@ -333,7 +333,11 @@ public class IntegrationServiceImpl extends DefaultRestfulService implements Int
 		}
 
 		try {
-			String streetNameAndNumber = address.getStreetName() + CoreConstants.SPACE + address.getStreetNumber();
+			String streetNameAndNumber = address.getStreetName();
+			if (!StringUtil.isEmpty(address.getStreetNumber())) {
+				streetNameAndNumber = streetNameAndNumber == null ? CoreConstants.EMPTY : streetNameAndNumber;
+				streetNameAndNumber = streetNameAndNumber.concat(CoreConstants.SPACE).concat(address.getStreetNumber());
+			}
 
 			PostalCode postalCode = null;
 			if (!StringUtil.isEmpty(address.getPostalCode())) {
