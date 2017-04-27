@@ -10,13 +10,17 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.idega.business.IBOLookup;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
+import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Country;
 import com.idega.core.location.data.PostalCode;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.user.data.User;
 import com.idega.util.EmailValidator;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -110,7 +114,15 @@ public class MemberChangeRequest implements Serializable {
 				this.address = addressBean;
 
 				addressBean.setStreetName(address.getStreetName());
-				addressBean.setStreetNumber(address.getStreetNumber());
+				String streetNumber = address.getStreetNumber();
+				if (StringUtil.isEmpty(streetNumber)) {
+					try {
+						AddressBusiness addressBusiness = IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), AddressBusiness.class);
+						streetNumber = addressBusiness.getStreetNumberFromAddressString(address.getStreetAddressNominative());
+						streetNumber = streetNumber == null ? null : streetNumber.trim();
+					} catch (Exception e) {}
+				}
+				addressBean.setStreetNumber(streetNumber);
 				addressBean.setTown(address.getCity());
 
 				try {
