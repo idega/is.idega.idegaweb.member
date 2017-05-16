@@ -370,6 +370,10 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 			try {
 				id = Integer.parseInt(leagueId);
 
+				if (id == -1) {
+					return null;
+				}
+
 				if (resultName.equals(Group.class.getName())) {
 					@SuppressWarnings("unchecked")
 					T result = (T) this.getGroupBusiness().getGroupByGroupID(id);
