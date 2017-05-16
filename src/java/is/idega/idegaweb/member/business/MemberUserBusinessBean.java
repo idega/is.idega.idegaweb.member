@@ -25,7 +25,6 @@ import com.idega.user.data.Group;
 import com.idega.user.data.GroupRelation;
 import com.idega.user.data.GroupTypeConstants;
 import com.idega.user.data.User;
-import com.idega.user.data.bean.GroupType;
 import com.idega.util.CoreConstants;
 import com.idega.util.CoreUtil;
 import com.idega.util.DBUtil;
@@ -805,11 +804,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		if (group == null) {
 			return null;
 		}
-		GroupType groupType = group.getGroupType();
-		if (groupType == null) {
-			return null;
-		}
-		String type = groupType.getGroupType();
+		String type = group.getType();
 		if (StringUtil.isEmpty(type)) {
 			return null;
 		}
