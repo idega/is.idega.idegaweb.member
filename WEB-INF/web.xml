@@ -14,11 +14,11 @@
 		<servlet-name>Member Integration Servlet</servlet-name>
 		<servlet-class>is.idega.idegaweb.member.servlet.MemberIntegrationServlet</servlet-class>
 		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-name>org.glassfish.jersey.config.property.packages</param-name>
 			<param-value>is.idega.idegaweb.member.integration.service</param-value>
 		</init-param>
 		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-name>org.glassfish.jersey.config.property.packages</param-name>
 			<param-value>is.idega.idegaweb.member.integration.bean</param-value>
 		</init-param>
 		<init-param>
