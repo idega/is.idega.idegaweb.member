@@ -276,4 +276,5 @@ usrch_overflow_message=There are more hits in your search than shown, you have t
 usrch_search_fname=First name
 usrch_search_lname=Last name
 usrch_search_pid=Personal ID
-workPhone=
+workPhone=Work phone
+statistics_writer.totals=Total:
