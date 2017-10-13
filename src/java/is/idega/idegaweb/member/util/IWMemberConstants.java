@@ -95,21 +95,40 @@ public class IWMemberConstants {
 	public static final String GROUP_TYPE_CLUB_PRACTICE_PLAYER = "iwme_club_practice_player";
 
 	//	Board roles
-	public static final String MEMBER_BOARD_CHAIR_MAN = "STAT_B_CHAIR"; //"chairman";
-	public static final String MEMBER_BOARD_VICE_CHAIRMAN = "STAT_B_VICECHAIR"; //"vice_chairman";
-	public static final String MEMBER_CASHIER =  "STAT_B_CASH"; //"cashier";
-	public static final String MEMBER_SECRETARY = "STAT_B_SECR"; //"secretary";
-	public static final String MEMBER_BOARD_MEMBER = "STAT_B_MAINBOARD"; //"board_member";
-	public static final String MEMBER_EXTRA_BOARD = "STAT_B_EXTRABOARD"; //"extra_board";
-	public static final String MEMBER_STAND_IN = "STAT_B_EXTRA"; //"stand_in";
-	public static final String MEMBER_CO_CHIEF = "STAT_B_COCHIEF"; //"co-chief";
-	public static final String MEMBER_CEO = "STAT_B_CEO"; //"ceo";
-	public static final String MEMBER_PRESIDENT = "STAT_B_PRES"; //"president";
-	public static final String MEMBER_VICE_PRESIDENT = "STAT_B_VICEPRES"; //"vice_president";
+	public static final String MEMBER_BOARD_CHAIR_MAN = "STAT_B_CHAIR"; //"chairman"; //Formaður
+	public static final String MEMBER_BOARD_VICE_CHAIRMAN = "STAT_B_VICECHAIR"; //"vice_chairman"; //Varaformaður
+	public static final String MEMBER_CASHIER =  "STAT_B_CASH"; //"cashier"; //Gjaldkeri
+	public static final String MEMBER_SECRETARY = "STAT_B_SECR"; //"secretary"; //Ritari
+	public static final String MEMBER_BOARD_MEMBER = "STAT_B_MAINBOARD"; //"board_member"; //Aðalstjórn
+	public static final String MEMBER_EXTRA_BOARD = "STAT_B_EXTRABOARD"; //"extra_board"; //Varastjórn
+	public static final String MEMBER_STAND_IN = "STAT_B_EXTRA"; //"stand_in"; //Varamaður
+	public static final String MEMBER_CO_CHIEF = "STAT_B_COCHIEF"; //"co-chief"; //Meðstjórnandi
+	public static final String MEMBER_CEO = "STAT_B_CEO"; //"ceo"; //Framkvæmdastjóri
+	public static final String MEMBER_PRESIDENT = "STAT_B_PRES"; //"president"; //Forseti
+	public static final String MEMBER_VICE_PRESIDENT = "STAT_B_VICEPRES"; //"vice_president"; //Varaforseti
 
 	//	Trainer roles
-	public static final String STATUS_COACH = "STAT_COACH";
-	public static final String STATUS_ASSISTANT_COACH = "STAT_ASSCOACH";
+	public static final String STATUS_COACH = "STAT_COACH"; //Þjálfari
+	public static final String STATUS_ASSISTANT_COACH = "STAT_ASSCOACH"; //Aðstoðarþjálfari
+	public static final String STAT_CHIEF_TRAINER = "STAT_CHIEF_TRAINER"; //Yfirþjálfari
+
+	// Other roles
+	public static final String STAT_CHEF_DE_MISSION = "STAT_CHEF_DE_MISSION"; //Aðalfararstjóri
+	public static final String STAT_DEPUTY_CDM = "STAT_DEPUTY_CDM"; //Aðstoðarfararstjóri
+	public static final String STAT_REF = "STAT_REF"; //Dómari
+	public static final String STAT_GUIDE = "STAT_GUIDE"; //Fararstjóri
+	public static final String STAT_TEAM_MANAGER = "STAT_TEAM_MANAGER"; //Flokksstjóri
+	public static final String STAT_EX_COM = "STAT_EX_COM"; //Framkvæmdastjórn
+	public static final String SPORTS_REPRESENTATIVE = "SPORTS_REPRESENTATIVE"; //Íþróttafulltrúi
+	public static final String STAT_COMP = "STAT_COMP"; //Keppandi
+	public static final String STAT_TEAM_OFFICIAL = "STAT_TEAM_OFFICIAL"; //Liðsstjóri
+	public static final String STAT_DOCTOR = "STAT_DOCTOR"; //Læknir
+	public static final String STAT_PSYCHOLOG = "STAT_PSYCHOLOG"; //Sálfræðingur
+	public static final String STAT_SPORT_MASSAGE = "STAT_SPORT_MASSAGE"; //Sjúkranuddari
+	public static final String STAT_PHYSIOTHERAPIST = "STAT_PHYSIOTHERAPIST"; //Sjúkraþjálfari
+	public static final String STAT_REGION_MANAGER = "STAT_REGION_MANAGER"; //Sviðsstjóri
+	public static final String STAT_PROJECT_MANGAGER = "STAT_PROJECT_MANGAGER"; //Verkefnastjóri
+
 
 	public static final String ORDER_BY_NAME = "name_order";
 	public static final String ORDER_BY_GROUP_PATH = "group_path_order";
