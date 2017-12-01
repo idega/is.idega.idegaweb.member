@@ -124,10 +124,14 @@ public class IWMemberConstants {
 	public static final String STAT_TEAM_OFFICIAL = "STAT_TEAM_OFFICIAL"; //Liðsstjóri
 	public static final String STAT_DOCTOR = "STAT_DOCTOR"; //Læknir
 	public static final String STAT_PSYCHOLOG = "STAT_PSYCHOLOG"; //Sálfræðingur
-	public static final String STAT_SPORT_MASSAGE = "STAT_SPORT_MASSAGE"; //Sjúkranuddari
+	public static final String STAT_SPORT_MASSAGE = "STAT_SPORT_MASSAGE"; //Sjúkranuddari or Nuddari
 	public static final String STAT_PHYSIOTHERAPIST = "STAT_PHYSIOTHERAPIST"; //Sjúkraþjálfari
 	public static final String STAT_REGION_MANAGER = "STAT_REGION_MANAGER"; //Sviðsstjóri
 	public static final String STAT_PROJECT_MANGAGER = "STAT_PROJECT_MANGAGER"; //Verkefnastjóri
+	public static final String STAT_EMPL = "STAT_EMPL"; //Starfsmaður
+	public static final String STAT_ASSISTANT = "STAT_ASSISTANT"; //Aðstoðarmaður
+	public static final String STAT_GUEST = "STAT_GUEST"; //Gestur
+	public static final String STAT_OFFICE_MANAGER = "STAT_OFFICE_MANAGER"; //Skrifstofustjóri
 
 
 	public static final String ORDER_BY_NAME = "name_order";
