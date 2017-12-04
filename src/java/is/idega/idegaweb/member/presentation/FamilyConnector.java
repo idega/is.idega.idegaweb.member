@@ -1,12 +1,10 @@
 package is.idega.idegaweb.member.presentation;
 
-import is.idega.block.family.business.FamilyLogic;
-
 import java.rmi.RemoteException;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
-import javax.ejb.RemoveException;
 
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWResourceBundle;
@@ -26,6 +24,8 @@ import com.idega.presentation.ui.TextInput;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 
+import is.idega.block.family.business.FamilyLogic;
+
 public class FamilyConnector extends StyledIWAdminWindow {
 	private static final String IW_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member";
 
@@ -37,9 +37,9 @@ public class FamilyConnector extends StyledIWAdminWindow {
 	public static final String _PARAM_ACTION = "action";
 	public static final String _PARAM_TYPE = "type";
 	public static final String _PARAM_METHOD = "method";
-	
+
 	private static final String FAMILY_RELATION_CUSTODIAN_AND_PARENT = "fam_rel_cust_par";
-	
+
 	private static final String HELP_TEXT_KEY_ATTATCH = "family_connector_attatch";
 	private static final String HELP_TEXT_KEY_DETATCH = "family_connector_detatch";
 
@@ -52,7 +52,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 
 	private int method = -1;
 	private User user = null;
-	
+
 	private String mainStyleClass = "main";
 
 	public FamilyConnector() {
@@ -70,6 +70,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		setResizable(true);
 	}
 
+	@Override
 	public void main(IWContext iwc) throws Exception {
 		this.method = parseMethod(iwc);
 		this.user = getUser(iwc);
@@ -97,7 +98,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		form.add(new HiddenInput(_PARAM_USER_ID, this.user.getPrimaryKey().toString()));
 		form.add(new HiddenInput(_PARAM_METHOD, String.valueOf(_METHOD_ATTACH)));
 		form.add(new HiddenInput(_PARAM_ACTION, String.valueOf(_ACTION_SAVE)));
-		
+
 		Table table = new Table();
 		table.setCellpadding(0);
 		table.setCellspacing(0);
@@ -115,11 +116,11 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		frameTable.add(new Text(iwrb.getLocalizedString("usr_fam_win_pin","Personal ID")), 1, 1);
 		frameTable.add(Text.getBreak(), 1, 1);
 		frameTable.add(new TextInput(_PARAM_RELATED_USER_ID), 1, 1);
-		
+
 		frameTable.add(new Text(iwrb.getLocalizedString("usr_fam_win_type","The person to connect is")), 1, 2);
 		frameTable.add(Text.getBreak(), 1, 2);
 		frameTable.add(getRelationMenu(iwc), 1, 2);
-		
+
 		Table bottomTable = new Table();
 		bottomTable.setStyleClass(this.mainStyleClass);
 		bottomTable.setAlignment(1,1,Table.HORIZONTAL_ALIGN_LEFT);
@@ -127,7 +128,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		bottomTable.setWidth("100%");
 		Help help = getHelp(HELP_TEXT_KEY_ATTATCH);
 		bottomTable.add(help,1,1);
-		
+
 		Table buttonTable = new Table();
 		buttonTable.setCellpadding(0);
 		buttonTable.setCellspacing(0);
@@ -137,7 +138,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		StyledButton close = new StyledButton(new CloseButton(iwrb.getLocalizedString("usr_fam_win_cancel","Cancel")));
 		buttonTable.add(close, 3, 1);
 		bottomTable.add(buttonTable, 2, 1);
-		
+
 		table.add(frameTable,1,1);
 		table.add(bottomTable,1,3);
 		form.add(table);
@@ -156,7 +157,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		Table table = new Table();
 		table.setCellpadding(0);
 		table.setCellspacing(0);
-		
+
 		Table frameTable = new Table();
 		frameTable.setStyleClass(this.mainStyleClass);
 		frameTable.setAlignment(1, 1, Table.HORIZONTAL_ALIGN_LEFT);
@@ -170,8 +171,8 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		bottomTable.setCellspacing(0);
 		bottomTable.setStyleClass(this.mainStyleClass);
 		bottomTable.setWidth("100%");
-		
-		
+
+
 		Help help = getHelp(HELP_TEXT_KEY_DETATCH);
 		bottomTable.add(help,1,1);
 		bottomTable.setAlignment(1,2,Table.HORIZONTAL_ALIGN_RIGHT);
@@ -183,7 +184,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		table.setVerticalAlignment(1,3,Table.VERTICAL_ALIGN_TOP);
 		table.add(frameTable,1,1);
 		table.add(bottomTable,1,3);
-		
+
 		form.add(table);
 		add(form,iwc);
 	}
@@ -198,7 +199,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 				case _METHOD_ATTACH :
 					try {
 						User relatedUser = getUserBusiness(iwc).getUserHome().findByPersonalID(relatedPerson);
-						
+
 						if(!this.user.getPrimaryKey().equals(relatedUser.getPrimaryKey())) {
 							if (relationType.equals(logic.getChildRelationType())) {
 								logic.setAsChildFor(relatedUser, this.user);
@@ -228,12 +229,12 @@ public class FamilyConnector extends StyledIWAdminWindow {
 								getAttachForm(iwc);
 							}
 							catch(Exception e) {
-								
+
 							}
-							
+
 						}
 
-						
+
 					}
 					catch (FinderException fe) {
 						fe.printStackTrace(System.err);
@@ -263,24 +264,25 @@ public class FamilyConnector extends StyledIWAdminWindow {
 						else if (relationType.equals(logic.getCustodianRelationType())) {
 							logic.removeAsCustodianFor(relatedUser, this.user);
 						}
-						else if( relationType.equals(FAMILY_RELATION_CUSTODIAN_AND_PARENT)){
+						else if (relationType.equals(FAMILY_RELATION_CUSTODIAN_AND_PARENT)) {
 							logic.removeAsParentFor(relatedUser, this.user);
 							logic.removeAsCustodianFor(relatedUser, this.user);
 						}
+						if (relatedUser.isDeceased()) {
+							logic.removeAllFamilyRelationsForUser(relatedUser, iwc.isLoggedOn() ? iwc.getCurrentUser() : null);
+						}
+
 						close();
-					}
-					catch (NumberFormatException nfe) {
-					}
-					catch (RemoteException re) {
-					}
-					catch (RemoveException re) {
+					} catch (Exception e) {
+						getLogger().log(Level.WARNING, "Error detaching " + relatedPerson + " from " + this.user + " by relation " + relationType, e);
 					}
 
 					break;
 			}
+		} else {
+			getLogger().warning("Related person is unknown!");
 		}
 
-		
 		iwc.setSessionAttribute(TabbedPropertyPanel.TAB_STORE_WINDOW, "TRUE");
 		setParentPageFormToSubmitOnUnLoad(TabbedPropertyPanel.TAB_FORM_NAME);
 	}
@@ -323,7 +325,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		FamilyLogic familyLogic = null;
 		if (familyLogic == null) {
 			try {
-				familyLogic = (FamilyLogic) com.idega.business.IBOLookup.getServiceInstance(iwc, FamilyLogic.class);
+				familyLogic = com.idega.business.IBOLookup.getServiceInstance(iwc, FamilyLogic.class);
 			}
 			catch (java.rmi.RemoteException rme) {
 				throw new RuntimeException(rme.getMessage());
@@ -332,11 +334,12 @@ public class FamilyConnector extends StyledIWAdminWindow {
 		return familyLogic;
 	}
 
+	@Override
 	public UserBusiness getUserBusiness(IWApplicationContext iwc) {
 		UserBusiness business = null;
 		if (business == null) {
 			try {
-				business = (UserBusiness) com.idega.business.IBOLookup.getServiceInstance(iwc, UserBusiness.class);
+				business = com.idega.business.IBOLookup.getServiceInstance(iwc, UserBusiness.class);
 			}
 			catch (java.rmi.RemoteException rme) {
 				throw new RuntimeException(rme.getMessage());
@@ -348,6 +351,7 @@ public class FamilyConnector extends StyledIWAdminWindow {
 	/**
 	* @see com.idega.presentation.PresentationObject#getBundleIdentifier()
 	*/
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
