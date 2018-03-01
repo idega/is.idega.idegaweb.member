@@ -289,3 +289,7 @@ usrch_search_lname=Last name
 usrch_search_pid=Personal ID
 workPhone=Work phone
 statistics_writer.totals=Total:
+totals_males=Total male
+totals_females=Total female
+statistics_writer.sum_totals_male=Total male
+statistics_writer.sum_totals_female=Total female

@@ -271,3 +271,8 @@ males=Karlar
 females=Konur
 both_gender=Bæði
 statistics_writer.totals=Samtals meðlimir:
+
+totals_males=Karlar
+totals_females=Konur
+statistics_writer.sum_totals_male=Samtals karlar
+statistics_writer.sum_totals_female=Samtals konur
