@@ -132,6 +132,8 @@ public class IWMemberConstants {
 	public static final String STAT_ASSISTANT = "STAT_ASSISTANT"; //Aðstoðarmaður
 	public static final String STAT_GUEST = "STAT_GUEST"; //Gestur
 	public static final String STAT_OFFICE_MANAGER = "STAT_OFFICE_MANAGER"; //Skrifstofustjóri
+	public static final String STAT_YOUNG_AMBASSADOR = "STAT_YOUNG_AMBASSADOR"; //Ungur sendiherra
+	public static final String STAT_YOUNG_CHANGE_MAKER = "STAT_YOUNG_CHANGE_MAKER"; //Ungur áhrifavaldur
 
 
 	public static final String ORDER_BY_NAME = "name_order";
