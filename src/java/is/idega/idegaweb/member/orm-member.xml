@@ -40,5 +40,6 @@
 	<entity class="is.idega.idegaweb.member.data.group.MemberGroupInnerGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberClubPlayerInnerGroup" />
 	<entity class="is.idega.idegaweb.member.data.group.MemberUnionTrainerGroup" />
+	<entity class="is.idega.idegaweb.member.data.group.MemberClubHonoraryGroup" />
     
 </entity-mappings>
