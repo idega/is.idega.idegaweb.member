@@ -57,6 +57,7 @@ import com.idega.user.data.User;
 import com.idega.user.data.UserInfoColumns;
 import com.idega.user.data.UserStatus;
 import com.idega.user.data.UserStatusHome;
+import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
 import com.idega.util.text.TextSoap;
 
@@ -364,8 +365,11 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 						NationalRegister userRegister = getNationalRegisterBusiness().getEntryBySSN(user.getPersonalID());
 						if (userRegister != null) {
 							custodianPersonalID = userRegister.getFamilyId();
-							User custodian = getUserBusiness().getUser(custodianPersonalID);
-							custodianString = custodian.getName();
+							User custodian = null;
+							try {
+								custodian = getUserBusiness().getUser(custodianPersonalID);
+							} catch (Exception e) {}
+							custodianString = custodian == null ? CoreConstants.EMPTY : custodian.getName();
 							custodianPhoneString = getPhoneNumber(custodian);
 						}
 					} else {
@@ -785,6 +789,10 @@ public class UserStatsBusinessBean extends IBOServiceBean implements
 	}
 
 	private String getPhoneNumber(Group group) {
+		if (group == null) {
+			return CoreConstants.EMPTY;
+		}
+
 		Collection phones = group.getPhones();
 		String phoneNumber = "";
 		if (!phones.isEmpty()) {
