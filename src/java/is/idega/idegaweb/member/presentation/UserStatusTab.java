@@ -14,7 +14,10 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+
 import javax.ejb.FinderException;
+
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWApplicationContext;
@@ -37,11 +40,12 @@ import com.idega.user.data.Status;
 import com.idega.user.data.StatusHome;
 import com.idega.user.data.User;
 import com.idega.user.presentation.UserTab;
+import com.idega.util.StringUtil;
 
 /**
  * @author palli
  *
- * To change this generated comment go to 
+ * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class UserStatusTab extends UserTab {
@@ -49,7 +53,7 @@ public class UserStatusTab extends UserTab {
 
 	private static final String TAB_NAME = "usr_stat_tab_name";
 	private static final String DEFAULT_TAB_NAME = "Status";
-	
+
 	private static final String MEMBER_HELP_BUNDLE_IDENTIFIER = "is.idega.idegaweb.member.isi";
 	private static final String HELP_TEXT_KEY = "user_status_tab";
 	private static final String PARTICIPATING_STATUS_META_DATA_KEY = "participating_status";
@@ -95,6 +99,7 @@ public class UserStatusTab extends UserTab {
 		setName(iwrb.getLocalizedString(TAB_NAME, DEFAULT_TAB_NAME));
 	}
 
+	@Override
 	public String getBundleIdentifier() {
 		return IW_BUNDLE_IDENTIFIER;
 	}
@@ -102,6 +107,7 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initializeFieldNames()
 	 */
+	@Override
 	public void initializeFieldNames() {
 	//	_inactiveFieldName = "usr_stat_inactive";
 		this._groupFieldName = "usr_grp_status";
@@ -118,10 +124,11 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initializeFieldValues()
 	 */
+	@Override
 	public void initializeFieldValues() {
 		this.fieldValues = new Hashtable();
 	//	fieldValues.put(_inactiveFieldName, Boolean.FALSE);
-		
+
 		this.fieldValues.put(this._statusFieldName, "");
 //		fieldValues.put(_parent1StatusFieldName, Boolean.FALSE);
 //		fieldValues.put(_parent2StatusFieldName, Boolean.FALSE);
@@ -134,6 +141,7 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#updateFieldsDisplayStatus()
 	 */
+	@Override
 	public void updateFieldsDisplayStatus() {
 //		_inactiveField.setChecked(((Boolean) fieldValues.get(_inactiveFieldName)).booleanValue());
 		if (getGroupID() > 0) {
@@ -142,13 +150,13 @@ public class UserStatusTab extends UserTab {
 				this._groupField.setText(selectedGroup.getName());
 			}
 		}
-		
+
 		else {
 			IWContext iwc = IWContext.getInstance();
 			IWResourceBundle iwrb = getResourceBundle(iwc);
 			this._groupField.setText(iwrb.getLocalizedString("user_status_bar.no_group_selected","No group selected"));
 		}
-		
+
 		this._statusField.setSelectedOption((String) this.fieldValues.get(this._statusFieldName));
 //		_parent1StatusField.setChecked(((Boolean) fieldValues.get(_parent1StatusFieldName)).booleanValue());
 //		_parent2StatusField.setChecked(((Boolean) fieldValues.get(_parent2StatusFieldName)).booleanValue());
@@ -161,6 +169,7 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initializeFields()
 	 */
+	@Override
 	public void initializeFields() {
 	//	_inactiveField = new CheckBox(_inactiveFieldName);
 	//	_inactiveField.setWidth("10");
@@ -180,9 +189,9 @@ public class UserStatusTab extends UserTab {
 		this._userInfoField3 = new TextArea(this._userInfoFieldName3, 50, 16);
 
 		IWContext iwc = IWContext.getInstance();
-		List status = null;
+		List<Status> status = null;
 		try {
-			status = (List) ((StatusHome)IDOLookup.getHome(Status.class)).findAll();
+			status = (List<Status>) ((StatusHome)IDOLookup.getHome(Status.class)).findAll();
 		}
 		catch (IDOLookupException e) {
 			e.printStackTrace();
@@ -195,15 +204,42 @@ public class UserStatusTab extends UserTab {
 			if (status.size() > 0) {
 				final IWResourceBundle iwrb = getResourceBundle(iwc);
 				this._statusField.addOption(new SelectOption(" ",-1));
-				
-				
-				final Collator collator = Collator.getInstance(iwc.getLocale());
-				Collections.sort(status,new Comparator() {
-					public int compare(Object arg0, Object arg1) {
-						return collator.compare(iwrb.getLocalizedString("usr_stat_" + ((Status) arg0).getStatusKey(), ((Status) arg0).getStatusKey()), iwrb.getLocalizedString("usr_stat_" + ((Status) arg1).getStatusKey(), ((Status) arg1).getStatusKey()));
-					}				
-				});
-				
+
+				try {
+					final Collator collator = Collator.getInstance(iwc.getLocale());
+					Collections.sort(status, new Comparator<Status>() {
+						@Override
+						public int compare(Status arg0, Status arg1) {
+							if (iwrb == null) {
+								return 0;
+							}
+							if (arg0 == null || arg1 == null) {
+								return 0;
+							}
+							String key1 = arg0.getStatusKey();
+							String key2 = arg1.getStatusKey();
+							if (StringUtil.isEmpty(key1) || StringUtil.isEmpty(key2)) {
+								return 0;
+							}
+							String loc1 = null;
+							try {
+								loc1 = iwrb.getLocalizedString("usr_stat_" + key1, key1);
+							} catch (Exception e) {}
+							String loc2 = null;
+							try {
+								loc2 = iwrb.getLocalizedString("usr_stat_" + key2, key2);
+							} catch (Exception e) {}
+							if (StringUtil.isEmpty(loc1) || StringUtil.isEmpty(loc2)) {
+								return 0;
+							}
+
+							return collator.compare(loc1, loc2);
+						}
+					});
+				} catch (Exception e) {
+					getLogger().log(Level.WARNING, "Error sorting users statuses " + status, e);
+				}
+
 				Iterator it = status.iterator();
 				while (it.hasNext()) {
 					Status s = (Status)it.next();
@@ -220,19 +256,20 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initializeTexts()
 	 */
+	@Override
 	public void initializeTexts() {
 		IWContext iwc = IWContext.getInstance();
 		IWResourceBundle iwrb = getResourceBundle(iwc);
 
 		//_inactiveText = new Text(iwrb.getLocalizedString(_inactiveFieldName, "In-active"));
 		//_inactiveText.setBold();
-		
+
 		this._groupText = new Text(iwrb.getLocalizedString(this._groupFieldName, "Group"));
 		this._groupText.setBold();
-		
+
 		this._statusText = new Text(iwrb.getLocalizedString(this._statusFieldName, "Status"));
 		this._statusText.setBold();
-		
+
 //		_parent1StatusText = new Text(iwrb.getLocalizedString(_parent1StatusFieldName, "Parent status1") + ":");
 //		_parent2StatusText = new Text(iwrb.getLocalizedString(_parent2StatusFieldName, "Parent status2") + ":");
 		this._parent3StatusText = new Text(iwrb.getLocalizedString(this._parent3StatusFieldName, "Parent status3"));
@@ -250,9 +287,10 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#lineUpFields()
 	 */
+	@Override
 	public void lineUpFields() {
 		empty();
-		
+
 		this.t = new Table(2, 8);
 		this.t.setCellpadding(5);
 		this.t.setCellspacing(0);
@@ -273,20 +311,22 @@ public class UserStatusTab extends UserTab {
 		add(this.t);
 	}
 
+	@Override
 	public void main(IWContext iwc) {
 		if (getPanel() != null) {
-			getPanel().addHelpButton(getHelpButton());		
+			getPanel().addHelpButton(getHelpButton());
 		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.idega.util.datastructures.Collectable#collect(com.idega.presentation.IWContext)
 	 */
+	@Override
 	public boolean collect(IWContext iwc) {
 		if (iwc != null) {
 	//		String inactive = iwc.getParameter(_inactiveFieldName);
 			String status = iwc.getParameter(this._statusFieldName);
-			
+
 //			String parent1Status = iwc.getParameter(_parent1StatusFieldName);
 //			String parent2Status = iwc.getParameter(_parent2StatusFieldName);
 			String parent3Status = iwc.getParameter(this._parent3StatusFieldName);
@@ -333,6 +373,7 @@ public class UserStatusTab extends UserTab {
 	/* (non-Javadoc)
 	 * @see com.idega.util.datastructures.Collectable#store(com.idega.presentation.IWContext)
 	 */
+	@Override
 	public boolean store(IWContext iwc) {
 		try {
 			String status = (String)this.fieldValues.get(this._statusFieldName);
@@ -340,8 +381,8 @@ public class UserStatusTab extends UserTab {
 				int user_id = this.getUserId();
 				int group_id = this.getGroupID();
 				int status_id = Integer.parseInt(status);
-				
-				getUserStatusBusiness(iwc).setUserGroupStatus(user_id,group_id,status_id,iwc.getCurrentUserId()); 	
+
+				getUserStatusBusiness(iwc).setUserGroupStatus(user_id,group_id,status_id,iwc.getCurrentUserId());
 			}
 			Boolean participatingStatus = (Boolean)this.fieldValues.get(this._parent3StatusFieldName);
 			User user = getUser();
@@ -358,18 +399,19 @@ public class UserStatusTab extends UserTab {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return true;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.idega.user.presentation.UserTab#initFieldContents()
 	 */
+	@Override
 	public void initFieldContents() {
 		IWContext iwc = IWContext.getInstance();
 		this.fieldValues = new Hashtable();
 //		fieldValues.put(_inactiveFieldName, Boolean.FALSE);
-		
+
 		if (getGroupID() != -1) {
 			this.t.setCellpaddingTop(5,40);
 			this.t.mergeCells(1, 5, 2, 5);
@@ -393,7 +435,7 @@ public class UserStatusTab extends UserTab {
 		catch(Exception e) {
 			status_id = -1;
 		}
-		
+
 		if (status_id > 0) {
 			this.fieldValues.put(this._statusFieldName, Integer.toString(status_id));
 		}
@@ -402,7 +444,7 @@ public class UserStatusTab extends UserTab {
 //		fieldValues.put(_parent1StatusFieldName, Boolean.FALSE);
 //		fieldValues.put(_parent2StatusFieldName, Boolean.FALSE);
 		}
-		
+
 		User user = getUser();
 		String participatingStatus = user.getMetaData(PARTICIPATING_STATUS_META_DATA_KEY);
 		this.fieldValues.put(this._parent3StatusFieldName, Boolean.valueOf(participatingStatus));
@@ -454,14 +496,14 @@ public class UserStatusTab extends UserTab {
 		help.setHelpTextKey(HELP_TEXT_KEY);
 		help.setImage(helpImage);
 		return help;
-		
+
 	}
-	
+
 	public UserStatusBusiness getUserStatusBusiness(IWApplicationContext iwc){
 		UserStatusBusiness business = null;
 		if(business == null){
 			try{
-				business = (UserStatusBusiness)com.idega.business.IBOLookup.getServiceInstance(iwc,UserStatusBusiness.class);
+				business = com.idega.business.IBOLookup.getServiceInstance(iwc,UserStatusBusiness.class);
 			}
 			catch(java.rmi.RemoteException rme){
 				throw new RuntimeException(rme.getMessage());
@@ -469,12 +511,12 @@ public class UserStatusTab extends UserTab {
 		}
 		return business;
 	}
-	
+
 	public UserInfoColumnsBusiness getUserInfoColumnsBusiness(IWApplicationContext iwc){
 		UserInfoColumnsBusiness business = null;
 		if(business == null){
 			try{
-				business = (UserInfoColumnsBusiness)com.idega.business.IBOLookup.getServiceInstance(iwc,UserInfoColumnsBusiness.class);
+				business = com.idega.business.IBOLookup.getServiceInstance(iwc,UserInfoColumnsBusiness.class);
 			}
 			catch(java.rmi.RemoteException rme){
 				throw new RuntimeException(rme.getMessage());
