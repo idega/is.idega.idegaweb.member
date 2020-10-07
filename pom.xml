@@ -64,6 +64,12 @@
     <dependency>
       <groupId>com.idega.block.platform</groupId>
       <artifactId>com.idega.block.media</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-logging</groupId>
+      		<artifactId>commons-logging-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.idega.block.addon</groupId>
@@ -90,6 +96,16 @@
       <artifactId>jasperreports</artifactId>
       <version>${jasperreports-jasperreports-version}</version>
       <type>jar</type>
+      <exclusions>
+      	<exclusion>
+      		<groupId>javax.servlet</groupId>
+      		<artifactId>servlet-api</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>commons-logging</groupId>
+      		<artifactId>commons-logging-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
