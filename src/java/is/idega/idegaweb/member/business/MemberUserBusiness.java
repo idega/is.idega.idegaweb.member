@@ -11,6 +11,7 @@ package is.idega.idegaweb.member.business;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -219,5 +220,7 @@ public interface MemberUserBusiness extends IBOService, UserBusiness {
 
 	public Group getLeagueForDivision(Group division);
 	public com.idega.user.data.bean.Group getLeagueForDivision(Integer divisionId);
+
+	public boolean addGeneralMember(Integer groupId, User user, User addedBy, Date timestamp);
 
 }

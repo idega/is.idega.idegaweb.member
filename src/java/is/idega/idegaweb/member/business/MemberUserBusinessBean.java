@@ -1,9 +1,11 @@
 package is.idega.idegaweb.member.business;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -301,7 +303,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	public List<Group> getLeagueGroupListForClubGroup(Group club) throws NoLeagueFoundException, RemoteException{
 		String[] divisionType = {IWMemberConstants.GROUP_TYPE_CLUB_DIVISION};
 		List<Group> children = club.getChildGroups(divisionType,true);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 
 		if(children!=null && !children.isEmpty()){
 
@@ -478,7 +480,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public List<Group> getGroupListForUserFromTopNodesAndGroupType(User user, String groupType, IWUserContext iwuc) throws RemoteException{
 		Collection<Group> tops = getUsersTopGroupNodesByViewAndOwnerPermissions(user,iwuc);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 		if(tops!=null && !tops.isEmpty()){
 			Iterator<Group> iter = tops.iterator();
 			while (iter.hasNext()) {
@@ -563,7 +565,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public List<Group> getClubListForUser(User user) throws NoClubFoundException,RemoteException{
 		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 		if (!ListUtil.isEmpty(parents)) {
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
@@ -589,7 +591,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public List<Group> getDivisionListForUser(User user) throws NoDivisionFoundException,RemoteException{
 		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 		if (parents!=null && !parents.isEmpty()) {
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
@@ -615,7 +617,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public List<Group> getGroupTemporaryListForUser(User user) throws RemoteException{
 		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 		if (parents!=null && !parents.isEmpty()) {
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
@@ -635,7 +637,7 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 	@Override
 	public List<Group> getGroupClubPlayerListForUser(User user) throws RemoteException{
 		Collection<Group> parents = getGroupBusiness().getParentGroupsRecursive((Group) user);
-		List<Group> list = new ArrayList<Group>();
+		List<Group> list = new ArrayList<>();
 		if (parents!=null && !parents.isEmpty()) {
 			Iterator<Group> iter = parents.iterator();
 			while (iter.hasNext()) {
@@ -1129,6 +1131,87 @@ public class MemberUserBusinessBean extends UserBusinessBean implements MemberUs
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean addGeneralMember(Integer groupId, User user, User addedBy, Date timestamp) {
+		if (groupId == null) {
+			getLogger().warning("Group ID is not provided");
+			return false;
+		}
+		if (user == null) {
+			getLogger().warning("User is not provided");
+			return false;
+		}
+
+		try {
+			GroupBusiness groupBusiness = getGroupBusiness();
+			UserBusiness userBusiness = getServiceInstance(UserBusiness.class);
+
+			Integer generalGroupId = null;
+			Group group = groupBusiness.getGroupByGroupID(groupId);
+			String type = group == null ? null : group.getType();
+			if (!StringUtil.isEmpty(type) && type.equals(GroupTypeConstants.GROUP_TYPE_GENERAL)) {
+				if (userBusiness.isMemberOfGroup(groupId, user)) {
+					getLogger().info("Member " + user + " (personal ID: " + user.getPersonalID() + ") already is a member at general (ADA) members group " + groupId);
+					return true;				//	User already is in general group
+				} else {
+					generalGroupId = groupId;	//	Add user into this general group
+				}
+			}
+
+			if (generalGroupId == null) {
+				List<com.idega.user.data.bean.Group> generalGroups = getGroupsWithTypesForGroup(
+						Arrays.asList(groupId),
+						Arrays.asList(GroupTypeConstants.GROUP_TYPE_GENERAL)
+				);
+				if (ListUtil.isEmpty(generalGroups)) {
+					getLogger().warning("Unable to add member " + user + " (personal ID: " + user.getPersonalID() + ") into general (ADA) members group for group with ID " +
+							groupId + ": did not find any general group for group " + groupId);
+					return false;
+				}
+
+				getLogger().info("Found general groups for group with ID " + groupId + ": " + generalGroups);
+				generalGroupId = generalGroups.iterator().next().getID();
+			}
+			if (generalGroupId == null) {
+				getLogger().warning("Unable to add member " + user + " (personal ID: " + user.getPersonalID() + ") into general (ADA) members group for group with ID " +
+						groupId + ": did not find any general group ID for group " + groupId);
+				return false;
+			} else {
+				getLogger().info("Found general group's ID (" + generalGroupId + ") for group " + groupId + ". Will add member " + user + " (personal ID: " +
+						user.getPersonalID() + ") into group with ID " + generalGroupId);
+			}
+
+			if (userBusiness.isMemberOfGroup(generalGroupId, user)) {
+				getLogger().info("Member " + user + " (personal ID: " + user.getPersonalID() + ") already is a member at general (ADA) members group (" + generalGroupId +
+						") for group with ID " + groupId);
+				return true;
+			}
+
+			com.idega.util.Property result = groupBusiness.addUser(
+					generalGroupId,
+					user,
+					addedBy,
+					timestamp == null ? IWTimestamp.RightNow().getTimestamp() : new Timestamp(timestamp.getTime())
+			);
+			if (result == null || !StringHandler.isNumeric(result.getValue())) {
+				getLogger().warning("Failed to add member " + user + " (personal ID: " + user.getPersonalID() + ") into general (ADA) members group (" + generalGroupId +
+						") for group with ID " + groupId);
+			} else {
+				getLogger().info("Added member " + user + " (personal ID: " + user.getPersonalID() + ") into general (ADA) members group (" + generalGroupId +
+						") for group with ID " + groupId);
+				return true;
+			}
+		} catch (Throwable e) {
+			getLogger().log(
+					Level.WARNING,
+					"Error adding member " + user + " (personal ID: " + user.getPersonalID() + ") into general (ADA) members group for group with ID " + groupId,
+					e
+			);
+		}
+
+		return false;
 	}
 
 }
