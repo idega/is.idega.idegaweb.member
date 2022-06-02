@@ -21,7 +21,7 @@ public class IWMemberConstants {
 	public static final String APPLICATION_PARAMETER_ADMINISTRATOR_MAIN_EMAIL = CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS;
 	public static final String APPLICATION_PARAMETER_MAIL_SERVER = CoreConstants.PROP_SYSTEM_SMTP_MAILSERVER;
 
-	public static final String GROUP_RELATION_TYPE_PARENT = "GROUP_PARENT";
+	public static final String GROUP_RELATION_TYPE_PARENT = CoreConstants.GROUP_RELATION_PARENT;
 
 	public static final String META_DATA_DIVISION_LEAGUE_CONNECTION ="CLUBDIV_CONN";
 	public static final String META_DATA_DIVISION_BOARD = "CLUBDIV_BOARD";
